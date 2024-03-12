@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  ckan-server:
+    build:
+      context: .
+      dockerfile: docker/rhel-9.3/Dockerfile
+    logging:
+      driver: "json-file"
+      options:
+          max-size: "100m"
+          max-file: "10"
+    ports:
+      - "8002:5000"
+      - "8081:22"
+      - "8984:8983"
+      - "8980:80"
+   
