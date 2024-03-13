@@ -1,7 +1,6 @@
 # ckan-ansible
 Ansible playbook to deploy CKAN on different environments.
 
-
 ## Structure
 ```bash
 /opt/
@@ -52,3 +51,24 @@ This directory structure organizes `ckan-ansible` project. Here's an explanation
   * `postgresql/`: Role for managing database installation and configuration.
   * `solr/`: Role for managing Solr installation and configuration.
   * `redis/`: Role for managing Redis installation and configuration.
+
+## CKAN Ansible Deployment
+Clone this repository to your local machine:
+
+```bash
+git clone https://github.com/mjanez/ckan-ansible.git
+cd ckan-ansible
+```
+
+Edit the `inventories` folder hosts vars and add the target deployment servers IP addresses or `hostname`.
+
+Customize the deployment configurations in `group_vars/*` to match your requirements. Modify any necessary variables such as database credentials, CKAN versions, and other specific settings.
+
+Run the Ansible playbook to deploy CKAN:
+
+    ```bash
+    ansible-playbook playbooks/production/deploy_ckan.yml
+    ```
+
+### Configuration
+The `inventories/production/host_vars/*.yml` file contains configuration variables that can be customized according to your deployment needs. These variables include database credentials, CKAN version, data storage paths, and other CKAN-specific settings. Review and modify these variables before running the Ansible playbook.
