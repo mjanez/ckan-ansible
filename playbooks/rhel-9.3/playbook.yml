@@ -26,10 +26,19 @@
       when: ansible_distribution not in ['Ubuntu', 'Debian']
 
   roles:
-    - { role: common, tags: common }
-    - { role: database, tags: database, when: setup_local_database == "y" }
-    - { role: ckan, tags: ckan }
-    - { role: solr, tags: solr, when: setup_local_solr == "y" }
-    - { role: redis, tags: redis, when: setup_local_redis == "y" }
-    - { role: webserver, tags: webserver }
+    - role: common
+      tags: common
+    - role: database
+      tags: database
+      when: setup_local_database == "y"
+    - role: ckan
+      tags: ckan
+    - role: solr
+      tags: solr
+      when: setup_local_solr == "y"
+    - role: redis
+      tags: redis
+      when: setup_local_redis == "y"
+    - role: webserver
+      tags: webserver
 

@@ -1,20 +1,20 @@
 --- 
 ### Host  #########################################
 server_name: production
-ansible_host: loclhost
+ansible_host: localhost
 ansible_user: ckan
 ansible_port: 22
-ansible_ssh_pass: "yourpassword"
+ansible_ssh_pass: yourpassword
 
 ### CKAN variables #########################################
-ckan_version: "ckan-2.10.1"
-ckan_site_name: "youckanurl.com"
-ckan_site_url: "http://{{ ckan_site_name }}"
-ckan_site_title: "Your-Company Data Portal"
+ckan_version: ckan-2.9.10
+ckan_site_name: youckanurl.com
+ckan_site_url: http://{{ ckan_site_name }}
+ckan_site_title: Your-Company Data Portal
 ckan_site_description: "Sample description for Your-Company's data management e.t.c."
 
 ### Database variables #########################################
-postgres_version: "12"
+postgres_version: 15
 ckan_database: {
   dbuser: "ckan_portal_user",
   dbpassword: ">C4fMsJb.*Va-rV2",
@@ -30,6 +30,6 @@ ckan_datastore: {
 }
 
 ### Solr Service #########################################
-solr_version: "8.11.2"
-ckan_solr_core_name: "ckan"
+solr_version: 9
+ckan_solr_core_name: ckan
 
