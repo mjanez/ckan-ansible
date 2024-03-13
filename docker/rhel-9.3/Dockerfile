@@ -21,10 +21,10 @@ RUN dnf update -y && \
     pip3 install --no-cache-dir virtualenv && \
     pip3 install --no-cache-dir ansible && \
     # Create ckan user/group with sudo access
-    groupadd -g 92 ${CKAN_USER} && \
-    useradd -u 92 -m -d /home/${CKAN_USER} -s /bin/bash -g ${CKAN_USER} ${CKAN_USER} && \
-    echo "${CKAN_USER} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${CKAN_USER} && \
-    chmod 0440 /etc/sudoers.d/${CKAN_USER}
+    groupadd -g 92 ckan && \
+    useradd -u 92 -m -d /home/ckan -s /bin/bash -g ckan ckan && \
+    echo "ckan ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/ckan && \
+    chmod 0440 /etc/sudoers.d/ckan
 
 # SSH setup
 RUN mkdir -p /home/ckan/.ssh && \
@@ -40,7 +40,7 @@ RUN chown ckan:ckan /home/ckan/.ssh/authorized_keys && \
     chmod 600 /home/ckan/.ssh/authorized_keys
 
 # Switch to ckan user
-USER ${CKAN_USER}
+USER ckan
 
 EXPOSE ${CKAN_PORT} ${SSH_PORT} ${NGINX_PORT}
 
