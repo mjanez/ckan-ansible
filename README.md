@@ -1,5 +1,8 @@
-# ckan-ansible
-Ansible playbook to deploy CKAN on different environments.
+# CKAN Ansible Deployment
+Ansible playbooks to deploy CKAN on different environments.
+
+Environments:
+  - RedHat Enterprise Linux 9
 
 ## Structure
 ```bash
