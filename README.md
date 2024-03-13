@@ -73,7 +73,7 @@ Also specify if using a SSH password authentication or [create a SSH key pair](d
 ### Example
 1. Select the environment you want to deploy, `rhel-9.3`.
 
-2. Edit the `playbooks/rhel-9.3/host_vars/production_01.yml` with the variables for the target deployment server. And put the SSH keys if is not using password authentication (`ansible_ssh_private_key_file`/`ansible_ssh_pass` ).
+2. Edit the `playbooks/rhel-9.3/host_vars/production_01.yml` with the variables for the target deployment server. And put the path to the SSH private key if is not using password authentication (`ansible_ssh_private_key_file`/`ansible_ssh_pass` ).
 
 3. Run the Ansible playbook to deploy CKAN on the target server. The following command will deploy CKAN on the target server using the `rhel-9.3` environment configuration. The `-vvv` flag is used for verbose output.:
 
