@@ -9,11 +9,12 @@ ENV SSH_PORT=22
 ENV CKAN_PORT=5000
 ENV NGINX_PORT=80
 ENV CKAN_USER=ckan
+ENV CKAN_USER_SSH_PWD=ckan
 
 # Install necessary packages and install Ansible
 RUN dnf update -y && \
     # Basic packages
-    dnf -y install sudo nano git wget gcc openssl-devel libffi-devel make automake cmake \
+    dnf -y install sudo nano git wget gcc openssh-server openssl-devel libffi-devel make automake cmake \
     # Python dependencies
     python3 python3-pip libpq && \
     dnf clean all && \
@@ -23,15 +24,17 @@ RUN dnf update -y && \
     # Create ckan user/group with sudo access
     groupadd -g 92 ckan && \
     useradd -u 92 -m -d /home/ckan -s /bin/bash -g ckan ckan && \
+    echo "ckan:${CKAN_USER_SSH_PWD}" | chpasswd && \
     echo "ckan ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/ckan && \
     chmod 0440 /etc/sudoers.d/ckan
 
 # SSH setup
-RUN mkdir -p /home/ckan/.ssh && \
-    chmod 700 /home/ckan/.ssh && \
-    chown ckan:ckan /home/ckan/.ssh && \
-    echo "PasswordAuthentication no" >> /etc/ssh/sshd_config && \
-    chmod o-rwx /home/ckan/.ssh
+RUN mkdir /var/run/sshd && \
+    # Configure SSH for non-root public key authentication
+    sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd && \
+    # Generate host keys
+    ssh-keygen -A
 
 # Copy the public key
 COPY docker/ssh/keys/ssh.pub /home/ckan/.ssh/authorized_keys
@@ -39,10 +42,7 @@ COPY docker/ssh/keys/ssh.pub /home/ckan/.ssh/authorized_keys
 RUN chown ckan:ckan /home/ckan/.ssh/authorized_keys && \
     chmod 600 /home/ckan/.ssh/authorized_keys
 
-# Switch to ckan user
-USER ckan
-
 EXPOSE ${CKAN_PORT} ${SSH_PORT} ${NGINX_PORT}
 
-# Keep container running
-CMD tail -f /dev/null
+# Keep container running starts SSHD
+CMD ["/usr/sbin/sshd", "-D"]
