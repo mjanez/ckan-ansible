@@ -7,3 +7,4 @@ docker/ssh/keys/*
 
 # Environment
 .env
+.vscode
