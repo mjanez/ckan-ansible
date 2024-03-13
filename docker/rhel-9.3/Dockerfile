@@ -4,7 +4,11 @@ LABEL maintainer="mjanez" \
       version="rhel-9.3"
 
 # Set up environment variables
-ENV ANSIBLE_DIR=/opt
+ENV ANSIBLE_DIR=/opt 
+ENV SSH_PORT=22
+ENV CKAN_PORT=5000
+ENV NGINX_PORT=80
+ENV CKAN_USER=ckan
 
 # Install necessary packages and install Ansible
 RUN dnf update -y && \
@@ -16,28 +20,29 @@ RUN dnf update -y && \
     # Install Ansible
     pip3 install --no-cache-dir virtualenv && \
     pip3 install --no-cache-dir ansible && \
-    # Create user_ckan with sudo access
-    useradd -m user_ckan && \
-    echo "user_ckan ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/user_ckan && \
-    chmod 0440 /etc/sudoers.d/user_ckan
+    # Create ckan user/group with sudo access
+    groupadd -g 92 ${CKAN_USER} && \
+    useradd -u 92 -m -d /home/${CKAN_USER} -s /bin/bash -g ${CKAN_USER} ${CKAN_USER} && \
+    echo "${CKAN_USER} ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/${CKAN_USER} && \
+    chmod 0440 /etc/sudoers.d/${CKAN_USER}
 
 # SSH setup
-RUN mkdir -p /root/.ssh && \
-    chmod 700 /root/.ssh && \
-    chown root:root /root/.ssh && \
+RUN mkdir -p /home/ckan/.ssh && \
+    chmod 700 /home/ckan/.ssh && \
+    chown ckan:ckan /home/ckan/.ssh && \
     echo "PasswordAuthentication no" >> /etc/ssh/sshd_config && \
-    chmod o-rwx /root/.ssh
+    chmod o-rwx /home/ckan/.ssh
 
 # Copy the public key
-COPY docker/ssh/keys/ssh.pub /root/.ssh/authorized_keys
+COPY docker/ssh/keys/ssh.pub /home/ckan/.ssh/authorized_keys
 
-RUN chown root:root /root/.ssh/authorized_keys && \
-    chmod 600 /root/.ssh/authorized_keys
+RUN chown ckan:ckan /home/ckan/.ssh/authorized_keys && \
+    chmod 600 /home/ckan/.ssh/authorized_keys
 
-# Switch to user_ckan
-USER user_ckan
+# Switch to ckan user
+USER ${CKAN_USER}
 
-EXPOSE 80 22
+EXPOSE ${CKAN_PORT} ${SSH_PORT} ${NGINX_PORT}
 
 # Keep container running
 CMD tail -f /dev/null
