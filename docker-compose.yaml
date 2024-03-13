@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: docker/${OS_TYPE}/Dockerfile
     env_file:
-      - docker/.env
+      - .env
     logging:
       driver: "json-file"
       options:
