@@ -2,7 +2,7 @@ version: '3'
 
 services:
   ckan-server:
-    container_name: ${CONTAINER_RHEL_NAME}
+    container_name: ${CONTAINER_OS_NAME}
     build:
       context: .
       dockerfile: docker/${CONTAINER_OS}/Dockerfile
