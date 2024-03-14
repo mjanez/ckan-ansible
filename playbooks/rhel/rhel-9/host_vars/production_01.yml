@@ -6,10 +6,10 @@ ansible_connection: ssh
 
 ### Host  #########################################
 server_name: production
-ansible_host: 192.168.122.89
-ansible_user: vagrant
-ansible_port: 2222
-ansible_ssh_pass: vagrant
+ansible_host: 192.168.68.109
+ansible_user: ckan
+ansible_port: 8022
+ansible_ssh_pass: ckan
 
 ### CKAN variables #########################################
 ckan_version: ckan-2.9.10

@@ -21,5 +21,6 @@
       - "automake"
       - "gmp-devel"
       - "lsof"
+      - "systemd"
     state: present
     update_cache: yes
