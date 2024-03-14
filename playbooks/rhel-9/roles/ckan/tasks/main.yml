@@ -1,0 +1,20 @@
+---
+- name: Virtualenv is installed and configured
+  include_role:
+    name: ckan
+    tasks_from: virtualenv.yml
+
+- name: Installing CKAN
+  include_role:
+    name: ckan
+    tasks_from: installckan.yml
+
+- name: Install dependency ckan extensions
+  include_role:
+    name: ckan
+    tasks_from: installextension.yml
+
+- name: Setup CKAN config
+  include_role:
+    name: ckan
+    tasks_from: ckanconfig.yml

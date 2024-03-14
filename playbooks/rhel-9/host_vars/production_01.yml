@@ -1,0 +1,40 @@
+--- 
+
+### Ansible connection  #########################################
+## If you are running the playbook on the same machine, you can use the "local" connection instead of "ssh"
+ansible_connection: ssh
+
+### Host  #########################################
+server_name: production
+ansible_host: 192.168.68.109
+ansible_user: ckan
+ansible_port: 8022
+ansible_ssh_pass: ckan
+
+### CKAN variables #########################################
+ckan_version: ckan-2.9.10
+ckan_site_name: youckanurl.com
+ckan_site_url: http://{{ ckan_site_name }}
+ckan_site_title: Your-Company Data Portal
+ckan_site_description: "Sample description for Your-Company's data management e.t.c."
+
+### Database variables #########################################
+postgres_version: 15
+ckan_database: {
+  dbuser: "ckan_portal_user",
+  dbpassword: ">C4fMsJb.*Va-rV2",
+  dbname: "ckan_portal_db",
+  dbhost: "localhost",
+}
+
+ckan_datastore: {
+  datastoreuser: "ckan_datastore_user",
+  datastorepassword: "DC4fMsJb+",
+  datastoredb: "ckan_datastore_db",
+  datastorehost: "localhost",
+}
+
+### Solr Service #########################################
+solr_version: 9
+ckan_solr_core_name: ckan
+

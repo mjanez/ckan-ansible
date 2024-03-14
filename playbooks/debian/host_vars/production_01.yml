@@ -6,9 +6,9 @@ ansible_connection: ssh
 
 ### Host  #########################################
 server_name: production
-ansible_host: targethost
+ansible_host: 192.168.68.109
 ansible_user: ckan
-ansible_port: 22
+ansible_port: 8022
 ansible_ssh_pass: ckan
 
 ### CKAN variables #########################################

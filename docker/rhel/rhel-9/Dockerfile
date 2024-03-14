@@ -1,7 +1,7 @@
 FROM registry.access.redhat.com/ubi9/ubi:9.3
 LABEL maintainer="mjanez" \
       name="ckan-ansible" \
-      version="rhel-9.3"
+      version="rhel-9"
 
 # Set up environment variables
 ENV ANSIBLE_DIR=/opt 
@@ -26,7 +26,10 @@ RUN dnf update -y && \
     useradd -u 92 -m -d /home/ckan -s /bin/bash -g ckan ckan && \
     echo "ckan:${CKAN_USER_SSH_PWD}" | chpasswd && \
     echo "ckan ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/ckan && \
-    chmod 0440 /etc/sudoers.d/ckan
+    chmod 0440 /etc/sudoers.d/ckan && \
+    # Clean up
+    dnf clean all && \
+    rm -rf /root/.cache/pip/*
 
 # SSH setup
 RUN mkdir /var/run/sshd && \
@@ -37,7 +40,7 @@ RUN mkdir /var/run/sshd && \
     ssh-keygen -A
 
 # Copy the public key
-COPY docker/ssh/keys/ssh.pub /home/ckan/.ssh/authorized_keys
+COPY docker/.ssh/keys/ssh.pub /home/ckan/.ssh/authorized_keys
 
 RUN chown ckan:ckan /home/ckan/.ssh/authorized_keys && \
     chmod 600 /home/ckan/.ssh/authorized_keys

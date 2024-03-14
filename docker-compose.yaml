@@ -2,10 +2,10 @@ version: '3'
 
 services:
   ckan-server:
-    container_name: ${RHEL_CONTAINER_NAME}
+    container_name: ${CONTAINER_RHEL_NAME}
     build:
       context: .
-      dockerfile: docker/${OS_TYPE}/Dockerfile
+      dockerfile: docker/${CONTAINER_OS}/Dockerfile
     env_file:
       - .env
     logging:
