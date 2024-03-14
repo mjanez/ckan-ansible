@@ -22,7 +22,8 @@ Edit the `inventory` folder hosts vars and add the target deployment servers IP 
 
 Customize the deployment configurations in `host_vars/*` to match your requirements. Modify any necessary variables such as database credentials, CKAN versions, and other specific settings.
 
-Also specify if using a SSH password authentication or [create a SSH key pair](docker/.ssh/keys/README.md) and copy the public key to the target deployment servers.
+>[!IMPORTANT]
+> Also if using a SSH password authentication for private repos [create a SSH key pair](docker/.ssh/keys/README.md) and copy the keys to the `./playbooks/{os}/{version}/roles/common/tasks/files`. The filenames of the keypair files must begin with id_ (e.g. `id_rsa` + `id_rsa.pub`)
 
 
 ### Example
@@ -52,11 +53,14 @@ Once you have [Vagrant](https://www.vagrantup.com/docs/installation), [VirtualBo
 # Change to a specific OS directory
 cd vagrant/rhel/rhel-9
 
-# Initialize Vagrant
-vagrant init alvistack/rhel-9
-
 # Start the virtual machine
 vagrant up
+
+# Check the IP address of the virtual machine
+vagrant ssh-config
+
+# Return to the project directory
+cd ../../..
 
 # Launch ansible playbook
 export ANSIBLE_CONFIG=$(pwd)/playbooks/rhel/rhel-9/ansible.cfg
@@ -64,6 +68,12 @@ ansible-playbook playbooks/rhel/rhel-9/playbook.yml
 
 # SSH into this machine
 vagrant ssh
+
+# To stop the virtual machine
+vagrant halt
+
+# To suspend the virtual machine
+vagrant suspend
 
 # Terminate the virtual machine
 vagrant destroy --force
@@ -93,6 +103,11 @@ ssh -p 2222 ckan@localhost
     ├── host_vars/
     │   └── production_01.yml
     └── roles/
+        ├── common/
+        │   ├── tasks/
+        │   │   └── files/
+        │   │   └── main.yml
+        │   └── ...
         ├── ckan/
         │   ├── tasks/
         │   │   └── main.yml
@@ -122,7 +137,7 @@ This directory structure organizes `ckan-ansible` project. Here's an explanation
 * `inventory/`: Contains inventories files for different environments (e.g., production, staging).
 * `roles/`: Contains Ansible roles for managing different components.
   * `ckan/`: Role for managing CKAN installation and configuration.
-  * `common/`: Role for common tasks shared across different components.
+  * `common/`: Role for common tasks shared across different components. Also contains the `files/` directory for copying SSH keys to the target server as needed.
   * `webserver/`: Role for managing web server configuration.
   * `postgresql/`: Role for managing database installation and configuration.
   * `solr/`: Role for managing Solr installation and configuration.
