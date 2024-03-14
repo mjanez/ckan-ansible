@@ -23,7 +23,7 @@ Edit the `inventory` folder hosts vars and add the target deployment servers IP 
 Customize the deployment configurations in `host_vars/*` to match your requirements. Modify any necessary variables such as database credentials, CKAN versions, and other specific settings.
 
 >[!IMPORTANT]
-> Also if using a SSH password authentication for private repos [create a SSH key pair](docker/.ssh/keys/README.md) and copy the keys to the `./playbooks/{os}/{version}/roles/common/tasks/files`. The filenames of the keypair files must begin with id_ (e.g. `id_rsa` + `id_rsa.pub`)
+> Also if using a SSH password authentication for private repos [create a SSH key pair](.ssh/keys/README.md) and copy the keys to the `./playbooks/{os}/{version}/roles/common/tasks/files`. The filenames of the keypair files must begin with id_ (e.g. `id_rsa` + `id_rsa.pub`)
 
 
 ### Example
@@ -56,11 +56,13 @@ cd vagrant/rhel/rhel-9
 # Start the virtual machine
 vagrant up
 
-# Check the IP address of the virtual machine
+# Copy the SSH private key to the Ansible 
 vagrant ssh-config
 
+# Edit the `playbooks/rhel/rhel-9/host_vars/production_01.yml` with the ssh private_key from .vagrant/machines/private_key
 # Return to the project directory
 cd ../../..
+cp ./vagrant/rhel/rhel-9/.vagrant/machines/default/virtualbox/private_key .ssh/keys/private_key
 
 # Launch ansible playbook
 export ANSIBLE_CONFIG=$(pwd)/playbooks/rhel/rhel-9/ansible.cfg
