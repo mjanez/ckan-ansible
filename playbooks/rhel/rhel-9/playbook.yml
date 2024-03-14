@@ -1,4 +1,4 @@
-- name: Deploy CKAN server
+- name: Deploy CKAN-spatial server
   hosts: ckan_servers
   become: yes
   gather_facts: yes
@@ -10,12 +10,12 @@
       default: "n"
       
     - name: "setup_local_solr"
-      prompt: "Do you want to setup a local solr instance? (y/n)"
+      prompt: "Do you want to setup a local Solr instance? (y/n)"
       private: no
       default: "n"
 
     - name: "setup_local_redis"
-      prompt: "Do you want to setup a local redis instance? (y/n)"
+      prompt: "Do you want to setup a local Redis instance? (y/n)"
       private: no
       default: "n"
   
