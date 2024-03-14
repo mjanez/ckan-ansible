@@ -46,7 +46,18 @@ Customize the deployment configurations in `host_vars/*` to match your requireme
 The `inventories/production/host_vars/*.yml` file contains configuration variables that can be customized according to your deployment needs. These variables include database credentials, CKAN version, data storage paths, and other CKAN-specific settings. Review and modify these variables before running the Ansible playbook.
 
 ## Test
-### Vagrant
+### Docker
+Once you have [Docker](https://docs.docker.com/get-docker/) installed, run the following commands under your [project directory](https://docs.docker.com/compose/gettingstarted/):
+
+```bash
+# Up the docker compose services
+docker-compose up -d
+
+# Test the ssh connection
+ssh -p 2222 ckan@localhost
+```
+
+###TODO: Vagrant
 Once you have [Vagrant](https://www.vagrantup.com/docs/installation), [VirtualBox](https://www.virtualbox.org/) and [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) installed, run the following commands under your [project directory](https://learn.hashicorp.com/tutorials/vagrant/getting-started-project-setup?in=vagrant/getting-started):
 
 ```bash
@@ -56,13 +67,8 @@ cd vagrant/rhel/rhel-9
 # Start the virtual machine
 vagrant up
 
-# Copy the SSH private key to the Ansible 
-vagrant ssh-config
-
-# Edit the `playbooks/rhel/rhel-9/host_vars/production_01.yml` with the ssh private_key from .vagrant/machines/private_key
-# Return to the project directory
-cd ../../..
-cp ./vagrant/rhel/rhel-9/.vagrant/machines/default/virtualbox/private_key .ssh/keys/private_key
+# Edit the host_vars file: ansible_host, ansible_port, ansible_user, ansible_ssh_pass with the Vagrantfile values
+vi $(pwd)/playbooks/rhel/rhel-9/host_vars/production_01.yml
 
 # Launch ansible playbook
 export ANSIBLE_CONFIG=$(pwd)/playbooks/rhel/rhel-9/ansible.cfg
@@ -81,16 +87,7 @@ vagrant suspend
 vagrant destroy --force
 ```
 
-### Docker
-Once you have [Docker](https://docs.docker.com/get-docker/) installed, run the following commands under your [project directory](https://docs.docker.com/compose/gettingstarted/):
 
-```bash
-# Up the docker compose services
-docker-compose up -d
-
-# Test the ssh connection
-ssh -p 2222 ckan@localhost
-```
 
 ## Structure of the Ansible playbooks
   ```bash
