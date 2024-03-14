@@ -1,0 +1,10 @@
+# Ansible
+config/tmp
+
+# SSH keys for docker
+docker/.ssh/keys/*
+!docker/.ssh/keys/README.md
+
+# Environment
+.env
+.vscode
