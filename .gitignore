@@ -1,5 +1,5 @@
 # Ansible
-config/tmp
+playbooks/*/*/config/*.log
 
 # SSH keys for docker
 .ssh/keys/*
