@@ -19,8 +19,9 @@
     mode: 0600
 
 - name: Restart PostgreSQL
-  command:
-    cmd: systemctl restart postgresql-{{ postgres_version }}
+  systemd:
+    name: postgresql-{{ postgres_version }}
+    state: restarted
 
 - name: Create PostgreSQL User ({{ ckan_database.ckan_db_user }})
   postgresql_user:

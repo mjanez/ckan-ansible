@@ -41,7 +41,7 @@ RUN mkdir /var/run/sshd && \
     ssh-keygen -A
 
 # Copy the public key
-COPY docker/.ssh/keys/ssh.pub /home/ckan/.ssh/authorized_keys
+COPY .ssh/keys/ssh.pub /home/ckan/.ssh/authorized_keys
 
 RUN chown ckan:ckan /home/ckan/.ssh/authorized_keys && \
     chmod 600 /home/ckan/.ssh/authorized_keys
