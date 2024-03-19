@@ -1,11 +1,12 @@
----
-- name: Install required dnf packages
+
+- name: Install required base packages
   dnf:
     name:
       - "git-core"
       - "python3-devel"
       - "python3-pip"
       - "python3-libselinux"
+      - "python3-devel"
       - "policycoreutils-python-utils"
       - "libxml2-devel"
       - "libxslt-devel"
@@ -14,13 +15,18 @@
       - "gcc"
       - "gcc-c++"
       - "wget"
+      - "curl"
+      - "patch"
       - "file-libs"
-      - "maven"
-      - "java-1.8.0-openjdk"
+      - "make"
       - "cmake"
       - "automake"
       - "gmp-devel"
-      - "lsof"
       - "systemd"
+      - "epel-release"
+      - "openssl-devel"
+      - "libffi-devel"
+      - "libtool"
+      - "supervisor"
     state: present
     update_cache: yes

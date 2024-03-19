@@ -1,4 +1,4 @@
----
+
   # If using private repositories a SSH keypair should be placed in the provisioning/files/
   # directory. The filenames of the keypair files must begin with id_ (e.g. id_rsa + id_rsa.pub).
   - name: Get filenames of files of SSH keypair to copy
@@ -10,13 +10,13 @@
     delegate_to: localhost
 
   - name: Check if keypair files available
-    ansible.builtin.fail:
+    fail:
       msg: No keypair files present in provisioning/files/!
     when: not keypair_filenames.files
 
   - name: Copy SSH keys
-    become: yes
-    ansible.builtin.copy:
+    become: true
+    copy:
       src: "{{ item.path }}"
       dest: /root/.ssh/
       mode: preserve
@@ -24,5 +24,5 @@
       - "{{ keypair_filenames.files }}"
 
   - name: Add SSH fingerprint of github.com to known_hosts
-    become: yes
+    become: true
     shell: ssh-keyscan -H github.com >> /root/.ssh/known_hosts
