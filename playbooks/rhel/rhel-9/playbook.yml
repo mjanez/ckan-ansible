@@ -1,22 +1,22 @@
 - name: Deploy CKAN-spatial server
   hosts: ckan_servers
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   vars_prompt:
     - name: "setup_local_database"
-      prompt: "Do you want to setup a local postgres database? (y/n)"
-      private: no
+      prompt: "Do you want to setup a local PostgresSQL Database? \nWARNING: This may delete an existing PostgreSQL database! (y/n)"
+      private: false
       default: "n"
       
     - name: "setup_local_solr"
-      prompt: "Do you want to setup a local Solr instance? (y/n)"
-      private: no
+      prompt: "Do you want to setup a local Solr instance with spatial capabilities? (y/n)"
+      private: false
       default: "n"
 
     - name: "setup_local_redis"
       prompt: "Do you want to setup a local Redis instance? (y/n)"
-      private: no
+      private: false
       default: "n"
   
   pre_tasks:
@@ -28,7 +28,7 @@
   roles:
       - { role: common, tags: common }
       - { role: database, tags: database, when: setup_local_database == "y" }
-      - { role: ckan, tags: ckan }
       - { role: solr, tags: solr, when: setup_local_solr == "y" }
       - { role: redis, tags: redis, when: setup_local_redis == "y" }
+      - { role: ckan, tags: ckan }
       - { role: webserver, tags: webserver }
