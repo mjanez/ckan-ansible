@@ -1,0 +1,49 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # Use RHEL 9 as the base box
+  config.vm.box = "generic/rhel8"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  #config.vm.network "public_network"
+  config.vm.network "private_network", ip: "192.168.56.20"
+  config.vm.hostname = "rhel9-test"
+
+  # Specify the SSH username
+  config.ssh.username = "vagrant"
+
+  # Copy the playbook,.env and setup files to the VM (Update with the correct SSH User if config.ssh.username is different from vagrant)
+  config.vm.synced_folder "../../../playbooks/rhel/rhel-9", "/home/vagrant/ckan-ansible/playbooks/rhel/rhel-9"
+  config.vm.provision "file", source: "../../../.env", destination: "/home/vagrant/.env"
+  config.vm.provision "file", source: "./setup", destination: "/home/vagrant/setup"
+
+  # Disable synced folder (enabled by default, but we don't need it)
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+  
+    vb.memory = "4096"
+    vb.cpus = "4"
+    
+    vb.name = "rhel9-test"
+  end
+
+  # Execute the setup files
+  Dir.glob("./setup/*.sh").sort.each do |script|
+    config.vm.provision "shell", path: script, privileged: false
+  end
+  
+  ## Uncomment the following lines to enable provisioning with Ansible. Windows is not supported.
+  # config.vm.provision "ansible" do |ansible|
+  #   ansible.playbook = "../../../playbooks/rhel/rhel-9/playbook.yml"
+  # end
+
+end
