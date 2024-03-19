@@ -72,13 +72,17 @@ Once you have [Vagrant](https://www.vagrantup.com/docs/installation), [VirtualBo
   vagrant ssh
   ```
 
-1. In the virtual machine, run the following commands to deploy CKAN with Ansible:
+2. In the virtual machine, run the following commands to deploy CKAN with Ansible:
 
   ```bash
   ansible-playbook $HOME/ckan-ansible/playbooks/rhel/rhel-9/playbook.yml -vvv
   ```
 
-3. Once the playbook has finished, you can access CKAN at `http://192.168.56.20` from your local machine.
+  >[!TIP]
+  > `ckan-ansible/playbooks/*/*` are rsynced to the VM at `/home/vagrant/ckan-ansible/playbooks/*/*`, you can edit the playbooks in your local machine and run the ansible-playbook command in the VM using [VSCode](#vagrant-and-visual-studio-code).
+
+
+1. Once the playbook has finished, you can access CKAN at `http://192.168.56.20` from your local machine.
 
 ### Docker [WIP]
 Once you have [Docker](https://docs.docker.com/get-docker/) installed, run the following commands under your [project directory](https://docs.docker.com/compose/gettingstarted/):
