@@ -1,8 +1,8 @@
---- 
+ 
 
 ### Ansible connection  #########################################
 ## If you are running the playbook on the same machine, you can use the "local" connection instead of "ssh"
-ansible_connection: ssh
+ansible_connection: local
 
 ### Host  #########################################
 server_name: production
@@ -11,15 +11,35 @@ ansible_user: ckan
 ansible_port: 8022
 ansible_ssh_pass: ckan
 
-### CKAN variables #########################################
-ckan_version: ckan-2.9.10
-ckan_site_name: youckanurl.com
-ckan_site_url: http://{{ ckan_site_name }}
-ckan_site_title: Your-Company Data Portal
-ckan_site_description: "Sample description for Your-Company's data management e.t.c."
+### Package variables #########################################
+proj_version: proj-9.1.1
+systemd_dir: /lib/systemd/system
 
-### Database variables #########################################
+### Webserver variables #########################################
+proxy_server_name: localhost
+proxy_ckan_location: /catalog
+proxy_csw_location: /csw
+
+### CKAN variables #########################################
+ckan_version: ckan-2.9.11
+ckan_dir: /usr/lib/ckan
+ckan_pip_constraints: /tmp/ckan_constraints.txt
+ckan_storage_dir: "{{ ckan_dir }}/storage"
+ckan_site_name: "{{ proxy_server_name }}"
+ckan_site_url: http://{{ ckan_site_name }}
+ckan_root_path: "{{ proxy_ckan_location }}/{{LANG}}"
+ckan_site_title: "CKAN Test site"
+ckan_site_description: "CKAN site to test Open Data portals."
+
+### CKAN extensions variables #########################################
+ckanext_xloader_version: 1.0.1
+ckanext_harvest_version: v1.5.6
+
+
+### Database service #########################################
 postgres_version: 15
+postgres_port: 5432
+postgres_dir: "/var/lib/pgsql/data"
 ckan_database: {
   postgres_user: "postgres",
   postgres_password: "postgres",
@@ -37,6 +57,77 @@ ckan_datastore: {
 }
 
 ### Solr Service #########################################
-solr_version: 9
-ckan_solr_core_name: ckan
+solr_version: 9.5.0
+solr_port: "8983"
+solr_mirror: "https://dlcdn.apache.org"
+solr_workspace: /root
+solr_schema_ckan_branch: "dev-v2.10"
+jts_version: 1.19.0
+jts_jar_file: "{{ solr_dir }}/server/solr-webapp/webapp/WEB-INF/lib/jts-core-{{ jts_version }}.jar"
 
+solr_user: solr
+solr_group: "{{ solr_user }}"
+solr_remove_cruft: false
+solr_service_manage: true
+solr_service_name: solr
+solr_ckan_core_name: ckan
+solr_service_state: started
+solr_config_file: /etc/default/{{ solr_service_name }}.in.sh
+solr_install_dir: /opt
+solr_dir: "/opt/{{ solr_service_name }}"
+solr_data: "/var/{{ solr_service_name }}"
+solr_connect_host: localhost
+solr_default_core_path: "{% if solr_version.split('.')[0] < '9' %}{{ solr_dir }}/example/files/conf/{% else %}{{ solr_dir }}/server/solr/configsets/_default/conf/{% endif %}"
+solr_config_dir: "{{ solr_dir }}/server/solr/configsets"
+solr_ckan_schema_file: "{{ solr_data }}/data/ckan/conf/managed-schema.xml"
+solr_xms: "256M"
+solr_xmx: "512M"
+solr_timezone: "{{ timezone }}"
+solr_opts: "$SOLR_OPTS -Dlog4j2.formatMsgNoLookups=true"
+# Enable restart solr handler
+solr_restart_handler_enabled: true
+
+### Redis Service #########################################
+# Used for RHEL/CentOS/Fedora only. Allows the use of different repos.
+redis_enablerepo: epel
+redis_port: 6379
+redis_bind_interface: 127.0.0.1
+redis_unixsocket: ''
+redis_timeout: 300
+redis_loglevel: "notice"
+redis_logfile: /var/log/redis/redis-server.log
+redis_databases: 16
+# Set to an empty set to disable persistence (saving the DB to disk).
+redis_save:
+  - 900 1
+  - 300 10
+  - 60 10000
+redis_rdbcompression: "yes"
+redis_dbfilename: dump.rdb
+redis_dbdir: /var/lib/redis
+redis_maxmemory: 0
+redis_maxmemory_policy: "noeviction"
+redis_maxmemory_samples: 5
+redis_appendonly: "no"
+redis_appendfsync: "everysec"
+# Add extra include files for local configuration/overrides.
+redis_includes: []
+# Require authentication to Redis with a password.
+redis_requirepass: ""
+# Disable certain Redis commands for security reasons.
+redis_disabled_commands: []
+#  - FLUSHDB
+#  - FLUSHALL
+#  - KEYS
+#  - PEXPIRE
+#  - DEL
+#  - CONFIG
+#  - SHUTDOWN
+#  - BGREWRITEAOF
+#  - BGSAVE
+#  - SAVE
+#  - SPOP
+#  - SREM
+#  - RENAME
+#  - DEBUG
+redis_extra_config: ""
