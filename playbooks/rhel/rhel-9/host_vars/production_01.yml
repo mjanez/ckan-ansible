@@ -19,12 +19,16 @@ systemd_dir: /lib/systemd/system
 proxy_server_name: localhost
 proxy_ckan_location: /catalog
 proxy_csw_location: /csw
+nginx_dir: /etc/nginx
+nginx_port: 80
+nginx_sslport: 443
 
 ### CKAN variables #########################################
 ckan_version: ckan-2.9.11
 ckan_dir: /usr/lib/ckan
 ckan_pip_constraints: /tmp/ckan_constraints.txt
 ckan_storage_dir: "{{ ckan_dir }}/storage"
+ckan_port: 5000
 ckan_site_name: "{{ proxy_server_name }}"
 ckan_site_url: http://{{ ckan_site_name }}
 ckan_root_path: "{{ proxy_ckan_location }}/{{LANG}}"
@@ -32,9 +36,18 @@ ckan_site_title: "CKAN Test site"
 ckan_site_description: "CKAN site to test Open Data portals."
 
 ### CKAN extensions variables #########################################
-ckanext_xloader_version: 1.0.1
-ckanext_harvest_version: v1.5.6
-
+ckanext_versions:
+  ckanext_xloader: 1.0.1
+  ckanext_harvest: v1.5.6
+  ckanext_geoview: v0.1.0
+  ckanext_spatial: v2.1.1
+  ckanext_dcat: v1.2.0-geodcatap
+  ckanext_scheming: release-3.0.0
+  ckanext_resourcedictionary: v1.0.1
+  ckanext_pages: v0.5.2
+  ckanext_pdfview: 0.0.8
+  ckanext_fluent: v1.0.1
+  ckanext_scheming_dcat: v2.1.0
 
 ### Database service #########################################
 postgres_version: 15
@@ -57,14 +70,17 @@ ckan_datastore: {
 }
 
 ### Solr Service #########################################
+solr_os_supported: 
+  - "RedHat"
+  - "CentOS"
+  - "Debian"
 solr_version: 9.5.0
-solr_port: "8983"
+solr_port: 8983
 solr_mirror: "https://dlcdn.apache.org"
 solr_workspace: /root
 solr_schema_ckan_branch: "dev-v2.10"
 jts_version: 1.19.0
 jts_jar_file: "{{ solr_dir }}/server/solr-webapp/webapp/WEB-INF/lib/jts-core-{{ jts_version }}.jar"
-
 solr_user: solr
 solr_group: "{{ solr_user }}"
 solr_remove_cruft: false
@@ -88,7 +104,11 @@ solr_opts: "$SOLR_OPTS -Dlog4j2.formatMsgNoLookups=true"
 solr_restart_handler_enabled: true
 
 ### Redis Service #########################################
-# Used for RHEL/CentOS/Fedora only. Allows the use of different repos.
+redis_os_supported: 
+  - "RedHat"
+  - "CentOS"
+  - "Debian"
+  - "Archlinux"
 redis_enablerepo: epel
 redis_port: 6379
 redis_bind_interface: 127.0.0.1
