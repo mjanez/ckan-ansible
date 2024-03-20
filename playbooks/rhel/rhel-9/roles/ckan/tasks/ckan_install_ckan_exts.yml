@@ -1,0 +1,169 @@
+- name: Install ckanext-xloader {{ ckanext_versions.ckanext_xloader }}
+  vars:
+    virtualenv: "{{ ckan_dir }}/default"
+  block:
+    - name: Install ckanext-xloader {{ ckanext_versions.ckanext_xloader }}
+      pip:
+        name: git+https://github.com/ckan/ckanext-xloader.git@{{ ckanext_versions.ckanext_xloader }}#egg=ckanext-xloader
+        virtualenv: "{{ ckan_dir }}/default"
+        extra_args: -e
+      register: result
+      ignore_errors: true
+
+    - name: Install ckanext-xloader requirements
+      pip:
+        requirements: "{{ virtualenv }}/src/ckanext-xloader/requirements.txt"
+        virtualenv: "{{ virtualenv }}"
+      when: result is success
+
+    - name: Install ckanext-xloader requests[security]
+      pip:
+        name: requests[security]
+        virtualenv: "{{ virtualenv }}"
+        state: latest
+      when: result is success
+
+- name: Install ckanext-harvest {{ ckanext_versions.ckanext_harvest }}
+  vars:
+    virtualenv: "{{ ckan_dir }}/default"
+  block:
+    - name: Install ckanext-harvest {{ ckanext_versions.ckanext_harvest }}
+      pip:
+        name: git+https://github.com/ckan/ckanext-harvest.git@{{ ckanext_versions.ckanext_harvest }}#egg=ckanext-harvest
+        virtualenv: "{{ ckan_dir }}/default"
+        extra_args: -e
+      register: result
+      ignore_errors: true
+
+    - name: Install ckanext-harvest requirements
+      pip:
+        requirements: "{{ virtualenv }}/src/ckanext-harvest/requirements.txt"
+        virtualenv: "{{ virtualenv }}"
+      when: result is success
+
+- name: Install ckanext-geoview {{ ckanext_versions.ckanext_geoview }}
+  vars:
+    virtualenv: "{{ ckan_dir }}/default"
+  block:
+    - name: Install ckanext-geoview {{ ckanext_versions.ckanext_geoview }}
+      pip:
+        name: git+https://github.com/ckan/ckanext-geoview.git@{{ ckanext_versions.ckanext_geoview }}#egg=ckanext-geoview
+        virtualenv: "{{ ckan_dir }}/default"
+        extra_args: -e
+      register: result
+      ignore_errors: true
+
+- name: Install ckanext-spatial {{ ckanext_versions.ckanext_spatial }}
+  vars:
+    virtualenv: "{{ ckan_dir }}/default"
+  block:
+    - name: Install ckanext-spatial {{ ckanext_versions.ckanext_spatial }}
+      pip:
+        name: git+https://github.com/ckan/ckanext-spatial.git@{{ ckanext_versions.ckanext_spatial }}#egg=ckanext-spatial
+        virtualenv: "{{ ckan_dir }}/default"
+        extra_args: -e
+      register: result
+      ignore_errors: true
+
+    - name: Install ckanext-spatial requirements
+      pip:
+        requirements: "{{ virtualenv }}/src/ckanext-spatial/requirements.txt"
+        virtualenv: "{{ virtualenv }}"
+      when: result is success
+
+- name: Install mjanez/ckanext-dcat {{ ckanext_versions.ckanext_dcat }}
+  vars:
+    virtualenv: "{{ ckan_dir }}/default"
+  block:
+    - name: Install mjanez/ckanext-dcat {{ ckanext_versions.ckanext_dcat }}
+      pip:
+        name: git+https://github.com/mjanez/ckanext-dcat.git@{{ ckanext_versions.ckanext_dcat }}#egg=ckanext-dcat
+        virtualenv: "{{ ckan_dir }}/default"
+        extra_args: -e
+      register: result
+      ignore_errors: true
+
+    - name: Install mjanez/ckanext-dcat requirements
+      pip:
+        requirements: "{{ virtualenv }}/src/ckanext-dcat/requirements.txt"
+        virtualenv: "{{ virtualenv }}"
+      when: result is success
+
+- name: Install ckanext-scheming {{ ckanext_versions.ckanext_scheming }}
+  vars:
+    virtualenv: "{{ ckan_dir }}/default"
+  block:
+    - name: Install ckanext-scheming {{ ckanext_versions.ckanext_scheming }}
+      pip:
+        name: git+https://github.com/ckan/ckanext-scheming.git@{{ ckanext_versions.ckanext_scheming }}#egg=ckanext-scheming
+        virtualenv: "{{ ckan_dir }}/default"
+        extra_args: -e
+      register: result
+      ignore_errors: true
+
+- name: Install mjanez/ckanext-resourcedictionary {{ ckanext_versions.ckanext_resourcedictionary }}
+  vars:
+    virtualenv: "{{ ckan_dir }}/default"
+  block:
+    - name: Install mjanez/ckanext-resourcedictionary {{ ckanext_versions.ckanext_resourcedictionary }}
+      pip:
+        name: git+https://github.com/mjanez/ckanext-resourcedictionary.git@{{ ckanext_versions.ckanext_resourcedictionary }}#egg=ckanext-resourcedictionary
+        virtualenv: "{{ ckan_dir }}/default"
+        extra_args: -e
+      register: result
+      ignore_errors: true
+
+- name: Install ckanext-pages {{ ckanext_versions.ckanext_pages }}
+  vars:
+    virtualenv: "{{ ckan_dir }}/default"
+  block:
+    - name: Install ckanext-pages {{ ckanext_versions.ckanext_pages }}
+      pip:
+        name: git+https://github.com/ckan/ckanext-pages.git@{{ ckanext_versions.ckanext_pages }}#egg=ckanext-pages
+        virtualenv: "{{ ckan_dir }}/default"
+        extra_args: -e
+      register: result
+      ignore_errors: true
+
+- name: Install ckanext-pdfview {{ ckanext_versions.ckanext_pdfview }}
+  vars:
+    virtualenv: "{{ ckan_dir }}/default"
+  block:
+    - name: Install ckanext-pdfview {{ ckanext_versions.ckanext_pdfview }}
+      pip:
+        name: git+https://github.com/ckan/ckanext-pdfview.git@{{ ckanext_versions.ckanext_pdfview }}#egg=ckanext-pdfview
+        virtualenv: "{{ ckan_dir }}/default"
+        extra_args: -e
+      register: result
+      ignore_errors: true
+
+- name: Install mjanez/ckanext-fluent {{ ckanext_versions.ckanext_fluent }}
+  vars:
+    virtualenv: "{{ ckan_dir }}/default"
+  block:
+    - name: Install mjanez/ckanext-fluent {{ ckanext_versions.ckanext_fluent }}
+      pip:
+        name: git+https://github.com/mjanez/ckanext-fluent.git@{{ ckanext_versions.ckanext_fluent }}#egg=ckanext-fluent
+        virtualenv: "{{ ckan_dir }}/default"
+        extra_args: -e
+      register: result
+      ignore_errors: true
+
+- name: Install mjanez/ckanext-scheming_dcat {{ ckanext_versions.ckanext_scheming_dcat }}
+  vars:
+    virtualenv: "{{ ckan_dir }}/default"
+  block:
+    - name: Install mjanez/ckanext-scheming_dcat {{ ckanext_versions.ckanext_scheming_dcat }}
+      pip:
+        name: git+https://github.com/mjanez/ckanext-scheming_dcat.git@{{ ckanext_versions.ckanext_scheming_dcat }}#egg=ckanext-scheming_dcat
+        virtualenv: "{{ ckan_dir }}/default"
+        extra_args: -e
+      register: result
+      ignore_errors: true
+
+    #TODO: Temp fix to avoid errors with scheming_dcat/scheming-dcat/schemingdcat
+    - name: Install mjanez/ckanext-scheming_dcat requirements
+      pip:
+        requirements: "{{ virtualenv }}/src/ckanext-scheming-dcat/requirements.txt"
+        virtualenv: "{{ virtualenv }}"
+      when: result is success

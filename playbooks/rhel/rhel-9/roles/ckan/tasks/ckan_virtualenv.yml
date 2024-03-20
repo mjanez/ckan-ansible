@@ -1,0 +1,44 @@
+- name: Check if pip is installed
+  command: which pip
+  register: pip_check
+  ignore_errors: true
+
+- name: Install pip if not installed
+  dnf:
+    name:
+      - "python3-pip"
+
+- name: Create directory
+  file:
+    path: "{{ ckan_dir }}/default"
+    state: directory
+    owner: "{{ lookup('env','USER') }}"
+    mode: '0755'
+  become: true
+
+- name: Change directory owner, group and permissions
+  file:
+    path: "{{ ckan_dir }}"
+    state: directory
+    owner: "{{ lookup('env','USER') }}"
+    group: "{{ lookup('env','USER') }}"
+    mode: '0755'
+    recurse: yes
+  become: true
+
+- name: Create virtualenv for CKAN
+  command: "python3 -m venv {{ ckan_dir }}/default"
+
+- name: Install setuptools and wheel
+  pip:
+    name:
+      - setuptools
+      - wheel
+    virtualenv: "{{ ckan_dir }}/default"
+
+- name: Upgrade pip in virtualenv
+  pip:
+    name:
+      - pip
+    extra_args: --upgrade
+    virtualenv: "{{ ckan_dir }}/default"

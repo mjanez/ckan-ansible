@@ -1,4 +1,5 @@
-# CKAN configuration
+#
+# CKAN - Pylons configuration
 #
 # These are some of the configuration options available for your CKAN
 # instance. Check the documentation in 'doc/configuration.rst' or at the
@@ -9,41 +10,20 @@
 #
 # The %(here)s variable will be replaced with the parent directory of this file
 #
+
 [DEFAULT]
 
-## Default settings ############################################################
-## This enables the `Flask-DebugToolbar
-## <https://flask-debugtoolbar.readthedocs.io/>`_ in the web interface, makes
-## Webassets serve unminified JS and CSS files, and enables CKAN templates'
-## debugging features.
-## 
-## You will need to ensure the ``Flask-DebugToolbar`` python package is installed,
-## by activating your ckan virtual environment and then running::
-## 
-##     pip install -r /usr/lib/ckan/default/src/ckan/dev-requirements.txt
-## 
-## If you are running CKAN on Apache, you must change the WSGI
-## configuration to run a single process of CKAN. Otherwise
-## the execution will fail with: ``AssertionError: The EvalException
-## middleware is not usable in a multi-process environment``. Eg. change::
-## 
-##   WSGIDaemonProcess ckan_default display-name=ckan_default processes=2 threads=15
-##   to
-##   WSGIDaemonProcess ckan_default display-name=ckan_default threads=15
-## 
-## .. warning:: This option should be set to ``False`` for a public site.
-##    With debug mode enabled, a visitor to your site could execute malicious
-##    commands.
+# WARNING: *THIS SETTING MUST BE SET TO FALSE ON A PUBLIC ENVIRONMENT*
+# With debug mode enabled, a visitor to your site could execute malicious commands.
 debug = false
 
 [app:main]
-
-## General settings ############################################################
+## Extension settings
 use = egg:ckan
 ckan.legacy_route_mappings = {}
 config.mode = default
 
-## Development settings ########################################################
+## Development settings
 ckan.devserver.host = localhost
 ckan.devserver.port = 5000
 ckan.devserver.threaded = false
@@ -52,28 +32,45 @@ ckan.devserver.watch_patterns =
 ckan.devserver.ssl_cert = 
 ckan.devserver.ssl_key = 
 
-## Session settings ############################################################
+## Session settings
 ckan.user.last_active_interval = 600
 cache_dir = /tmp/%(ckan.site_id)s
 beaker.session.key = ckan
-beaker.session.secret = qMzPNuN-F7tEspDZW_n5cjZAZUA
+beaker.session.secret = I0LwuGnn2fMWsE647UGEepVQNH0-v140WQ0Ed5OAZ2E
 beaker.session.auto = false
 beaker.session.cookie_expires = false
 # beaker.session.cookie_domain = .example.com
 beaker.session.save_accessed_time = true
 beaker.session.secure = false
 beaker.session.timeout = 600
+# `ckan generate config` generates a unique value for this each time it generates
+# a config file.
+app_instance_uuid = c67a97f3-4d70-49a2-be7b-656636b6163a
 
-## Database settings ###########################################################
+# repoze.who config
+who.config_file = %(here)s/who.ini
+who.log_level = warning
+who.log_file = %(cache_dir)s/who_log.ini
+# Session timeout (user logged out after period of inactivity, in seconds).
+# Inactive by default, so the session doesn't expire.
+# who.timeout = 86400
+
+## Database Settings
 sqlalchemy.url = postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}/{{ ckan_database.ckan_db }}
+
 ckan.datastore.write_url = postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}/{{ ckan_datastore.datastore_db }}
 ckan.datastore.read_url = postgresql://{{ ckan_datastore.datastore_readonly_user }}:{{ ckan_datastore.datastore_readonly_password }}@{{ ckan_datastore.datastore_host }}/{{ ckan_datastore.datastore_db }}
 ckan.datastore.sqlsearch.enabled = true
 sqlalchemy.pool_pre_ping = true
 # sqlalchemy.<OPTION> = 
 
-## Site Settings ###############################################################
+# PostgreSQL' full-text search parameters
+ckan.datastore.default_fts_lang = english
+ckan.datastore.default_fts_index_method = gist
+
+## Site Settings
 ckan.site_url = {{ ckan_site_url }}
+ckan.root_path = 
 apikey_header_name = X-CKAN-API-Key
 ckan.cache_expires = 0
 ckan.cache_enabled = false
@@ -85,19 +82,19 @@ ckan.requests.timeout = 5
 ckan.hide_version = false
 ckan.redirect_to_login_if_not_authorized = true
 
-## Authorization Settings ######################################################
+## Authorization Settings
 ckan.auth.anon_create_dataset = false
 ckan.auth.create_unowned_dataset = false
-ckan.auth.create_dataset_if_not_in_organization = true
-ckan.auth.user_create_groups = true
-ckan.auth.user_create_organizations = true
+ckan.auth.create_dataset_if_not_in_organization = false
+ckan.auth.user_create_groups = false
+ckan.auth.user_create_organizations = false
 ckan.auth.user_delete_groups = true
 ckan.auth.user_delete_organizations = true
 ckan.auth.create_user_via_api = false
-ckan.auth.create_user_via_web = true
+ckan.auth.create_user_via_web = false
 ckan.auth.roles_that_cascade_to_sub_groups = admin
 ckan.auth.public_user_details = true
-ckan.auth.public_activity_stream_detail = false
+ckan.auth.public_activity_stream_detail = true
 ckan.auth.allow_dataset_collaborators = false
 ckan.auth.allow_admin_collaborators = false
 ckan.auth.allow_collaborators_to_change_owner_org = false
@@ -107,7 +104,7 @@ ckan.auth.reveal_private_datasets = false
 ckan.auth.enable_cookie_auth_in_api = true
 ckan.auth.route_after_login = dashboard.datasets
 
-## CSRF Protection #############################################################
+## CSRF Protection
 WTF_CSRF_ENABLED = true
 WTF_CSRF_CHECK_DEFAULT = true
 WTF_CSRF_SECRET_KEY = nIRak4RsB4pIDlIT6NK3mRZW-jsF02RMtRP2yve_OgI
@@ -119,7 +116,7 @@ WTF_CSRF_SSL_STRICT = true
 WTF_I18N_ENABLED = true
 ckan.csrf_protection.ignore_extensions = true
 
-## Flask-Login Remember me cookie settings #####################################
+## Flask-Login Remember me cookie settings
 REMEMBER_COOKIE_NAME = remember_token
 REMEMBER_COOKIE_DURATION = 31536000
 # REMEMBER_COOKIE_DOMAIN = .example.com
@@ -129,15 +126,18 @@ REMEMBER_COOKIE_HTTPONLY = true
 REMEMBER_COOKIE_REFRESH_EACH_REQUEST = false
 REMEMBER_COOKIE_SAMESITE = None
 
-## API Token Settings ##########################################################
-api_token.nbytes = 32
+## API Token Settings
+api_token.nbytes = 60
 api_token.jwt.encode.secret = string:%(beaker.session.secret)s
 api_token.jwt.decode.secret = string:%(beaker.session.secret)s
 api_token.jwt.algorithm = HS256
 
-## Search Settings #############################################################
+## API Token: expire_api_token plugin
+expire_api_token.default_lifetime = 3600
+
+## Search Settings
 ckan.site_id = default
-solr_url = http://127.0.0.1:8983/solr/{{ ckan_solr_core_name }}
+solr_url = http://127.0.0.1:{{ solr_port }}/solr/{{ solr_ckan_core_name }}
 solr_user = 
 solr_password = 
 ckan.search.remove_deleted_packages = true
@@ -154,19 +154,24 @@ ckan.group_and_organization_list_max = 1000
 ckan.group_and_organization_list_all_fields_max = 25
 solr_timeout = 60
 
-## Redis Settings ##############################################################
+## Redis Settings
 ckan.redis.url = redis://localhost:6379/0
 
-## CORS Settings ###############################################################
-ckan.cors.origin_allow_all = false
+## CORS Settings
+# If cors.origin_allow_all is true, all origins are allowed.
+# If false, the cors.origin_whitelist is used.
+# ckan.cors.origin_allow_all = true
+# cors.origin_whitelist is a space separated list of allowed domains.
+# ckan.cors.origin_whitelist = http://example1.com http://example2.com
 ckan.cors.origin_whitelist = 
 
-## Plugins Settings ############################################################
-ckan.plugins = activity pdf_view datastore idms
+## Plugins Settings
+ckan.plugins = stats text_view image_view webpage_view recline_view resourcedictionary datastore xloader
 ckan.resource_proxy.timeout = 5
 
-## Front-End Settings ##########################################################
-ckan.site_title = CKANy
+
+## Front-End Settings 
+ckan.site_title = CKAN
 ckan.site_description = 
 ckan.site_intro_text = 
 ckan.site_logo = /base/images/ckan-logo.png
@@ -177,8 +182,8 @@ ckan.datasets_per_page = 20
 package_hide_extras = 
 ckan.dumps_url = 
 ckan.dumps_format = 
-ckan.recaptcha.publickey = 
-ckan.recaptcha.privatekey = 
+#ckan.recaptcha.publickey =
+#ckan.recaptcha.privatekey =
 ckan.featured_groups = 
 ckan.featured_orgs = 
 ckan.default_group_sort = title
@@ -186,11 +191,23 @@ ckan.gravatar_default = identicon
 ckan.debug_supress_header = false
 ckan.homepage_style = 1
 ckan.site_custom_css = 
+ckan.display_timezone = {{ timezone }}
 
-## Resource Views Settings #####################################################
+## Resource Views Settings (plugins must be loaded in ckan.plugins)
 ckan.views.default_views = image_view datatables_view
+###ckan.views.default_views = image_view webpage_view text_view recline_view wmts_view geojson_view geo_view shp_view pdf_view
 
-## Theming Settings ############################################################
+# Customize which text formats the text_view plugin will show
+###ckan.preview.json_formats = json jsonld
+###ckan.preview.xml_formats = xml rdf rdf+xml owl+xml atom rss turtle ttl n3 n-triples
+###ckan.preview.text_formats = text plain text/plain text/turtle csv tsv rss txt json
+
+# Customize which image formats the image_view plugin will show
+#ckan.preview.image_formats = png jpeg jpg gif
+###ckan.preview.direct = png jpg gif
+###ckan.preview.loadable = html htm rdf+xml owl+xml xml n3 n-triples turtle plain atom csv tsv rss txt json arcgis_rest
+
+## Theming Settings
 ckan.template_head_end = 
 ckan.template_footer_end = 
 ckan.template_title_delimiter = -
@@ -203,26 +220,26 @@ ckan.default.group_type = group
 ckan.default.organization_type = organization
 ckan.admin_tabs = {}
 
-## Storage Settings ############################################################
-ckan.storage_path = /usr/lib/ckan/storage
+## Storage Settings
+ckan.storage_path = {{ ckan_storage_dir}}
 ckan.max_resource_size = 10
 ckan.max_image_size = 2
 
-## Uploader Settings ###########################################################
+## Uploader Settings
 ckan.upload.user.types = 
 ckan.upload.user.mimetypes = 
 ckan.upload.group.types = 
 ckan.upload.group.mimetypes = 
 
-## Webassets Settings ##########################################################
-ckan.webassets.path = /usr/lib/ckan/webassets
+## Webassets Settings 
+ckan.webassets.path = {{ ckan_dir }}/webassets
 ckan.webassets.use_x_sendfile = false
 
-## User Settings ###############################################################
+## User Settings
 ckan.user_list_limit = 20
 ckan.user_reset_landing_page = home.index
 
-## Activity Streams Settings ###################################################
+## Activity Streams Settings 
 ckan.activity_streams_enabled = true
 ckan.activity_streams_email_notifications = false
 ckan.activity_list_limit = 31
@@ -230,45 +247,43 @@ ckan.activity_list_limit_max = 100
 ckan.email_notifications_since = 2 days
 ckan.hide_activity_from_users = %(ckan.site_id)s
 
-## Feeds Settings ##############################################################
+## Feeds Settings 
 ckan.feeds.author_name = 
 ckan.feeds.author_link = 
 ckan.feeds.authority_name = 
 ckan.feeds.date = 
 ckan.feeds.limit = 20
 
-## Internationalisation Settings ###############################################
+## Internationalisation Settings
 ckan.locale_default = en
-ckan.locales_offered = 
-ckan.locales_filtered_out = 
-ckan.locale_order = 
+ckan.locale_order = en pt_BR ja it cs_CZ ca es fr el sv sr sr@latin no sk fi ru de pl nl bg ko_KR hu sa sl lv
+ckan.locales_offered =
+ckan.locales_filtered_out = en_GB
 ckan.i18n_directory = 
 ckan.i18n.extra_directory = 
 ckan.i18n.extra_gettext_domain = 
 ckan.i18n.extra_locales = 
 ckan.i18n.rtl_languages = he ar fa_IR
 ckan.i18n.rtl_theme = css/main-rtl
-ckan.display_timezone = UTC
-ckan.root_path = 
-ckan.resource_formats = /usr/lib/ckan/default/src/ckan/ckan/config/resource_formats.json
+ckan.resource_formats = {{ ckan_dir }}/default/src/ckan/ckan/config/resource_formats.json
 
-## Form Settings ###############################################################
+## Form Settings
+# package_hide_extras = for_search_index_only
 ckan.dataset.create_on_ui_requires_resources = true
 package_new_return_url = 
 package_edit_return_url = 
-licenses_group_url = 
+licenses_group_url = http://licenses.opendefinition.org/licenses/groups/ckan.json
 
-## Email settings ##############################################################
-smtp.server = localhost
-smtp.starttls = false
-smtp.user = 
-smtp.password = 
-smtp.mail_from = 
-smtp.reply_to = 
-email_to = 
-error_email_from = 
-
-## Background Job Settings #####################################################
+## Email settings
+#email_to = errors@example.com
+#error_email_from = ckan-errors@example.com
+#smtp.server = localhost
+#smtp.starttls = False
+#smtp.user = username@example.com
+#smtp.password = your_password
+#smtp.mail_from =
+#smtp.reply_to =
+## Background Job Settings
 ckan.jobs.timeout = 180
 
 ## Logging configuration
