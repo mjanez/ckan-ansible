@@ -1,0 +1,8 @@
+# Enable extensions
+- name: Enable ckanext-scheming plugin
+  become: true
+  ansible.builtin.lineinfile:
+    path: "{{ ckan_dir }}/default/ckan.ini"
+    backrefs: yes
+    regexp: ^(ckan\.plugins = .* recline_view).*$
+    line: \1 scheming_datasets scheming_groups scheming_organizations

@@ -1,0 +1,39 @@
+- name: Copy CKAN config file
+  template:
+    src: ckan.ini.j2
+    dest: "{{ ckan_dir }}/default/ckan.ini"
+
+- name: Copy CKAN config file
+  template:
+    src: ckan.ini.j2
+    dest: "{{ ckan_dir }}/default/ckan.ini"
+
+- name: Copy WHO config file
+  template:
+    src: who.ini.j2
+    dest: "{{ ckan_dir }}/default/who.ini"
+
+- name: Create a symoblic link to the ckan who ini file
+  file:
+    src: "{{ ckan_dir }}/default/src/ckan/who.ini"
+    dest: "{{ ckan_dir }}/default/who.ini"
+    state: link
+    force: yes
+
+- name: Initialize CKAN database
+  command: "{{ ckan_dir }}/default/bin/ckan --config={{ ckan_dir }}/default/ckan.ini db init"
+
+- name: setup permission to datastore database
+  shell: "{{ ckan_dir }}/default/bin/ckan --config={{ ckan_dir }}/default/ckan.ini datastore set-permissions | sudo -u postgres psql --set ON_ERROR_STOP=1"
+
+- name: Create webassets storage folder
+  file:
+    path: "{{ ckan_dir }}/webassets"
+    state: directory
+    mode: '0777'
+
+- name: Create storage folder
+  file:
+    path: "{{ ckan_storage_dir }}"
+    state: directory
+    mode: '0777'

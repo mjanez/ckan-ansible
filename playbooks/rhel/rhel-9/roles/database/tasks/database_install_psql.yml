@@ -1,0 +1,44 @@
+- name: Install PostgreSQL {{ postgres_version }} server and psycopg2
+  dnf:
+    name: "@postgresql:{{ postgres_version }}/server,postgresql-contrib,postgresql-devel,python3-psycopg2"
+    state: present
+    update_cache: true
+
+- name: "Check if database: {{ ckan_database.ckan_db }} exists in PostgreSQL"
+  shell: psql -lqt | cut -d \| -f 1 | grep -qw {{ ckan_database.ckan_db }}
+  register: database_exists
+  failed_when: false
+  changed_when: false
+
+- name: Stop PostgreSQL service
+  service:
+    name: postgresql
+    state: stopped
+  when: not database_exists.rc == 0
+  become: true
+
+- name: "Delete PostgreSQL data directory if database: {{ ckan_database.ckan_db }} does not exist"
+  file:
+    path: "{{ postgres_dir }}"
+    state: absent
+  when: not database_exists.rc == 0
+  become: true
+
+- name: Initialize the PostgreSQL cluster
+  command:
+    cmd: postgresql-setup --initdb
+  when: not database_exists.rc == 0
+  become: true
+
+- name: Set PostgreSQL port
+  lineinfile:
+    path: "{{ postgres_dir }}/postgresql.conf"
+    regexp: '^#?port ='
+    line: "port = {{ postgres_port }}"
+  become: true
+
+- name: Start and enable the PostgresSQL service
+  systemd:
+    name: postgresql
+    state: reloaded
+

@@ -1,0 +1,58 @@
+
+- name: Install required spatial packages
+  dnf:
+    name:
+      - "geos-devel"
+      - "libcurl-devel"
+      - "libgeotiff-devel"
+      - "libtiff-devel"
+      - "sqlite"
+      - "sqlite-devel"
+      - "gtest-devel"
+      - "unzip"
+    state: present
+    update_cache: yes
+
+- name: Check if proj is installed
+  command: proj
+  register: proj_installed
+  failed_when: false
+  changed_when: false
+
+- name: Check {{ proj_version }} version if installed
+  command: proj -v
+  register: proj_version_output
+  failed_when: false
+  changed_when: false
+  when: proj_installed.rc == 0
+
+- name: Set proj installed version
+  set_fact:
+    proj_installed_version: "{{ proj_version_output.stdout.split()[-1] if proj_version_output.stdout.split() else '' }}"
+  when: proj_installed.rc == 0
+
+- name: Download and install {{ proj_version }}
+  block:
+    - name: Download {{ proj_version }}.tar.gz
+      get_url:
+        url: "https://download.osgeo.org/proj/{{ proj_version }}.tar.gz"
+        dest: "/tmp/{{ proj_version }}.tar.gz"
+      when: proj_installed.rc != 0 or proj_installed_version != proj_version
+
+    - name: Extract {{ proj_version }}.tar.gz
+      ansible.builtin.unarchive:
+        src: "/tmp/{{ proj_version }}.tar.gz"
+        dest: /tmp
+        remote_src: yes
+      when: proj_installed.rc != 0 or proj_installed_version != proj_version
+
+    - name: Build and install {{ proj_version }}
+      shell:
+        cmd: |
+          cd /tmp/{{ proj_version }} &&
+          cmake . &&
+          make -j$(nproc) &&
+          make install
+      args:
+        executable: /bin/bash
+      when: proj_installed.rc != 0 or proj_installed_version != proj_version

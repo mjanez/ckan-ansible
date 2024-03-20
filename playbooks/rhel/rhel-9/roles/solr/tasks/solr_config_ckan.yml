@@ -1,0 +1,48 @@
+- name: Check if CKAN solr core exists
+  uri:
+    url: "http://{{ solr_connect_host }}:{{ solr_port }}/solr/admin/cores?action=STATUS&core={{ solr_ckan_core_name }}"
+    return_content: true
+  register: solr_core_status
+  check_mode: false
+
+- name: Determine if core exists
+  set_fact:
+    solr_core_exists: "{{ solr_core_status.json.status[solr_ckan_core_name] is defined }}"
+  check_mode: false
+
+- name: Ensure Solr conf directories exist.
+  file:
+    path: "{{ solr_data }}/data/{{ item }}/conf"
+    state: directory
+    owner: "{{ solr_user }}"
+    group: "{{ solr_group }}"
+    recurse: true
+    mode: 0755
+  when: not solr_core_exists
+
+- name: Ensure core configuration directories exist.
+  command: "cp -r {{ solr_default_core_path }} {{ solr_data }}/data/{{ item }}/"
+  when: not solr_core_exists
+  with_items:
+    - "{{ solr_ckan_core_name }}"
+  become: true
+  become_user: "{{ solr_user }}"
+
+- name: Create CKAN solr core
+  command: "{{ solr_dir }}/bin/solr create_core -c {{ solr_ckan_core_name }} -force"
+  args:
+    creates: "{{ solr_dir }}/server/solr/{{ solr_ckan_core_name }}"
+  when: not solr_core_exists
+
+- name: Copy CKAN Solr schema from CKAN {{ solr_schema_ckan_branch }}
+  get_url:
+    url: "https://raw.githubusercontent.com/ckan/ckan/{{ solr_schema_ckan_branch }}/ckan/config/solr/schema.xml"
+    dest: "{{ solr_ckan_schema_file }}"
+    owner: solr
+    group: solr
+    mode: '0644'
+  register: result
+
+- debug:
+    msg: "Copied CKAN Solr schema from CKAN {{ solr_schema_ckan_branch }} based on the Dockerfile.spatial from https://github.com/mjanez/ckan-docker/blob/master/solr/Dockerfile.spatial"
+  when: result is changed
