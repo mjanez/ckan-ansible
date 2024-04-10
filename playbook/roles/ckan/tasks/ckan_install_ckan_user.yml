@@ -1,0 +1,19 @@
+- name: "Create {{ ckan_group }} group"
+  group:
+    name: "{{ ckan_group }}"
+    state: present
+  become: true
+
+- name: "Create {{ ckan_user }} user"
+  user:
+    name: "{{ ckan_user }}"
+    group: "{{ ckan_group }}"
+    state: present
+  become: true
+
+- name: "Add current user {{ lookup('env','USER') }} to {{ ckan_group }} group"
+  user:
+    name: "{{lookup('env','USER')}}"
+    groups: "{{ ckan_group }}"
+    append: yes
+  become: true

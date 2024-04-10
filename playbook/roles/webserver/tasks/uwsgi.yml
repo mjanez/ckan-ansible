@@ -1,0 +1,36 @@
+- name: Install uWSGI
+  pip:
+    name: uwsgi
+    virtualenv: "{{ ckan_virtualenv }}"
+    virtualenv_command: pyvenv
+    
+- name: Copy wsgi.py to configuration folder
+  copy:
+    remote_src: yes
+    src: "{{ ckan_virtualenv }}/src/ckan/wsgi.py"
+    dest: "{{ ckan_config_dir}}/wsgi.py"
+    mode: 0755
+  become: true
+  become_user: "{{ ckan_user }}"
+
+- name: Copy ckan_uwsgi.ini to configuration folder
+  template:
+    src: ckan_uwsgi.ini.j2
+    dest: "{{ ckan_config_dir}}/ckan_uwsgi.ini"
+    mode: 0755
+  become: true
+  become_user: "{{ ckan_user }}"
+
+- name: "Create a symbolic link to the wsgi.py file in {{ ckan_virtualenv}}"
+  file:
+    src: "{{ ckan_config_dir}}/wsgi.py" 
+    dest: "{{ ckan_virtualenv}}/wsgi.py" 
+    state: link
+    force: yes
+
+- name: "Create a symbolic link to the ckan_uwsgi.ini file in {{ ckan_virtualenv}}"
+  file:
+    src: "{{ ckan_config_dir}}/ckan_uwsgi.ini" 
+    dest: "{{ ckan_virtualenv}}/ckan_uwsgi.ini" 
+    state: link
+    force: yes

@@ -1,12 +1,12 @@
 # Ansible
-playbooks/*/*/config/*.log
+playbook/config/*.log
 
 # SSH keys for docker
 .ssh/keys/*
 !.ssh/keys/README.md
 
 # SSH keys for Ansible
-playbooks/*/*/roles/common/tasks/files
+playbook/roles/common/tasks/files
 
 # Environment
 .env

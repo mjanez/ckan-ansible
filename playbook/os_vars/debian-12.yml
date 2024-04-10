@@ -1,0 +1,31 @@
+### Packages: https://debian.pkgs.org/12
+
+### Supervisor
+supervisord_bin_path: /usr/local/bin/supervisord
+supervisorctl_bin_path: /usr/local/bin/supervisorctl
+supervisord_conf_file: /usr/bin/echo_supervisord_conf
+supervisord_workers_dir : /etc/supervisord.d
+supervisord_service: supervisord
+
+### Redis
+__redis_package: redis-server
+redis_daemon: redis-server
+redis_conf_path: /etc/redis/redis.conf
+redis_conf_mode: 0640
+
+### PostgreSQL
+postgres_version: 15
+
+### Python
+python_pkg: python3
+python_bin_path: /usr/bin/python3
+
+### Proj
+proj_gtest_pkg: libgtest-dev
+
+### Java
+openjdk_pkg: java-1.8.0-openjdk
+java_bin_path: /usr/lib/jvm
+
+### systemd
+systemd_dir: /lib/systemd/system

@@ -1,0 +1,33 @@
+
+- name: Install required base packages
+  dnf:
+    name:
+      - "git-core"
+      - "chkconfig"
+      - "policycoreutils-python-utils"
+      - "libxml2-devel"
+      - "libxslt-devel"
+      - "libpq-devel"
+      - "pcre"
+      - "pcre-devel"
+      - "git"
+      - "gcc"
+      - "gcc-c++"
+      - "wget"
+      - "curl"
+      - "patch"
+      - "file-libs"
+      - "make"
+      - "cmake"
+      - "automake"
+      - "gmp-devel"
+      - "systemd"
+      - "epel-release"
+      - "openssl-devel"
+      - "libffi-devel"
+      - "libtool"
+      - "sudo"
+      - "gzip"
+      - "unzip"
+    state: present
+    update_cache: yes

@@ -1,0 +1,15 @@
+- name: "Ensure {{ solr_group }} exists."
+  group: "name={{ solr_group }} state=present"
+
+- name: "Ensure user {{ solr_user }} exists."
+  user:
+    name: "{{ solr_user }}"
+    state: present
+    group: "{{ solr_group }}"
+
+- name: "Add current user {{lookup('env','USER')}} to {{ solr_user }} group"
+  user:
+    name: "{{lookup('env','USER')}}"
+    groups: "{{ solr_user }}"
+    append: yes
+  become: true

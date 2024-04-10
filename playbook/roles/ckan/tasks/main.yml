@@ -1,0 +1,51 @@
+
+- name: Create CKAN user and group
+  include_role:
+    name: ckan
+    tasks_from: ckan_install_ckan_user.yml
+
+- name: Virtualenv is installed and configured
+  include_role:
+    name: ckan
+    tasks_from: ckan_virtualenv.yml
+
+- name: Install Virtualenv pip constraints
+  include_role:
+    name: ckan
+    tasks_from: ckan_config_pip_constraints.yml
+
+- name: Install CKAN
+  include_role:
+    name: ckan
+    tasks_from: ckan_install_ckan.yml
+
+- name: Install CKAN extensions
+  include_role:
+    name: ckan
+    tasks_from: ckan_install_ckan_exts.yml
+
+- name: Test connections to Solr/DB
+  include_role:
+    name: ckan
+    tasks_from: ckan_test_conns.yml
+
+- name: Setup CKAN config
+  include_role:
+    name: ckan
+    tasks_from: ckan_config_ckan.yml
+
+- name: "Change owner and group of {{ ckan_virtualenv }} to {{ ckan_user }}"
+  file:
+    path: "{{ ckan_virtualenv }}"
+    owner: "{{ ckan_user }}"
+    group: "{{ ckan_group }}"
+    recurse: yes
+  become: true
+
+- name: "Change owner and group of {{ ckan_config_dir }} to {{ ckan_user }}"
+  file:
+    path: "{{ ckan_config_dir }}"
+    owner: "{{ ckan_user }}"
+    group: "{{ ckan_group }}"
+    recurse: yes
+  become: true

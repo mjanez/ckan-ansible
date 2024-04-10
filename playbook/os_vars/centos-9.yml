@@ -1,0 +1,29 @@
+### Packages: https://rhel.pkgs.org/9
+
+### Supervisor
+supervisord_bin_path: /usr/bin/supervisord
+supervisorctl_bin_path: /usr/bin/supervisorctl
+supervisord_conf_file: /etc/supervisord.conf
+supervisord_workers_dir : /etc/supervisord.d
+supervisord_service: supervisord
+
+### Redis
+redis_package: redis
+redis_daemon: redis
+redis_conf_path: /etc/redis.conf
+redis_conf_mode: '0644'
+
+
+### Python
+python_pkg: python3
+python_bin_path: /usr/bin/python3
+
+### Proj
+proj_gtest_pkg: gtest-devel
+
+### Java
+openjdk_pkg: java-1.8.0-openjdk
+java_bin_path: /usr/lib/jvm
+
+### systemd
+systemd_dir: /lib/systemd/system

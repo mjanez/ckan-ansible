@@ -1,0 +1,67 @@
+- name: Restart Solr service
+  become: true
+  service:
+    name: "{{ solr_service_name }}"
+    state: restarted
+
+- name: Wait for Solr to restart
+  wait_for:
+    host: "{{ solr_host }}"
+    port: "{{ solr_port }}"
+    delay: 10
+    timeout: 60
+
+- name: Check if Solr core exists
+  uri:
+    url: "http://{{ solr_host }}:{{ solr_port }}/solr/admin/cores?action=STATUS&core={{ solr_ckan_core_name }}"
+    method: GET
+    return_content: yes
+  register: solr_core_status
+  become: true
+  become_user: "{{ solr_user }}"
+
+- name: Print Solr core status
+  debug:
+    var: solr_core_status.json
+
+- name: "Delete existing {{ solr_ckan_core_name }} core"
+  command: "{{ solr_dir }}/bin/solr delete -c {{ solr_ckan_core_name }} -p {{ solr_port }}"
+  become: true
+  become_user: "{{ solr_user }}"
+  when: solr_core_status.json.status[solr_ckan_core_name] | length > 0
+
+- name: "Create {{ solr_ckan_core_name }} solr core"
+  command: "{{ solr_dir }}/bin/solr create -c {{ solr_ckan_core_name }} -p {{ solr_port }}"
+  become: true
+  become_user: "{{ solr_user }}"
+
+- name: Ensure Solr CKAN conf directories exist.
+  file:
+    path: "{{ solr_data }}/data/{{ solr_ckan_core_name }}/conf"
+    state: directory
+    owner: "{{ solr_user }}"
+    group: "{{ solr_group }}"
+    recurse: true
+    mode: 0755
+  become: true
+  become_user: "{{ solr_user }}"
+
+- name: Ensure core configuration directories exist.
+  command: "cp -r {{ solr_default_core_path }} {{ solr_data }}/data/{{ solr_ckan_core_name }}/"
+  become: true
+  become_user: "{{ solr_user }}"
+
+- name: Copy CKAN Solr schema from CKAN {{ solr_schema_ckan_branch }}
+  get_url:
+    url: "https://raw.githubusercontent.com/ckan/ckan/{{ solr_schema_ckan_branch }}/ckan/config/solr/schema.xml"
+    dest: "{{ solr_ckan_schema_file }}"
+    owner: "{{ solr_user }}"
+    group: "{{ solr_group }}"
+    mode: '0644'
+  register: result
+  become: true
+  become_user: "{{ solr_user }}"
+
+- debug:
+    msg: "Copied CKAN Solr schema from CKAN {{ solr_schema_ckan_branch }} based on the Dockerfile.spatial from https://github.com/mjanez/ckan-docker/blob/master/solr/Dockerfile.spatial"
+  when: result is changed

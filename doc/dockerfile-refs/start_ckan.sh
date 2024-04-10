@@ -1,0 +1,70 @@
+#!/bin/sh
+
+# Set up the Secret key used by Beaker and Flask
+# This can be overriden using a CKAN___BEAKER__SESSION__SECRET env var
+if grep -E "beaker.session.secret ?= ?$" ckan.ini
+then
+    echo "Setting beaker.session.secret in ini file"
+    ckan config-tool $CKAN_INI "beaker.session.secret=$(python3 -c 'import secrets; print(secrets.token_urlsafe())')"
+    JWT_SECRET=$(python3 -c 'import secrets; print("string:" + secrets.token_urlsafe())')
+    ckan config-tool $CKAN_INI "api_token.jwt.encode.secret=${JWT_SECRET}"
+    ckan config-tool $CKAN_INI "api_token.jwt.decode.secret=${JWT_SECRET}"
+fi
+
+# Run the prerun script to init CKAN and create the default admin user
+python3 prerun.py
+
+# Run any startup scripts provided by images extending this one
+if [[ -d "/docker-entrypoint.d" ]]
+then
+    for f in /docker-entrypoint.d/*; do
+        case "$f" in
+            *.sh)     echo "$0: Running init file $f"; . "$f" ;;
+            *.py)     echo "$0: Running init file $f"; python3 "$f"; echo ;;
+            *)        echo "$0: Ignoring $f (not an sh or py file)" ;;
+        esac
+        echo
+    done
+fi
+
+# Create Harvester logs directory and change its ownership
+mkdir -p $CKAN_LOGS_PATH/harvester
+chown -R ckan:ckan $CKAN_LOGS_PATH/harvester
+
+# Create xloader logs directory and change its ownership
+mkdir -p $CKAN_LOGS_PATH/xloader
+chown -R ckan:ckan $CKAN_LOGS_PATH/xloader
+
+# Set the common uwsgi options
+UWSGI_OPTS="--plugins http,python \
+            --socket /tmp/uwsgi.sock \
+            --wsgi-file /srv/app/wsgi.py \
+            --module wsgi:application \
+            --uid 92 --gid 92 \
+            --http 0.0.0.0:5000 \
+            --master --enable-threads \
+            --lazy-apps \
+            -p 2 -L -b 32768 --vacuum \
+            --harakiri $UWSGI_HARAKIRI"
+
+if [ $? -eq 0 ]
+then
+    # Start supervisord
+    echo "[prerun.workers] Loading the CKAN workers with supervisord..."
+    supervisord --configuration /etc/supervisord.conf &
+
+    # Workers
+    ## Add harvester background procces to crontab
+    echo "[prerun.workers] Add harvester background procceses to crontab"
+    crontab -l | { cat; echo "*/15 * * * * /usr/bin/supervisorctl start ckan_harvester_run"; } | crontab -
+    ## Clean-up mechanism for the harvest log table. 'ckan.harvest.log_timeframe'. The default time frame is 30 days
+    crontab -l | { cat; echo "0 5 */30 * * /usr/bin/supervisorctl start ckan_harvester_clean_log"; } | crontab -
+    ## Execute cron in the background
+    echo "[prerun.workers] Execute cron in the background"
+    crond -b -l 8
+
+    # Start uwsgi
+    uwsgi $UWSGI_OPTS
+else
+  echo "[prerun] failed...not starting CKAN."
+fi

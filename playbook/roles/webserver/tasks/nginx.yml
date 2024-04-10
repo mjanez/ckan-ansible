@@ -1,0 +1,91 @@
+- name: Install NGINX
+  dnf:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: Copy nginx config file
+  template:
+    src: nginx/nginx.conf.j2
+    dest: "{{ nginx_dir }}/nginx.conf"
+
+- name: Remove default nginx site if it exists
+  file:
+    path: "{{ nginx_dir }}/sites-enabled/default"
+    state: absent
+  become: true
+
+- name: Create NGINX directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  become: true
+  with_items:
+    - "{{ nginx_log_dir }}"
+    - "{{ nginx_dir }}/certs"
+    - "{{ nginx_dir }}/sites-available"
+    - "{{ nginx_dir }}/sites-enabled"
+
+- name: Copy nginx config file to sites-available
+  template:
+    src: nginx/ckan.conf.j2
+    dest: "{{ nginx_dir }}/sites-available/ckan.conf"
+    mode: '0644'
+
+- name: Create a symbolic link to the sites-enabled
+  file:
+    src: "{{ nginx_dir }}/sites-available/ckan.conf"
+    dest: "{{ nginx_dir }}/sites-enabled/ckan.conf"
+    state: link
+    force: yes
+
+- name: Copy pycsw nginx config file to sites-available
+  template:
+    src: nginx/pycsw.conf.j2
+    dest: "{{ nginx_dir }}/sites-available/pycsw.conf"
+    mode: '0644'
+  when: pycsw_enabled
+
+- name: Create a symbolic link for pycsw to the sites-enabled
+  file:
+    src: "{{ nginx_dir }}/sites-available/pycsw.conf"
+    dest: "{{ nginx_dir }}/sites-enabled/pycsw.conf"
+    state: link
+    force: yes
+  when: pycsw_enabled
+
+- name: Open necessary firewall ports
+  firewalld:
+    port: "{{ item }}"
+    permanent: true
+    state: enabled
+  become: true
+  with_items:
+    - "{{ nginx_port }}/tcp"
+    - "{{ nginx_sslport }}/tcp"
+
+- name: Copy nginx configuration files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  become: true
+  with_items:
+    - src: files/index.html
+      dest: /usr/share/nginx/html/index.html"
+    - src: files/ckan-local.crt
+      dest: "{{ nginx_dir }}/certs/"
+    - src: files/ckan-local.key
+      dest: "{{ nginx_dir }}/certs/"
+  notify: restart nginx
+
+- name: Check if SELinux is installed
+  command: sestatus
+  register: selinux_status
+  ignore_errors: true
+
+- name: Allow httpd to make network connections
+  command: setsebool -P httpd_can_network_connect true
+  when: enable_httpd_network_connect and selinux_status.rc == 0
+  become: true
+  notify: 
+    - restart nginx

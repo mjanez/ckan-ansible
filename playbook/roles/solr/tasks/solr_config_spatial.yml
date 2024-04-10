@@ -1,0 +1,47 @@
+- name: Install JTS JAR file
+  get_url:
+    url: "https://repo1.maven.org/maven2/org/locationtech/jts/jts-core/{{ jts_version }}/jts-core-{{ jts_version }}.jar"
+    dest: "{{ jts_jar_file }}"
+    owner: solr
+    group: solr
+    mode: '0644'
+
+- name: Add spatial field type definitions and fields to Solr schema
+  block:
+    - lineinfile:
+        path: "{{ solr_ckan_schema_file }}"
+        insertafter: "<types>"
+        line: '<fieldType name="location_rpt" class="solr.SpatialRecursivePrefixTreeFieldType" spatialContextFactory="JTS" autoIndex="true" validationRule="repairBuffer0" distErrPct="0.025" maxDistErr="0.001" distanceUnits="kilometers" />'
+
+    - lineinfile:
+        path: "{{ solr_ckan_schema_file }}"
+        insertafter: "<fields>"
+        line: '<field name="spatial_geom" type="location_rpt" indexed="true" multiValued="true" />'
+
+- name: Add BBox field definitions to Solr schema
+  block:
+    - lineinfile:
+        path: "{{ solr_ckan_schema_file }}"
+        insertafter: "<fields>"
+        line: |
+          <field name="bbox_area" type="float" indexed="true" stored="true" />
+          <field name="maxx" type="float" indexed="true" stored="true" />
+          <field name="maxy" type="float" indexed="true" stored="true" />
+          <field name="minx" type="float" indexed="true" stored="true" />
+          <field name="miny" type="float" indexed="true" stored="true" />
+          <field name="tag_uri" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="conforms_to" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="lineage_source" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="lineage_process_steps" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="reference" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="theme" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="theme_es" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="theme_eu" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="resource_relation" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="metadata_profile" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+
+- name: Restart Solr
+  service:
+    name: "{{ solr_service_name }}"
+    state: restarted
+  ignore_errors: true

@@ -1,0 +1,21 @@
+[uwsgi]
+
+http            =  0.0.0.0:{{ ckan_port }}
+uid             =  {{ ckan_user }}
+gid             =  {{ ckan_group }}
+wsgi-file       =  {{ ckan_config_dir}}/wsgi.py
+virtualenv      =  {{ ckan_virtualenv }}
+home            =  {{ ckan_virtualenv }}
+module          =  wsgi:application
+master          =  true
+socket          =  {{ uwsgi_unix_http_server_socket_path }}
+harakiri        =  50
+max-requests    =  5000
+vacuum          =  true
+callable        =  application
+strict          =  true
+enable-threads  =  true
+lazy-apps       =  true
+processes       =  2
+buffer-size     =  32768
+chdir           =  {{ ckan_virtualenv }}

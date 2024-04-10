@@ -1,4 +1,0 @@
-- name: "start or restart: {{ redis_daemon }}"
-  service:
-    name: "{{ redis_daemon }}"
-    state: restarted
