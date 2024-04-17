@@ -5,7 +5,7 @@ services:
     container_name: ${CONTAINER_OS_NAME}
     build:
       context: .
-      dockerfile: docker/${CONTAINER_OS}/Dockerfile
+      dockerfile: docker/${CONTAINER_OS}/${CONTAINER_OS}-${CONTAINER_OS_VERSION}/Dockerfile
     env_file:
       - .env
     logging:

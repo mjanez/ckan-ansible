@@ -1,0 +1,23 @@
+- name: Ensure Supervisor config paths are present.
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+  loop:
+    - "{{ supervisord_workers_dir }}"
+    - "{{ supervisor_log_dir }}"
+
+- name: "Copy ckan_uwsgi to configuration folder"
+  template:
+    src: templates/workers/ckan_uwsgi.conf.j2
+    dest: "{{ supervisord_workers_dir }}/ckan_uwsgi.conf"
+
+- name: Ensure Supervisor configuration is present.
+  template:
+    src: supervisord.conf.j2
+    dest: "{{ supervisord_conf_file }}"
+    mode: 0644
+    owner: root
+    group: root

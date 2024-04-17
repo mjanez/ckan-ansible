@@ -1,0 +1,93 @@
+#TODO: WIP
+- name: Ensure dependencies are installed.
+  package:
+    name:
+      - "java-1.8.0-openjdk"
+      - "maven"
+      - "lsof"
+      - "acl"
+      - "gzip"
+    state: present
+
+- name: Check if Solr is already installed.
+  stat: "path={{ solr_dir }}/dist/{{ solr_filename }}.war"
+  register: solr_war_file
+
+- name: Copy Solr into place.
+  command: "cp -r {{ solr_workspace }}/{{ solr_filename }} {{ solr_dir }}"
+  when: not solr_war_file.stat.exists
+
+- name: Ensure Solr install files are owned by the solr_user.
+  file:  # noqa 208
+    path: "{{ solr_dir }}"
+    owner: "{{ solr_user }}"
+    group: "{{ solr_group }}"
+    recurse: true
+  when: not solr_war_file.stat.exists
+
+# Set up solr_data.
+- name: Check if solr_data is already set up.
+  stat: "path={{ solr_data }}/solr.xml"
+  register: solr_example
+
+- name: Ensure solr_data directory exists.
+  file:
+    path: "{{ solr_data }}"
+    state: directory
+    owner: "{{ solr_user }}"
+    group: "{{ solr_group }}"
+    mode: 0755
+  when: not solr_example.stat.exists
+
+- name: Copy Solr example into solr_data.
+  shell: "cp -r {{ solr_dir }}/example/solr/* {{ solr_data }}"
+  when: not solr_example.stat.exists
+
+- name: Fix the example solrconfig.xml file.
+  replace:
+    dest: "{{ solr_data }}/collection1/conf/solrconfig.xml"
+    regexp: ^.+solr\.install\.dir.+$
+    replace: ""
+    mode: 0644
+  when: "not solr_example.stat.exists and solr_version.split('.')[0] == '4'"
+
+- name: Ensure Solr home files are owned by the solr_user.
+  file:  # noqa 208
+    path: "{{ solr_data }}"
+    owner: "{{ solr_user }}"
+    group: "{{ solr_group }}"
+    recurse: true
+  when: not solr_example.stat.exists
+
+# Set up Solr init script.
+- name: Ensure log file is created and has proper permissions.
+  file:
+    path: "/var/log/solr.log"
+    state: touch
+    owner: "{{ solr_user }}"
+    group: root
+    mode: 0664
+  changed_when: false
+  when: ansible_service_mgr != 'systemd'
+
+- name: Copy solr init script into place.
+  template:
+    src: "solr-init-{{ ansible_os_family }}-pre5.j2"
+    dest: "/etc/init.d/{{ solr_service_name }}"
+    mode: 0755
+  when: ansible_service_mgr != 'systemd'
+
+- name: Ensure daemon is installed (Debian).
+  apt: name=daemon state=present
+  when:
+    - ansible_os_family == "Debian"
+    - ansible_service_mgr != 'systemd'
+
+- name: Copy solr systemd unit file into place (for systemd systems).
+  template:
+    src: solr-pre5.unit.j2
+    dest: /etc/systemd/system/{{ solr_service_name }}.service
+    owner: root
+    group: root
+    mode: 0755
+  when: ansible_service_mgr == 'systemd'

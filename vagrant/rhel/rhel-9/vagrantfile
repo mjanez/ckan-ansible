@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
   config.ssh.username = "vagrant"
 
   # Copy the playbook,.env and setup files to the VM (Update with the correct SSH User if config.ssh.username is different from vagrant)
-  config.vm.synced_folder "../../../playbooks/rhel/rhel-9", "/home/vagrant/ckan-ansible/playbooks/rhel/rhel-9"
+  config.vm.synced_folder "../../../playbook", "/home/vagrant/ckan-ansible/playbook"
   config.vm.provision "file", source: "../../../.env", destination: "/home/vagrant/.env"
   config.vm.provision "file", source: "./setup", destination: "/home/vagrant/setup"
 
@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
     vb.gui = false
   
     vb.memory = "4096"
-    vb.cpus = "4"
+    vb.cpus = "2"
     
     vb.name = "rhel9-test"
   end
@@ -43,7 +43,7 @@ Vagrant.configure("2") do |config|
   
   ## Uncomment the following lines to enable provisioning with Ansible. Windows is not supported.
   # config.vm.provision "ansible" do |ansible|
-  #   ansible.playbook = "../../../playbooks/rhel/rhel-9/playbook.yml"
+  #   ansible.playbook = "../../../playbook/playbook.yml"
   # end
 
 end

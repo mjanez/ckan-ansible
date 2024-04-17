@@ -1,0 +1,61 @@
+- name: Copy CKAN config file
+  template:
+    src: ckan.ini.j2
+    dest: "{{ ckan_config_dir }}/ckan.ini"
+    mode: 0755
+  become: true
+  become_user: "{{ ckan_user }}"
+
+- name: Copy WHO config file
+  template:
+    src: who.ini.j2
+    dest: "{{ ckan_config_dir }}/who.ini"
+    mode: 0755
+  become: true
+  become_user: "{{ ckan_user }}"
+
+- name: "Create a symbolic link to the ckan.ini file in {{ ckan_virtualenv}}"
+  file:
+    src: "{{ ckan_config_dir }}/ckan.ini" 
+    dest: "{{ ckan_virtualenv}}/ckan.ini" 
+    state: link
+    force: yes
+
+- name: "Create a symbolic link to the who.ini file in {{ ckan_virtualenv}}"
+  file:
+    src: "{{ ckan_config_dir}}/who.ini" 
+    dest: "{{ ckan_virtualenv}}/who.ini" 
+    state: link
+    force: yes
+
+- name: Update CKAN config file
+  include_tasks: ckan_config_ckan_ini.yml
+
+- name: Initializing or upgrading CKAN database
+  command: "{{ ckan_virtualenv }}/bin/ckan --config={{ ckan_config_dir}}/ckan.ini db init"
+
+- name: Initializing datastore database
+  shell: "{{ ckan_virtualenv }}/bin/ckan --config={{ ckan_config_dir}}/ckan.ini datastore set-permissions | sudo -u postgres psql --set ON_ERROR_STOP=1"
+
+- name: Create webassets storage folder
+  file:
+    path: "{{ ckan_config_dir}}/webassets"
+    state: directory
+    mode: '0777'
+  become: true
+  become_user: "{{ ckan_user }}"
+
+- name: Create storage folder
+  file:
+    path: "{{ ckan_storage_dir }}"
+    state: directory
+    mode: '0777'
+  become: true
+  become_user: "{{ ckan_user }}"
+
+- name: Ensure ckan log directory exists
+  file:
+    path: "{{ ckan_log_dir }}"
+    state: directory
+    mode: '0777'
+  become: true

@@ -1,0 +1,25 @@
+- name: "Include OS-specific variables for {{ ansible_os_family }}-{{ ansible_distribution_major_version }}"
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "os_vars/{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "os_vars/{{ ansible_os_family | lower }}.yml"
+
+- name: Install basic dependencies
+  include_role:
+    name: common
+    tasks_from: common_pkgs.yml
+
+- name: "Install Python packages for {{ python_pkg }}"
+  include_role:
+    name: common
+    tasks_from: common_python.yml
+
+- name: Install Spatial dependencies
+  include_role:
+    name: common
+    tasks_from: common_pkgs_spatial.yml
+
+- name: SSH keys are installed
+  include_role:
+    name: common
+    tasks_from: common_config_ssh.yml

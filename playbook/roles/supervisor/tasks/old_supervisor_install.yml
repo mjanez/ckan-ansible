@@ -1,0 +1,17 @@
+- name: Ensure Supervisor is installed.
+  pip:
+    name: supervisor
+    state: present
+    version: "{{ supervisor_version | default(omit) }}"
+    executable: pip3
+
+- name: Ensure Supervisor log dir exists.
+  file:
+    path: "{{ supervisor_log_dir }}"
+    state: directory
+    mode: 0755
+
+- include_tasks: supervisor_config.yml
+
+- include_tasks: supervisor_setup.yml
+  when: supervisor_started or supervisor_enabled

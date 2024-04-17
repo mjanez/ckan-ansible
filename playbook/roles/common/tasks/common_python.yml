@@ -1,0 +1,62 @@
+- name: "Install {{ python_pkg }} base packages"
+  dnf:
+    name:
+      - "{{ python_pkg }}-devel"
+      - "{{ python_pkg }}-pip"
+      - "{{ python_pkg }}-devel"
+    state: present
+    update_cache: yes
+
+- block:
+    - name: Install {{ python_pkg }}-libselinux
+      dnf:
+        name: "{{ python_pkg }}-libselinux"
+        state: present
+
+  rescue:
+    - name: Install libselinux and python3-libselinux as fallback
+      dnf:
+        name:
+          - libselinux
+          - python3-libselinux
+        state: present
+
+- name: Check current python3 version
+  command: which python3
+  register: current_python3
+  changed_when: false
+
+- name: Show Python3 version
+  command: python3 --version
+  register: python3_version
+  changed_when: false
+
+- name: Debug Python 3 version
+  debug:
+    var: python3_version.stdout_lines
+
+- name: Update default python3 version to {{ python_pkg }}
+  command: "alternatives --set python3 {{ python_bin_path }}"
+  become: true
+  when: python_pkg != 'python3' and current_python3.stdout != python_bin_path
+
+- name: New Python3 version
+  command: python3 --version
+  register: python3_version
+  changed_when: false
+
+- name: Debug updated Python 3 version
+  debug:
+    var: python3_version.stdout_lines
+
+- name: Check if pip3 is installed
+  command: pip3 --version
+  register: pip3_check
+  ignore_errors: true
+
+- name: "Install pip3 for {{ python_pkg }} if not installed"
+  dnf:
+    name:
+      - "{{ python_pkg }}-pip"
+    state: present
+  when: pip3_check.failed

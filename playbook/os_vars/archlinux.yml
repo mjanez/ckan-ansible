@@ -1,0 +1,30 @@
+### Packages: https://archlinux.pkgs.org/rolling
+
+### Supervisor
+supervisord_bin_path: /usr/bin/supervisord
+supervisorctl_bin_path: /usr/bin/supervisorctl
+supervisord_conf_file: /etc/supervisord.conf
+supervisord_workers_dir : /etc/supervisord.d
+supervisord_service: supervisord
+
+### Redis
+__redis_package: redis
+redis_daemon: redis
+redis_conf_path: /etc/redis.conf
+
+### PostgreSQL
+postgres_version: 15
+
+### Python
+python_pkg: python39
+python_bin_path: /usr/bin/python3.9
+
+### Proj
+proj_gtest_pkg: gtest-dev
+
+### Java
+openjdk_pkg: java-1.8.0-openjdk
+java_bin_path: /usr/lib/jvm
+
+### systemd
+systemd_dir: /usr/lib/systemd

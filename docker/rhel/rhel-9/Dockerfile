@@ -18,6 +18,8 @@ RUN dnf update -y && \
     # Python dependencies
     python3 python3-pip libpq && \
     dnf clean all && \
+    # Update pip
+    pip3 install --upgrade pip && \
     # Install Ansible
     pip3 install --no-cache-dir virtualenv && \
     pip3 install --no-cache-dir ansible && \
@@ -40,10 +42,11 @@ RUN mkdir /var/run/sshd && \
     ssh-keygen -A
 
 # Copy the public key
-COPY .ssh/keys/ssh.pub /home/ckan/.ssh/authorized_keys
-
-RUN chown ckan:ckan /home/ckan/.ssh/authorized_keys && \
-    chmod 600 /home/ckan/.ssh/authorized_keys
+RUN if [ -f .ssh/keys/ssh.pub ]; then \
+    cp .ssh/keys/ssh.pub /home/ckan/.ssh/authorized_keys && \
+    chown ckan:ckan /home/ckan/.ssh/authorized_keys && \
+    chmod 600 /home/ckan/.ssh/authorized_keys; \
+fi
 
 EXPOSE ${CKAN_PORT} ${SSH_PORT} ${NGINX_PORT}
 

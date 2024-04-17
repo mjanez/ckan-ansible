@@ -1,0 +1,33 @@
+- name: Ensure Supervisor config paths are present.
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+  loop:
+    - "{{ supervisord_workers_dir }}"
+    - "{{ supervisord_log_dir }}"
+
+- name: Ensure Supervisor configuration is present.
+  template:
+    src: supervisord.conf.j2
+    dest: "{{ supervisord_conf_file }}"
+    mode: 0644
+
+- name: "Copy ckan_uwsgi to configuration folder"
+  template:
+    src: templates/workers/ckan_uwsgi.conf.j2
+    dest: "{{ supervisord_workers_dir }}/ckan_uwsgi.conf"
+
+# - name: Process and copy all supervisor programs (workers)
+#   template:
+#     src: "{{ item }}"
+#     dest: "{{ supervisord_workers_dir }}/{{ item | basename | split('.conf.j2') | first }}.conf"
+#   with_fileglob:
+#     - "templates/workers/*.conf.j2"
+#   become: true
+
+- name: Reload {{ supervisord_service }} service
+  become: true
+  command: systemctl start {{ supervisord_service }}

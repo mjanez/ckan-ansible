@@ -1,0 +1,42 @@
+
+- name: Ensure dependencies are installed.
+  dnf:
+    name:
+      - "{{ openjdk_pkg }}"
+      - "maven"
+      - "lsof"
+      - "acl"
+      - "tar"
+      - "unzip"
+    state: present
+
+- name: Get the path to the Java 11 executable
+  shell: alternatives --display java | grep '{{ java_bin_path }}/{{ openjdk_pkg }}-.*bin/java' | awk '{print $1}'
+  register: java_home_raw
+  changed_when: false
+
+- name: Trim the Java 11 path
+  set_fact:
+    java_home: "{{ java_home_raw.stdout | trim }}"
+
+- name: Debug java_home
+  debug:
+    var: java_home
+
+- name: Check Java version
+  block:
+    - name: Try java --version
+      command: java --version
+      register: java_version
+      changed_when: false
+  rescue:
+    - name: If the above fails, try old java -version
+      command: java -version
+      register: java_version
+      changed_when: false
+
+- name: Set default Java if not Java 11
+  command: alternatives --set java "{{ java_home }}"
+  become: true
+  when: "'11' not in java_version.stdout"
+

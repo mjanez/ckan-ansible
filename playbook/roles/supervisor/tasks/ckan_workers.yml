@@ -1,0 +1,27 @@
+  - name: Remove existing ckan_harvester_run cron job
+    become: true
+    cron:
+      name: "Start ckan_harvester_run"
+      state: absent
+  
+  - name: Remove existing ckan_harvester_clean_log cron job
+    become: true
+    cron:
+      name: "Start ckan_harvester_clean_log"
+      state: absent
+  
+  - name: Add harvester background processes to crontab
+    cron:
+      name: "Start ckan_harvester_run"
+      minute: "*/15"
+      job: "{{ supervisorctl_bin_path }} start ckan_harvester_run"
+    when: worker_harvester_cron
+  
+  - name: Add clean-up mechanism for the harvest log table to crontab
+    cron:
+      name: "Start ckan_harvester_clean_log"
+      minute: "0"
+      hour: "5"
+      day: "*/30"
+      job: "{{ supervisorctl_bin_path }} start ckan_harvester_clean_log"
+    when: worker_harvester_cron

@@ -1,6 +1,0 @@
-
----
-- name: Installing dependencies packages
-  include_role:
-    name: common
-    tasks_from: dnf.yml

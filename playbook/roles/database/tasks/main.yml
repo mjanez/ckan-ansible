@@ -1,0 +1,15 @@
+
+- name: Install PostgreSQL
+  include_role:
+    name: database
+    tasks_from: database_install_psql.yml
+
+- name: Config PostgreSQL database
+  include_role:
+    name: database
+    tasks_from: database_config_psql.yml
+
+- name: Config CKAN databases
+  include_role:
+    name: database
+    tasks_from: database_config_ckan.yml
