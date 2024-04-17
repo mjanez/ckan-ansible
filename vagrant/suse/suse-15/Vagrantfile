@@ -31,7 +31,7 @@ Vagrant.configure("2") do |config|
     vb.gui = false
   
     vb.memory = "4096"
-    vb.cpus = "4"
+    vb.cpus = "2"
     
     vb.name = "opensuse15-test"
   end
