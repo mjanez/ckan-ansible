@@ -6,10 +6,10 @@ ansible_connection: local
 
 ### Ansible Target host  #########################################
 server_name: production
-ansible_host: 192.168.68.109
-ansible_user: ckan
-ansible_port: 8022
-ansible_ssh_pass: ckan
+ansible_host: 192.168.56.20
+ansible_user: remoteuser
+ansible_port: 222
+ansible_ssh_pass: remoteuser
 
 ### Webserver #########################################
 proxy_server_name: localhost

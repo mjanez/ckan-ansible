@@ -14,7 +14,7 @@ Deployments available for the following OS:
 Clone this repository to your local machine and edit the variables of the `playbook/host_vars/production_01.yml`:
 
 > [!CAUTION]
-> Remember to change the CKAN configuration variables before running the Ansible playbook. Specifically the `ckan_sysadmin_name`, `ckan_sysadmin_password` and `ckan_sysadmin_email`. Also the `proxy_server_name` and `nginx_port` for correct deployment.
+> Remember to change the CKAN configuration variables before running the Ansible playbook. Specifically the host user/pwd info (`ansible_user`, `ansible_password`, etc.) and CKAN configuration:  `ckan_sysadmin_name`, `ckan_sysadmin_password` and `ckan_sysadmin_email`. Also the `proxy_server_name` and `nginx_port` for correct deployment.
 
 ```bash
 git clone https://github.com/mjanez/ckan-ansible.git
