@@ -30,6 +30,55 @@ enable_httpd_network_connect: true
 ckan_url: "{{ proxy_server_url }}:{{ ckan_port }}{{ proxy_ckan_location }}"
 pycsw_url: "{{ proxy_server_url }}:{{ pycsw_port }}{{ proxy_pycsw_location }}"
 
+### Redis Service #########################################
+redis_os_supported: 
+  - "RedHat"
+  - "CentOS"
+  - "Debian"
+  - "Archlinux"
+redis_enablerepo: epel
+redis_port: 6379
+redis_bind_interface: 127.0.0.1
+redis_unixsocket: ''
+redis_timeout: 300
+redis_loglevel: "notice"
+redis_logfile: /var/log/redis/redis-server.log
+redis_databases: 16
+# Set to an empty set to disable persistence (saving the DB to disk).
+redis_save:
+  - 900 1
+  - 300 10
+  - 60 10000
+redis_rdbcompression: "yes"
+redis_dbfilename: dump.rdb
+redis_dbdir: /var/lib/redis
+redis_maxmemory: 0
+redis_maxmemory_policy: "noeviction"
+redis_maxmemory_samples: 5
+redis_appendonly: "no"
+redis_appendfsync: "everysec"
+# Add extra include files for local configuration/overrides.
+redis_includes: []
+# Require authentication to Redis with a password.
+redis_requirepass: ""
+# Disable certain Redis commands for security reasons.
+redis_disabled_commands: []
+#  - FLUSHDB
+#  - FLUSHALL
+#  - KEYS
+#  - PEXPIRE
+#  - DEL
+#  - CONFIG
+#  - SHUTDOWN
+#  - BGREWRITEAOF
+#  - BGSAVE
+#  - SAVE
+#  - SPOP
+#  - SREM
+#  - RENAME
+#  - DEBUG
+redis_extra_config: ""
+
 ### CKAN configuration variables #########################################
 ckan_site_id: ckan_test
 ckan_site_name: "{{ proxy_server_url }}"
@@ -42,39 +91,66 @@ ckan_sysadmin_name: ckan_admin
 ckan_sysadmin_email: ckan_admin@localhost
 ckan_sysadmin_password: test1234
 
-#### Views
-ckan_views_default_views: "image_view webpage_view text_view recline_view wmts_view geojson_view geo_view shp_view pdf_view" 
-
 #### Plugins
 ckan_plugins: "stats text_view image_view webpage_view recline_view resourcedictionary datastore xloader harvest spatial_metadata spatial_query spatial_harvest_metadata_api csw_harvester waf_harvester doc_harvester resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat schemingdcat_ckan_harvester schemingdcat_xls_harvester pdf_view pages fluent"
+
+#### Previews formats
+ckan__preview__json_formats: "json jsonld"
+ckan__preview__xml_formats: "xml rdf rdf+xml owl+xml atom rss turtle ttl n3 n-triples"
+ckan__preview__text_formats: "text plain text/plain text/turtle csv tsv rss txt json"
+ckan__preview__loadable: "html htm rdf+xml owl+xml xml n3 n-triples turtle plain atom csv tsv rss txt json arcgis_rest"
+
+#### Resource Proxy settings
+### Preview size limit, default: 1MB
+ckan__resource_proxy__max_file_size: 50048576
+## Size of chunks to read/write__
+ckan__resource_proxy__chunk_size: 4096
+## Default timeout for fetching proxied items
+ckan__resource_proxy__timeout: 10
+
+#### Views
+ckan_views_default_views: "image_view webpage_view text_view recline_view wmts_view geojson_view geo_view shp_view pdf_view" 
 
 #### Localization
 ckan_locale_default: en
 ckan_locale_order: "en es pt_BR ja it cs_CZ ca fr el sv sr sr@latin no sk fi ru de pl nl bg ko_KR hu sa sl lv"
 ckan_locales_offered: "en es pt_BR ja it cs_CZ ca fr el sv sr sr@latin no sk fi ru de pl nl bg ko_KR hu sa sl lv"
 
+#### ckanext-harvest
+ckan__harvest__mq__type: redis
+ckan__harvest__mq__hostname: "{{ redis_bind_interface }}"
+ckan__harvest__mq__port: "{{ redis_port }}"
+ckan__harvest__mq__redis_db: 1
+ckan__harvest__log_timeframe: 40
+
 #### ckanext-dcat
 ckanext__dcat__base_uri: "{{ ckan_site_url }}{{ proxy_ckan_location }}"
 ckanext__dcat__rdf__profiles: "euro_dcat_ap_2"
 ckanext__dcat__catalog_endpoint: "{{ proxy_ckan_location }}.{_format}"
 
-### ckanext-geoview
+#### ckanext-geoview
 ckanext__geoview__ol_viewer_formats: "wms wfs geojson gml kml"
 ckanext__geoview__geojson__max_file_size: 1000000
+ckanext__geoview__shp_viewer__srid: 3857
+ckanext__geoview__shp_viewer__encoding: UTF-8
 
-### ckanext-scheming
+#### ckanext-scheming
 ckanext__scheming__dataset_schemas: "ckanext.schemingdcat:schemas/geodcatap/geodcatap_dataset.yaml"
 ckanext__scheming__group_schemas: "ckanext.schemingdcat:schemas/geodcatap_es/geodcatap_es_group.json"
 ckanext__scheming__organization_schemas: "ckanext.schemingdcat:schemas/geodcatap_es/geodcatap_es_org.json"
 ckanext__scheming__presets: "ckanext.schemingdcat:schemas/default_presets.json ckanext.fluent:presets.json"
 
-### ckanext-schemingdcat
+#### ckanext-schemingdcat
 ckanext__schemingdcat__facet_list: "theme groups theme_es dcat_type groups publisher_name publisher_type spatial_uri owner_org res_format frequency tags tag_uri conforms_to"
 ckanext__schemingdcat__organization_custom_facets: true
 ckanext__schemingdcat__group_custom_facets: true
 ckanext__schemingdcat__geometadata_base_uri: "{{ ckan_site_url }}{{ proxy_pycsw_location }}"
 
-#### ckanext-spatial
+#### ckanext-spatial (Solr Backend - solr9-spatial: https://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#choosing-a-backend-for-the-spatial-search)
+ckan__search__solr_allowed_query_parsers: field
+#### (Solr Backend - solr9-spatial: https://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#choosing-a-backend-for-the-spatial-search)
+ckanext__spatial__search_backend: solr-spatial-field
+ckan__spatial__srid: 3857
 ckanext__spatial__common_map__custom_url: http://a.tile.openstreetmap.org/{z}/{x}/{y}.png
 ckanext__spatial__common_map__attribution: "Map tiles by <a href=\"http://openstreetmap.org\">OpenStreetMap</a> (<a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>)"
 
@@ -82,6 +158,12 @@ ckanext__spatial__common_map__attribution: "Map tiles by <a href=\"http://openst
 ckanext__xloader__api_token: api_token
 ckanext__xloader__jobs_db__uri: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}/{{ ckan_database.ckan_db }}"
 
+#### ckanext-pages
+ckanext__pages__organization: True
+ckanext__pages__group: True
+ckanext__pages__about_menu: False
+ckanext__pages__group_menu: True
+ckanext__pages__organization_menu: True
 
 ### Services config ###
 ### pycsw service #########################################
@@ -167,55 +249,6 @@ solr_timezone: "{{ timezone }}"
 solr_opts: "$SOLR_OPTS -Dlog4j2.formatMsgNoLookups=true"
 # Enable restart solr handler
 solr_restart_handler_enabled: true
-
-### Redis Service #########################################
-redis_os_supported: 
-  - "RedHat"
-  - "CentOS"
-  - "Debian"
-  - "Archlinux"
-redis_enablerepo: epel
-redis_port: 6379
-redis_bind_interface: 127.0.0.1
-redis_unixsocket: ''
-redis_timeout: 300
-redis_loglevel: "notice"
-redis_logfile: /var/log/redis/redis-server.log
-redis_databases: 16
-# Set to an empty set to disable persistence (saving the DB to disk).
-redis_save:
-  - 900 1
-  - 300 10
-  - 60 10000
-redis_rdbcompression: "yes"
-redis_dbfilename: dump.rdb
-redis_dbdir: /var/lib/redis
-redis_maxmemory: 0
-redis_maxmemory_policy: "noeviction"
-redis_maxmemory_samples: 5
-redis_appendonly: "no"
-redis_appendfsync: "everysec"
-# Add extra include files for local configuration/overrides.
-redis_includes: []
-# Require authentication to Redis with a password.
-redis_requirepass: ""
-# Disable certain Redis commands for security reasons.
-redis_disabled_commands: []
-#  - FLUSHDB
-#  - FLUSHALL
-#  - KEYS
-#  - PEXPIRE
-#  - DEL
-#  - CONFIG
-#  - SHUTDOWN
-#  - BGREWRITEAOF
-#  - BGSAVE
-#  - SAVE
-#  - SPOP
-#  - SREM
-#  - RENAME
-#  - DEBUG
-redis_extra_config: ""
 
 ### Supervisor Service #########################################
 supervisor_log_dir: /var/log/supervisor

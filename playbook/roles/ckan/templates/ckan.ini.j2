@@ -20,6 +20,13 @@ debug = false
 [app:main]
 ## Extension settings
 
+#### ckanext-harvest
+ckan.harvest.mq.type = {{ ckan__harvest__mq__type }}
+ckan.harvest.mq.hostname = {{ ckan__harvest__mq__hostname }}
+ckan.harvest.mq.port = {{ ckan__harvest__mq__port }}
+ckan.harvest.mq.redis_db = {{ ckan__harvest__mq__redis_db }}
+ckan.harvest.log_timeframe: {{ ckan__harvest__log_timeframe }}
+
 ### ckanext-dcat
 ckanext.dcat.base_uri = {{ ckanext__dcat__base_uri }}
 ckanext.dcat.rdf.profiles = {{ ckanext__dcat__rdf__profiles }}
@@ -38,13 +45,20 @@ schemingdcat.group_custom_facets = {{ ckanext__schemingdcat__group_custom_facets
 schemingdcat.geometadata_base_uri = {{ ckanext__schemingdcat__geometadata_base_uri }}
 
 ### ckanext-spatial
-ckanext.geoview.shp_viewer.srid = 3857
-ckanext.geoview.shp_viewer.encoding = UTF-8
-ckanext.geoview.ol_viewer.formats = {{ ckanext__geoview__ol_viewer_formats }}
-ckanext.geoview.geojson.max_file_size = {{ ckanext__geoview__geojson__max_file_size }}
+# Allow Solr local params
+ckan.search.solr_allowed_query_parsers = {{ ckan__search__solr_allowed_query_parsers }}
+## (Solr Backend - solr9-spatial)
+ckanext.spatial.search_backend = {{ ckanext__spatial__search_backend }}
+ckan.spatial.srid = {{ ckan__spatial__srid }}
 ckanext.spatial.common_map.type = custom
 ckanext.spatial.common_map.custom_url = {{ ckanext__spatial__common_map__custom_url }}
 ckanext.spatial.common_map.attribution = {{ ckanext__spatial__common_map__attribution }}
+
+### ckanext-geoview
+ckanext.geoview.shp_viewer.srid = {{ ckanext__geoview__shp_viewer__srid }}
+ckanext.geoview.shp_viewer.encoding = {{ ckanext__geoview__shp_viewer__encoding }}
+ckanext.geoview.ol_viewer.formats = {{ ckanext__geoview__ol_viewer_formats }}
+ckanext.geoview.geojson.max_file_size = {{ ckanext__geoview__geojson__max_file_size }}
 
 ### ckanext-xloader
 ckanext.xloader.api_token = {{ ckanext__xloader__api_token }}
@@ -52,11 +66,11 @@ ckanext.xloader.jobs_db.uri={{ ckanext__xloader__jobs_db__uri }}
 
 ### ckanext-pages
 ckan.pages.allow_html = False
-ckanext.pages.organization = True
-ckanext.pages.group = True
-ckanext.pages.about_menu = False
-ckanext.pages.group_menu = True
-ckanext.pages.organization_menu = True
+ckanext.pages.organization = {{ ckanext__pages__organization }}
+ckanext.pages.group = {{ ckanext__pages__group }}
+ckanext.pages.about_menu = {{ ckanext__pages__about_menu }}
+ckanext.pages.group_menu = {{ ckanext__pages__group_menu }}
+ckanext.pages.organization_menu = {{ ckanext__pages__organization_menu }}
 
 
 ## CKAN
@@ -202,12 +216,16 @@ ckan.redis.url = redis://localhost:6379/0
 # ckan.cors.origin_allow_all = true
 # cors.origin_whitelist is a space separated list of allowed domains.
 # ckan.cors.origin_whitelist = http://example1.com http://example2.com
-ckan.cors.origin_whitelist = 
+ckan.cors.origin_whitelist =
+ckan.cors.origin_allow_all = true 
 
 ## Plugins Settings
 ckan.plugins = {{ ckan_plugins }}
-ckan.resource_proxy.timeout = 5
 
+## Resource Proxy settings
+ckan.resource_proxy.timeout = 5
+ckan.resource_proxy.max_file_size = 1048576
+ckan.resource_proxy.chunk_size = 8192
 
 ## Front-End Settings 
 ckan.site_title = CKAN
@@ -237,14 +255,14 @@ ckan.views.default_views = {{ ckan_views_default_views }}
 ###ckan.views.default_views = image_view webpage_view text_view recline_view wmts_view geojson_view geo_view shp_view pdf_view
 
 # Customize which text formats the text_view plugin will show
-ckan.preview.json_formats = json jsonld
-ckan.preview.xml_formats = xml rdf rdf+xml owl+xml atom rss turtle ttl n3 n-triples
-###ckan.preview.text_formats = text plain text/plain text/turtle csv tsv rss txt json
+ckan.preview.json_formats = {{ ckan__preview__json_formats }}
+ckan.preview.xml_formats = {{ ckan__preview__xml_formats }}
+###ckan.preview.text_formats = {{ ckan__preview__text_formats }}
 
 # Customize which image formats the image_view plugin will show
 #ckan.preview.image_formats = png jpeg jpg gif
 ###ckan.preview.direct = png jpg gif
-ckan.preview.loadable = html htm rdf+xml owl+xml xml n3 n-triples turtle plain atom csv tsv rss txt json arcgis_rest
+ckan.preview.loadable = {{ ckan__preview__loadable }}
 
 ## Theming Settings
 ckan.template_head_end = 
