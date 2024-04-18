@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/ubi:9.3
+FROM registry.access.redhat.com/ubi9/ubi:latest
 LABEL maintainer="mjanez" \
       name="ckan-ansible" \
       version="rhel-9"

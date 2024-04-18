@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi:8.8
+FROM registry.access.redhat.com/ubi8/ubi:latest
 LABEL maintainer="mjanez" \
       name="ckan-ansible" \
       version="rhel-8"
