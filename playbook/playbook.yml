@@ -4,6 +4,11 @@
   gather_facts: true
 
   vars_prompt:
+    - name: "ansible_become_password"
+      prompt: "Enter your sudo password (or press Enter to proceed without a password)"
+      private: true
+      default: ""
+
     - name: "setup_local_database"
       prompt: "Do you want to setup a local PostgresSQL Database? \nWARNING: This may delete an existing PostgreSQL database! (y/n)"
       private: false
@@ -19,11 +24,6 @@
       private: false
       default: "n"
 
-    - name: "setup_local_ckan"
-      prompt: "Do you want to setup a local CKAN instance? (y/n)"
-      private: false
-      default: "y"
-
   pre_tasks:
     - name: Verify distribution
       fail:
@@ -35,7 +35,6 @@
       - { role: database, tags: database, when: setup_local_database == "y" }
       - { role: solr, tags: solr, when: setup_local_solr == "y" }
       - { role: redis, tags: redis, when: setup_local_redis == "y" }
-      - { role: ckan, tags: ckan, when: setup_local_ckan == "y"  }
+      - { role: ckan, tags: ckan }
       - { role: webserver, tags: webserver }
-      #TODO: Fix supervisor RHEL
-      #- { role: supervisor, tags: supervisor }
+      - { role: supervisor, tags: supervisor }
