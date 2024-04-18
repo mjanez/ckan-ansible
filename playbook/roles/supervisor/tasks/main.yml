@@ -3,16 +3,27 @@
     name: supervisor
     tasks_from: supervisor_install.yml
 
+- name: "Apply {{ supervisord_service }} configuration"
+  include_role:
+    name: supervisor
+    tasks_from: supervisor_config.yml
+
+- name: "Config {{ supervisord_service }} service for {{ ansible_os_family }} (for non-systemd systems)"
+  include_role:
+    name: supervisor
+    tasks_from: supervisor_service_nonsystemd.yml
+  when: "ansible_service_mgr != 'systemd'"
+
+- name: "Config {{ supervisord_service }} service for {{ ansible_os_family }} (for systemd systems)"
+  include_role:
+    name: supervisor
+    tasks_from: supervisor_service.yml
+  when: "ansible_service_mgr == 'systemd'"
+
 - name: Setup CKAN workers
   include_role:
     name: supervisor
     tasks_from: ckan_workers.yml
-
-- name: Ensure Supervisor is enabled at boot (if configured).
-  service:
-    name: supervisord
-    enabled: true
-  when: supervisor_enabled
 
 - name: "Change owner and group of {{ ckan_log_dir }} to {{ ckan_user }}"
   file:
@@ -21,7 +32,3 @@
     group: "{{ ckan_group }}"
     recurse: yes
   become: true
-
-- name: Reload systemd manager configuration
-  become: true
-  command: systemctl daemon-reload

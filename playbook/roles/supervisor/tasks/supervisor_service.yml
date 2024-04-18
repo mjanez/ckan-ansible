@@ -1,0 +1,20 @@
+- name: Enable {{ supervisord_service }} service
+  systemd:
+    name: "{{ supervisord_service }}"
+    daemon_reload: yes
+    enabled: yes
+  become: true
+  register: supervisord_systemd
+
+- name: Ensure {{ supervisord_service }} is started and enabled on boot if configured
+  command:
+    cmd: "systemctl enable {{ supervisord_service }}.service"
+  become: true
+  when: supervisord_systemd.status.UnitFileState == 'enabled-runtime'
+
+- name: Restart {{ supervisord_service }}
+  systemd: 
+    name: "{{ supervisord_service }}"
+    state: restarted
+    enabled: true
+  become: true

@@ -9,15 +9,31 @@
     - "{{ supervisord_workers_dir }}"
     - "{{ supervisor_log_dir }}"
 
-- name: "Copy ckan_uwsgi to configuration folder"
-  template:
-    src: templates/workers/ckan_uwsgi.conf.j2
-    dest: "{{ supervisord_workers_dir }}/ckan_uwsgi.conf"
-
 - name: Ensure Supervisor configuration is present.
   template:
     src: supervisord.conf.j2
     dest: "{{ supervisord_conf_file }}"
     mode: 0644
+
+- name: "Copy ckan_uwsgi to configuration folder"
+  template:
+    src: templates/workers/ckan_uwsgi.conf.j2
+    dest: "{{ supervisord_workers_dir }}/ckan_uwsgi.conf"
+
+- name: Copy Supervisor init file into {{ init_dir }} (for non-systemd systems).
+  template:
+    src: "supervisord.init-{{ ansible_os_family | lower }}.j2"
+    dest: "{{ init_dir }}/supervisord"
     owner: root
     group: root
+    mode: 0644
+  when: "ansible_service_mgr != 'systemd'"
+
+- name: Copy {{ supervisord_service }} service (for systemd systems).
+  template:
+    src: supervisord.service.j2
+    dest: "{{ systemd_dir }}/{{ supervisord_service }}.service"
+    owner: root
+    group: root
+    mode: 0644
+  when: "ansible_service_mgr == 'systemd'"

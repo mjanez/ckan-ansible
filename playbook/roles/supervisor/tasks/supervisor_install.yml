@@ -9,15 +9,3 @@
     path: "{{ supervisor_log_dir }}"
     state: directory
     mode: 0755
-
-- name: Apply supervisor configuration
-  include_tasks: supervisor_config.yml
-
-- name: "Config supervisor service for {{ ansible_os_family }}"
-  include_tasks: supervisor_setup.yml
-
-- name: Enable {{ supervisord_service }} service
-  service: 
-    name: "{{ supervisord_service }}"
-    state: started 
-    enabled: yes
