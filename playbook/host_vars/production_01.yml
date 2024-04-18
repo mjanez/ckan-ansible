@@ -7,9 +7,9 @@ ansible_connection: local
 ### Ansible Target host  #########################################
 server_name: production
 ansible_host: 192.168.56.20
-ansible_user: remoteuser
+ansible_user: sudouser
 ansible_port: 222
-ansible_ssh_pass: remoteuser
+ansible_ssh_pass: sudouserpassword
 
 ### Webserver #########################################
 proxy_server_name: localhost
@@ -79,6 +79,25 @@ redis_disabled_commands: []
 #  - DEBUG
 redis_extra_config: ""
 
+### Database service #########################################
+postgres_port: 5432
+postgres_dir: "/var/lib/pgsql/data"
+ckan_database: {
+  postgres_user: "postgres",
+  postgres_password: "postgres",
+  ckan_db_user: "ckandbuser",
+  ckan_db_password: "ckandbpassword",
+  ckan_db: "ckan_db",
+  postgres_host: "localhost",
+}
+
+ckan_datastore: {
+  datastore_readonly_user: "datastore_ro",
+  datastore_readonly_password: "datastoredbpassword",
+  datastore_db: "ckan_datastore",
+  datastore_host: "localhost",
+}
+
 ### CKAN configuration variables #########################################
 ckan_site_id: ckan_test
 ckan_site_name: "{{ proxy_server_url }}"
@@ -135,7 +154,7 @@ ckanext__geoview__shp_viewer__srid: 3857
 ckanext__geoview__shp_viewer__encoding: UTF-8
 
 #### ckanext-scheming
-ckanext__scheming__dataset_schemas: "ckanext.schemingdcat:schemas/geodcatap/geodcatap_dataset.yaml"
+ckanext__scheming__dataset_schemas: "ckanext.schemingdcat:schemas/geodcatap_es/geodcatap_es_dataset.yaml"
 ckanext__scheming__group_schemas: "ckanext.schemingdcat:schemas/geodcatap_es/geodcatap_es_group.json"
 ckanext__scheming__organization_schemas: "ckanext.schemingdcat:schemas/geodcatap_es/geodcatap_es_org.json"
 ckanext__scheming__presets: "ckanext.schemingdcat:schemas/default_presets.json ckanext.fluent:presets.json"
@@ -196,25 +215,6 @@ ckanext_versions:
   ckanext_fluent: v1.0.1
   ckanext_schemingdcat: v3.0.0
 
-### Database service #########################################
-postgres_port: 5432
-postgres_dir: "/var/lib/pgsql/data"
-ckan_database: {
-  postgres_user: "postgres",
-  postgres_password: "postgres",
-  ckan_db_user: "ckandbuser",
-  ckan_db_password: "ckandbpassword",
-  ckan_db: "ckan_db",
-  postgres_host: "localhost",
-}
-
-ckan_datastore: {
-  datastore_readonly_user: "datastore_ro",
-  datastore_readonly_password: "datastoredbpassword",
-  datastore_db: "ckan_datastore",
-  datastore_host: "localhost",
-}
-
 ### Solr Service #########################################
 solr_os_supported: 
   - "RedHat"
@@ -222,7 +222,7 @@ solr_os_supported:
   - "Debian"
 solr_version: 9.5.0
 solr_port: 8983
-solr_host: 127.0.0.1
+solr_host: 0.0.0.0
 solr_mirror: "https://dlcdn.apache.org"
 solr_workspace: /root
 solr_tmp_dir: /tmp
@@ -262,6 +262,12 @@ supervisor_unix_http_server_socket_path: "{{ supervisor_tmp_dir }}/supervisor.so
 
 supervisor_inet_http_server_enable: false
 supervisor_inet_http_server_port: '*:9001'
+
+### ckan-pycsw Service #########################################
+pycsw_ckan_schema: iso19139_geodcatap
+pycsw_output_schema: iso19139_inspire
+pycsw_cron_days_interval: 2
+pycsw_cron_hour_start: 4
 
 ### Test URLs
 test_solr_ckan_url: "http://{{ solr_host }}:{{ solr_port }}/solr/{{ solr_ckan_core_name }}"
