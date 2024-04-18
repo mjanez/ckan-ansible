@@ -9,9 +9,20 @@
       - "gzip"
     state: present
 
-- name: Check if Solr is already installed.
-  stat: "path={{ solr_dir }}/dist/{{ solr_filename }}.war"
-  register: solr_war_file
+- name: Check if Solr has been installed already.
+  stat:
+    path: "{{ solr_dir }}"
+  register: solr_dir_status
+
+- name: Set solr_filename for Solr >4.
+  set_fact:
+    solr_filename: "solr-{{ solr_version }}"
+  when: "solr_version.split('.')[0] >= '4'"
+
+- name: Set solr_mirror for Solr <9.
+  set_fact:
+    solr_project_mirror: "{{ solr_mirror }}/lucene"
+  when: solr_version.split('.')[0]|int < 9
 
 - name: Copy Solr into place.
   command: "cp -r {{ solr_workspace }}/{{ solr_filename }} {{ solr_dir }}"
@@ -70,10 +81,10 @@
   changed_when: false
   when: ansible_service_mgr != 'systemd'
 
-- name: Copy solr init script into place.
+- name: Copy solr init script into {{ init_dir }}.
   template:
     src: "solr-init-{{ ansible_os_family }}-pre5.j2"
-    dest: "/etc/init.d/{{ solr_service_name }}"
+    dest: "{{ init_dir }}/{{ solr_service_name }}"
     mode: 0755
   when: ansible_service_mgr != 'systemd'
 
@@ -86,7 +97,7 @@
 - name: Copy solr systemd unit file into place (for systemd systems).
   template:
     src: solr-pre5.unit.j2
-    dest: /etc/systemd/system/{{ solr_service_name }}.service
+    dest: "{{ systemd_dir }}/{{ solr_service_name }}.service"
     owner: root
     group: root
     mode: 0755

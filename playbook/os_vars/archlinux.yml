@@ -28,3 +28,6 @@ java_bin_path: /usr/lib/jvm
 
 ### systemd
 systemd_dir: /usr/lib/systemd
+
+### service
+init_dir: /etc/init.d
