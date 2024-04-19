@@ -1,33 +1,16 @@
+- name: Set package manager variable for {{ ansible_os_family }}
+  set_fact:
+    pkg_mgr: "{% if ansible_os_family == 'RedHat' and ansible_distribution_major_version|int >= 8 %}dnf{% elif ansible_os_family == 'Debian' %}apt{% elif ansible_os_family == 'Archlinux' %}pacman{% endif %}"
 
 - name: Install required base packages
-  dnf:
-    name:
-      - "git-core"
-      - "chkconfig"
-      - "policycoreutils-python-utils"
-      - "libxml2-devel"
-      - "libxslt-devel"
-      - "libpq-devel"
-      - "pcre"
-      - "pcre-devel"
-      - "git"
-      - "gcc"
-      - "gcc-c++"
-      - "wget"
-      - "curl"
-      - "patch"
-      - "file-libs"
-      - "make"
-      - "cmake"
-      - "automake"
-      - "gmp-devel"
-      - "systemd"
-      - "epel-release"
-      - "openssl-devel"
-      - "libffi-devel"
-      - "libtool"
-      - "sudo"
-      - "gzip"
-      - "unzip"
+  package:
+    name: "{{ common_pkgs }}"
     state: present
     update_cache: yes
+    use: "{{ pkg_mgr }}"
+  when: ansible_os_family in ['RedHat', 'Debian', 'Archlinux'] and not (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int < 8)
+
+- name: Fail if RHEL version is less than 8
+  fail:
+    msg: "RHEL version is less than 8, playbook is not compatible"
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int < 8

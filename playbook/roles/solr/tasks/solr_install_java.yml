@@ -1,14 +1,24 @@
 
-- name: Ensure dependencies are installed.
+- name: Ensure dependencies are installed (RHEL/CentOS >= 8)
   dnf:
-    name:
-      - "{{ openjdk_pkg }}"
-      - "maven"
-      - "lsof"
-      - "acl"
-      - "tar"
-      - "unzip"
+    name: "{{ solr_deps_pkgs }}"
     state: present
+    update_cache: true
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
+
+- name: Ensure dependencies are installed (Debian/Ubuntu)
+  apt:
+    name: "{{ solr_deps_pkgs }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Debian"
+
+- name: Ensure dependencies are installed (Arch Linux)
+  pacman:
+    name: "{{ solr_deps_pkgs }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Archlinux"
 
 - name: Get the path to the Java 11 executable
   shell: alternatives --display java | grep '{{ java_bin_path }}/{{ openjdk_pkg }}-.*bin/java' | awk '{print $1}'

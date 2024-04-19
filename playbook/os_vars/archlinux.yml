@@ -1,4 +1,28 @@
 ### Packages: https://archlinux.pkgs.org/rolling
+common_pkgs: 
+  - "git"
+  - "inetutils"  # provides the 'hostname' command, equivalent to chkconfig
+  - "libxml2"
+  - "libxslt"
+  - "postgresql-libs"  # equivalent to libpq-devel
+  - "pcre"
+  - "gcc"
+  - "wget"
+  - "curl"
+  - "patch"
+  - "file"
+  - "make"
+  - "cmake"
+  - "automake"
+  - "gmp"
+  - "systemd"
+  - "openssl"
+  - "libffi"
+  - "libtool"
+  - "sudo"
+  - "gzip"
+  - "unzip"
+  - "tar"
 
 ### Supervisor
 supervisord_bin_path: /usr/bin/supervisord
@@ -6,6 +30,7 @@ supervisorctl_bin_path: /usr/bin/supervisorctl
 supervisord_conf_file: /etc/supervisord.conf
 supervisord_workers_dir : /etc/supervisord.d
 supervisord_service: supervisord
+supervisor_pkg: supervisor
 
 ### Redis
 __redis_package: redis
@@ -19,12 +44,44 @@ postgres_version: 15
 python_pkg: python39
 python_bin_path: /usr/bin/python3.9
 
+### Python packages
+python_deps_pkgs:
+  - "{{ python_pkg }}"
+  - "{{ python_pkg }}-pip"
+
 ### Proj
 proj_gtest_pkg: gtest-dev
+
+### Spatial packages
+spatial_deps_pkgs:
+  - "geos"
+  - "curl"
+  - "libgeotiff"
+  - "libtiff"
+  - "sqlite"
+  - "{{ proj_gtest_pkg }}"
+  - "unzip"
 
 ### Java
 openjdk_pkg: java-1.8.0-openjdk
 java_bin_path: /usr/lib/jvm
+
+### Solr packages
+solr_deps_pkgs:
+  - "{{ openjdk_pkg }}"
+  - "maven"
+  - "lsof"
+  - "acl"
+
+### Postgresql packages
+postgresql_deps_pkgs:
+  - "postgresql"
+  - "postgresql-libs"
+  - "python-psycopg2"
+postgresqL_python3_psycopg2: python3-psycopg2
+
+### NGINX packages
+nginx_pkg: nginx
 
 ### systemd
 systemd_dir: /usr/lib/systemd

@@ -1,18 +1,17 @@
 - name: "Install {{ python_pkg }} base packages"
-  dnf:
-    name:
-      - "{{ python_pkg }}-devel"
-      - "{{ python_pkg }}-pip"
-      - "{{ python_pkg }}-devel"
+  package:
+    name: "{{ python_deps_pkgs }}"
     state: present
     update_cache: yes
+    use: "{{ pkg_mgr }}"
+  when: ansible_os_family in ['RedHat', 'Debian', 'Archlinux'] and not (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int < 8)
 
 - block:
     - name: Install {{ python_pkg }}-libselinux
       dnf:
         name: "{{ python_pkg }}-libselinux"
         state: present
-
+      when: ansible_os_family == "RedHat"
   rescue:
     - name: Install libselinux and python3-libselinux as fallback
       dnf:
@@ -20,6 +19,7 @@
           - libselinux
           - python3-libselinux
         state: present
+      when: ansible_os_family == "RedHat"
 
 - name: Check current python3 version
   command: which python3
@@ -35,10 +35,15 @@
   debug:
     var: python3_version.stdout_lines
 
-- name: Update default python3 version to {{ python_pkg }}
+- name: Update default python3 version to {{ python_pkg }} (RHEL/CentOS >= 8)
   command: "alternatives --set python3 {{ python_bin_path }}"
   become: true
-  when: python_pkg != 'python3' and current_python3.stdout != python_bin_path
+  when: python_pkg != 'python3' and current_python3.stdout != python_bin_path and ansible_os_family == "RedHat"
+
+- name: Update default python3 version to {{ python_pkg }} (Debian/Ubuntu)
+  command: "update-alternatives --set python3 {{ python_bin_path }}"
+  become: true
+  when: python_pkg != 'python3' and current_python3.stdout != python_bin_path and ansible_os_family == "Debian"
 
 - name: New Python3 version
   command: python3 --version

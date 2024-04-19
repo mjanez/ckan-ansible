@@ -1,8 +1,23 @@
-- name: Install NGINX
+- name: Install NGINX (RHEL/CentOS >= 8)
   dnf:
-    name: nginx
+    name: "{{ nginx_pkg }}"
     state: present
-    update_cache: yes
+    update_cache: true
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
+
+- name: Install NGINX (Debian/Ubuntu)
+  apt:
+    name: "{{ nginx_pkg }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Debian"
+
+- name: Install NGINX (Arch Linux)
+  pacman:
+    name: "{{ nginx_pkg }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Archlinux"
 
 - name: Copy nginx config file
   template:

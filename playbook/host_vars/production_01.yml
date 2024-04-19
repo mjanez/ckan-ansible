@@ -99,7 +99,7 @@ ckan_datastore: {
 }
 
 ### CKAN configuration variables #########################################
-ckan_site_id: ckan_test
+ckan_site_id: default
 ckan_site_name: "{{ proxy_server_url }}"
 ## Check if the ckan_site_url is correctly configured. Default uses the proxy_server_name and nginx_port
 ckan_site_url: "{{ ckan_site_name }}:{{ nginx_port }}"
@@ -264,10 +264,36 @@ supervisor_inet_http_server_enable: false
 supervisor_inet_http_server_port: '*:9001'
 
 ### ckan-pycsw Service #########################################
+ckan_pycsw_version: latest
 pycsw_ckan_schema: iso19139_geodcatap
 pycsw_output_schema: iso19139_inspire
 pycsw_cron_days_interval: 2
 pycsw_cron_hour_start: 4
+pycsw_log_dir: /var/log/pycsw
+pycsw_app_dir: "{{ ckan_virtualenv }}/src/ckan-pycsw"
+#### pycsw conf
+pycsw_identification_title: Sample Geospatial Catalogue
+pycsw_identification_abstract: OGC CSW server powered by pycsw
+pycsw_identification_keywords: "catalogue,discovery,metadata"
+pycsw_provider_name: Sample
+pycsw_provider_url: https://example.org/
+pycsw_contact_country: Spain
+pycsw_contact_name: admin
+pycsw_contact_position: Director
+pycsw_contact_address: "Plaza Mayor, 1"
+pycsw_contact_city: Madrid
+pycsw_contact_stateorprovince: Madrid
+pycsw_contact_postalcode: 28001
+pycsw_contact_phone: +xx-xxx-xxx-xxxx
+pycsw_contact_fax: +xx-xxx-xxx-xxxx
+pycsw_contact_email: admin@example.org
+pycsw_contact_url: https://example.org/members/admin
+pycsw_inspire_date: 2023-12-31
+pycsw_inspire_gemet_keywords: Utility and governmental services
+pycsw_inspire_conformity_service: notEvaluated
+pycsw_inspire_contact_name: Organization Name
+pycsw_inspire_contact_email: admin@example.org
+pycsw_inspire_temp_extent: 2023-12-31/2030-12-31
 
 ### Test URLs
 test_solr_ckan_url: "http://{{ solr_host }}:{{ solr_port }}/solr/{{ solr_ckan_core_name }}"

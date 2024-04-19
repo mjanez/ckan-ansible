@@ -38,3 +38,4 @@
       - { role: ckan, tags: ckan }
       - { role: webserver, tags: webserver }
       - { role: supervisor, tags: supervisor }
+      #- { role: ckan_pycsw, tags: ckan_pycsw }
