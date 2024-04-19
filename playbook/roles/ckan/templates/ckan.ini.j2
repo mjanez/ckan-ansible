@@ -265,9 +265,6 @@ ckan.preview.xml_formats = {{ ckan__preview__xml_formats }}
 ckan.preview.loadable = {{ ckan__preview__loadable }}
 
 ## Theming Settings
-ckan.template_head_end = 
-ckan.template_footer_end = 
-ckan.template_title_delimiter = -
 extra_template_paths = 
 extra_public_paths = 
 ckan.base_public_folder = public
@@ -275,7 +272,6 @@ ckan.base_templates_folder = templates
 ckan.default.package_type = dataset
 ckan.default.group_type = group
 ckan.default.organization_type = organization
-ckan.admin_tabs = {}
 
 ## Storage Settings
 ckan.storage_path = {{ ckan_storage_dir}}
@@ -298,6 +294,7 @@ ckan.user_reset_landing_page = home.index
 
 ## Activity Streams Settings 
 ckan.activity_streams_enabled = true
+### More info:https://docs.ckan.org/en/latest/maintaining/email-notifications.html#email-notifications
 ckan.activity_streams_email_notifications = false
 ckan.activity_list_limit = 31
 ckan.activity_list_limit_max = 100
@@ -327,8 +324,9 @@ ckan.resource_formats = {{ ckan_virtualenv }}/src/ckan/ckan/config/resource_form
 ## Form Settings
 # package_hide_extras = for_search_index_only
 ckan.dataset.create_on_ui_requires_resources = true
-package_new_return_url = 
-package_edit_return_url = 
+#package_edit_return_url = http://another.frontend/dataset/<NAME>
+#package_new_return_url = http://another.frontend/dataset/<NAME>
+## More info: https://docs.ckan.org/en/latest/maintaining/configuration.html#licenses-group-url
 licenses_group_url = http://licenses.opendefinition.org/licenses/groups/ckan.json
 
 ## Email settings

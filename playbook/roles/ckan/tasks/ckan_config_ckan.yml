@@ -59,3 +59,26 @@
     state: directory
     mode: '0777'
   become: true
+
+# Add CKAN sysadmin user
+- block:
+    - name: Check if CKAN sysadmin user exists
+      command: "{{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini user show {{ ckan_sysadmin_name }}"
+      register: user_exists
+      retries: 5
+      delay: 5
+      until: user_exists.rc == 0
+      ignore_errors: true
+
+    - name: Create CKAN sysadmin user
+      command: "{{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini user add {{ ckan_sysadmin_name }} password={{ ckan_sysadmin_password }} email={{ ckan_sysadmin_email }}"
+      when: "'User: None' in user_exists.stdout"
+
+    - name: Make CKAN user a sysadmin
+      command: "{{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini sysadmin add {{ ckan_sysadmin_name }}"
+      when: "'User: None' in user_exists.stdout"
+  environment:
+    CKAN_SYSADMIN_NAME: "{{ ckan_sysadmin_name }}"
+    CKAN_SYSADMIN_PASSWORD: "{{ ckan_sysadmin_password }}"
+    CKAN_SYSADMIN_EMAIL: "{{ ckan_sysadmin_email }}"
+    CKAN_INI: "{{ ckan_config_dir }}/ckan.ini"
