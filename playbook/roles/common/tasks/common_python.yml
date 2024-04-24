@@ -65,3 +65,9 @@
       - "{{ python_pkg }}-pip"
     state: present
   when: pip3_check.failed
+
+- name: Upgrade pip
+  pip:
+    name:
+      - pip
+    extra_args: --upgrade

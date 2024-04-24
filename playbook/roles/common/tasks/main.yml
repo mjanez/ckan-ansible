@@ -1,4 +1,4 @@
-- name: "Include OS-specific variables for {{ ansible_os_family }}-{{ ansible_distribution_major_version }}"
+- name: "Include OS-specific variables for OS: {{ ansible_os_family }}-{{ ansible_distribution_major_version }}"
   include_vars: "{{ item }}"
   with_first_found:
     - "os_vars/{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
