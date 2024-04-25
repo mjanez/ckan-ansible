@@ -9,7 +9,6 @@ Deployments available for the following OS:
 
 ## Requirements
 - [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
-- [Ansible - community.general](https://galaxy.ansible.com/ui/repo/published/community/general/)
 
 ## CKAN Ansible Deployment
 Clone this repository to your local machine and edit the variables of the `playbook/host_vars/production_01.yml`:
