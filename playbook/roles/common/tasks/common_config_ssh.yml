@@ -26,7 +26,14 @@
       state: directory
       mode: '0700'
       owner: "{{ lookup('env','USER') }}"
-      group: "{{ lookup('env','USER') }}"
+    command: id -gn "{{ lookup('env','USER') }}"
+    register: user_primary_group
+
+  - name: Set correct group ownership for .ssh directory
+    become: true
+    file:
+      path: "/home/{{ lookup('env','USER') }}/.ssh/"
+      group: "{{ user_primary_group.stdout }}"
   
   - name: Add SSH fingerprint of github.com to known_hosts
     become: true
