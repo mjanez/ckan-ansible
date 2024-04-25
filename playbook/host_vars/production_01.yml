@@ -11,6 +11,7 @@ ansible_user: sudouser
 ansible_port: 222
 ansible_ssh_pass: sudouserpassword
 timezone: Europe/Madrid
+### Also if using a SSH password authentication for private repos create a SSH key pair and copy the keys to the ./playbook/roles/common/files/keys. The filenames of the keypair files must begin with id_ (e.g. id_rsa + id_rsa.pub)
 ssh_keys_enabled: False
 
 ### Webserver #########################################
