@@ -1,0 +1,9 @@
+- name: Install ckan-pycsw
+  include_role:
+    name: ckan_pycsw
+    tasks_from: ckan_pycsw_install.yml
+
+- name: Config ckan-pycsw
+  include_role:
+    name: ckan_pycsw
+    tasks_from: ckan_pycsw_config.yml

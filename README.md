@@ -34,7 +34,7 @@ Customize the deployment configurations in `host_vars/*` to match your requireme
 
 2. Edit the `playbook/host_vars/production_01.yml`. Put the path to the SSH private key if is not using password authentication (`ansible_ssh_private_key_file`/`ansible_ssh_pass` ).
 
-3. Run the Ansible playbook to deploy CKAN on the target server. The following command will deploy CKAN on the target server using the playbook configuration. The `-vvv` flag is used for verbose output.:
+3. Run the Ansible playbook to deploy CKAN on the target server. The following command will deploy CKAN on the target server using the playbook configuration. The `-vvv` flag is used for verbose output:
 
     ```bash
     # Location of the ansible.cfg file based on the clone directory
@@ -43,8 +43,8 @@ Customize the deployment configurations in `host_vars/*` to match your requireme
     # Location if ckan-ansible is cloned in the home directory
     export ANSIBLE_CONFIG=$HOME/ckan-ansible/playbook/ansible.cfg
 
-    # Run the ansible playbook
-    ansible-playbook $(pwd)/playbook/playbook.yml -vvv
+    # Run the ansible playbook, Verbose with  -vvv
+    ansible-playbook $(pwd)/playbook/playbook.yml
     ```
 
     The `ANSIBLE_CONFIG` environment variable is used to specify the location of the `ansible.cfg` file. This is useful when you have multiple Ansible configurations and you want to specify which one to use, eg. `rhel-9`, `ubuntu-20.04`, etc.
@@ -78,7 +78,8 @@ Once you have [Vagrant](https://www.vagrantup.com/docs/installation), [VirtualBo
 2. In the virtual machine, run the following commands to deploy CKAN with Ansible:
 
   ```bash
-  ansible-playbook $HOME/ckan-ansible/playbook.yml -vvv
+  # Verbose with  -vvv
+  ansible-playbook $HOME/ckan-ansible/playbook/playbook.yml
   ```
 
   >[!TIP]
@@ -161,16 +162,24 @@ The `ckan-local.*` files will then need to be moved into the `ckan-ansible\playb
     │   ├── rhel-8.yml
     │   └── rhel-9.yml
     └── roles/
+        ├── ckan/
+        │   ├── tasks/
+        │   │   └── main.yml
+        │   └── ...
+        ├── ckan_pycsw/
+        │   ├── tasks/
+        │   │   └── main.yml
+        │   └── ...
         ├── common/
         │   ├── tasks/
         │   │   └── files/
         │   │   └── main.yml
         │   └── ...
-        ├── ckan/
+        ├── database/
         │   ├── tasks/
         │   │   └── main.yml
         │   └── ...
-        ├── postgresql/
+        ├── redis/
         │   ├── tasks/
         │   │   └── main.yml
         │   └── ...
@@ -178,7 +187,7 @@ The `ckan-local.*` files will then need to be moved into the `ckan-ansible\playb
         │   ├── tasks/
         │   │   └── main.yml
         │   └── ...
-        ├── redis/
+        ├── supervisor/
         │   ├── tasks/
         │   │   └── main.yml
         │   └── ...
@@ -198,11 +207,12 @@ This directory structure organizes `ckan-ansible` project. Here's an explanation
 * `group_vars`: Contains group-specific variables for different environments.
 * `roles/`: Contains Ansible roles for managing different components.
   * `ckan/`: Role for managing CKAN installation and configuration.
+  * `ckan_pycsw/`: Role for managing [ckan-pycsw](https://github.com/mjanez/ckan-pycsw) CSW/INSPIRE endpoint.
   * `common/`: Role for common tasks shared across different components. Also contains the `files/` directory for copying SSH keys to the target server as needed.
-  * `webserver/`: Role for managing web server configuration.
-  * `postgresql/`: Role for managing database installation and configuration.
-  * `solr/`: Role for managing Solr installation and configuration.
+  * `database/`: Role for managing postgresql databases installation and configuration.
   * `redis/`: Role for managing Redis installation and configuration.
+  * `solr/`: Role for managing Solr installation and configuration.
+  * `webserver/`: Role for managing web server configuration.
 
 ## Contributing
 Contributions are welcome! Please feel free to submit a Pull Request.

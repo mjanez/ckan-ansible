@@ -36,6 +36,7 @@
       - { role: solr, tags: solr, when: setup_local_solr == "y" }
       - { role: redis, tags: redis, when: setup_local_redis == "y" }
       - { role: ckan, tags: ckan }
+      - { role: ckan_pycsw, tags: ckan_pycsw }
       - { role: webserver, tags: webserver }
       - { role: supervisor, tags: supervisor }
-      #- { role: ckan_pycsw, tags: ckan_pycsw }
+
