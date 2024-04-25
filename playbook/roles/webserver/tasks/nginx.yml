@@ -81,11 +81,11 @@
     dest: "{{ item.dest }}"
   become: true
   with_items:
-    - src: files/index.html
+    - src: "{{ role_path }}/files/index.html"
       dest: /usr/share/nginx/html/index.html"
-    - src: files/ckan-local.crt
+    - src: "{{ role_path }}/files/ckan-local.crt"
       dest: "{{ nginx_dir }}/certs/"
-    - src: files/ckan-local.key
+    - src: "{{ role_path }}/files/ckan-local.key"
       dest: "{{ nginx_dir }}/certs/"
   notify: restart nginx
 
