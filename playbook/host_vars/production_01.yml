@@ -6,10 +6,11 @@ ansible_connection: local
 
 ### Ansible Target host  #########################################
 server_name: production
-ansible_host: 192.168.68.109
-ansible_user: ckan
-ansible_port: 8022
-ansible_ssh_pass: ckan
+ansible_host: 192.168.56.20
+ansible_user: sudouser
+ansible_port: 222
+ansible_ssh_pass: sudouserpassword
+timezone: Europe/Madrid
 
 ### Webserver #########################################
 proxy_server_name: localhost
@@ -22,13 +23,14 @@ nginx_dir: /etc/nginx
 nginx_log_dir: /var/log/nginx
 nginx_port: 81
 nginx_sslport: 8443
-proxy_pycsw_proxy_pass: "{{ proxy_server_url }}:{{ pycsw_port }}"
-proxy_ckan_proxy_pass: "{{ proxy_server_url }}:{{ ckan_port }}"
 # PRODUCTION DISABLE AND USE A BALANCER!: Enable or disable the httpd network connect to avoid nginx proxy_pass issues. https://www.nginx.com/blog/using-nginx-plus-with-selinux/
 enable_httpd_network_connect: true
 # URLs [ckan, pycsw]
-ckan_url: "{{ proxy_server_url }}:{{ ckan_port }}{{ proxy_ckan_location }}"
-pycsw_url: "{{ proxy_server_url }}:{{ pycsw_port }}{{ proxy_pycsw_location }}"
+proxy_pycsw_proxy_pass: "{{ proxy_server_url }}:{{ pycsw_port }}"
+proxy_ckan_proxy_pass: "{{ proxy_server_url }}:{{ ckan_port }}"
+proxy_server_port: "{{ nginx_port }}"
+ckan_url: "{{ proxy_server_url }}:{{ proxy_server_port }}{{ proxy_ckan_location }}"
+pycsw_url: "{{ proxy_server_url }}:{{ proxy_server_port }}{{ proxy_pycsw_location }}"
 
 ### Redis Service #########################################
 redis_os_supported: 
@@ -79,8 +81,27 @@ redis_disabled_commands: []
 #  - DEBUG
 redis_extra_config: ""
 
+### Database service #########################################
+postgres_port: 5432
+postgres_dir: "/var/lib/pgsql/data"
+ckan_database: {
+  postgres_user: "postgres",
+  postgres_password: "postgres",
+  ckan_db_user: "ckandbuser",
+  ckan_db_password: "ckandbpassword",
+  ckan_db: "ckan_db",
+  postgres_host: "localhost",
+}
+
+ckan_datastore: {
+  datastore_readonly_user: "datastore_ro",
+  datastore_readonly_password: "datastoredbpassword",
+  datastore_db: "ckan_datastore",
+  datastore_host: "localhost",
+}
+
 ### CKAN configuration variables #########################################
-ckan_site_id: ckan_test
+ckan_site_id: default
 ckan_site_name: "{{ proxy_server_url }}"
 ## Check if the ckan_site_url is correctly configured. Default uses the proxy_server_name and nginx_port
 ckan_site_url: "{{ ckan_site_name }}:{{ nginx_port }}"
@@ -135,7 +156,7 @@ ckanext__geoview__shp_viewer__srid: 3857
 ckanext__geoview__shp_viewer__encoding: UTF-8
 
 #### ckanext-scheming
-ckanext__scheming__dataset_schemas: "ckanext.schemingdcat:schemas/geodcatap/geodcatap_dataset.yaml"
+ckanext__scheming__dataset_schemas: "ckanext.schemingdcat:schemas/geodcatap_es/geodcatap_es_dataset.yaml"
 ckanext__scheming__group_schemas: "ckanext.schemingdcat:schemas/geodcatap_es/geodcatap_es_group.json"
 ckanext__scheming__organization_schemas: "ckanext.schemingdcat:schemas/geodcatap_es/geodcatap_es_org.json"
 ckanext__scheming__presets: "ckanext.schemingdcat:schemas/default_presets.json ckanext.fluent:presets.json"
@@ -165,9 +186,10 @@ ckanext__pages__about_menu: False
 ckanext__pages__group_menu: True
 ckanext__pages__organization_menu: True
 
-### Services config ###
-### pycsw service #########################################
-pycsw_enabled: false
+### Web Services config ############################################
+### Enable all sites in ckan-ansible/playbook/roles/webserver/templates/sites-available/*.conf.j2
+sites_enabled:
+  - ckan-pycsw
 
 ### CKAN service #########################################
 ckan_version: ckan-2.9.11
@@ -196,25 +218,6 @@ ckanext_versions:
   ckanext_fluent: v1.0.1
   ckanext_schemingdcat: v3.0.0
 
-### Database service #########################################
-postgres_port: 5432
-postgres_dir: "/var/lib/pgsql/data"
-ckan_database: {
-  postgres_user: "postgres",
-  postgres_password: "postgres",
-  ckan_db_user: "ckandbuser",
-  ckan_db_password: "ckandbpassword",
-  ckan_db: "ckan_db",
-  postgres_host: "localhost",
-}
-
-ckan_datastore: {
-  datastore_readonly_user: "datastore_ro",
-  datastore_readonly_password: "datastoredbpassword",
-  datastore_db: "ckan_datastore",
-  datastore_host: "localhost",
-}
-
 ### Solr Service #########################################
 solr_os_supported: 
   - "RedHat"
@@ -222,7 +225,7 @@ solr_os_supported:
   - "Debian"
 solr_version: 9.5.0
 solr_port: 8983
-solr_host: 127.0.0.1
+solr_host: 0.0.0.0
 solr_mirror: "https://dlcdn.apache.org"
 solr_workspace: /root
 solr_tmp_dir: /tmp
@@ -262,6 +265,37 @@ supervisor_unix_http_server_socket_path: "{{ supervisor_tmp_dir }}/supervisor.so
 
 supervisor_inet_http_server_enable: false
 supervisor_inet_http_server_port: '*:9001'
+
+### ckan-pycsw Service #########################################
+ckan_pycsw_version: v2.6.1
+pycsw_ckan_schema: iso19139_geodcatap
+pycsw_output_schema: iso19139_inspire
+pycsw_cron_days_interval: 2
+pycsw_cron_hour_start: 4
+pycsw_app_dir: "{{ ckan_virtualenv }}/src/ckan-pycsw"
+#### pycsw conf
+pycsw_identification_title: Sample Geospatial Catalogue
+pycsw_identification_abstract: OGC CSW server powered by pycsw
+pycsw_identification_keywords: "catalogue,discovery,metadata"
+pycsw_provider_name: Sample
+pycsw_provider_url: https://example.org/
+pycsw_contact_country: Spain
+pycsw_contact_name: admin
+pycsw_contact_position: Director
+pycsw_contact_address: "Plaza Mayor, 1"
+pycsw_contact_city: Madrid
+pycsw_contact_stateorprovince: Madrid
+pycsw_contact_postalcode: 28001
+pycsw_contact_phone: +xx-xxx-xxx-xxxx
+pycsw_contact_fax: +xx-xxx-xxx-xxxx
+pycsw_contact_email: admin@example.org
+pycsw_contact_url: https://example.org/members/admin
+pycsw_inspire_date: 2023-12-31
+pycsw_inspire_gemet_keywords: Utility and governmental services
+pycsw_inspire_conformity_service: notEvaluated
+pycsw_inspire_contact_name: Organization Name
+pycsw_inspire_contact_email: admin@example.org
+pycsw_inspire_temp_extent: 2023-12-31/2030-12-31
 
 ### Test URLs
 test_solr_ckan_url: "http://{{ solr_host }}:{{ solr_port }}/solr/{{ solr_ckan_core_name }}"

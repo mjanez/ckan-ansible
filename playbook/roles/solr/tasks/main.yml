@@ -37,3 +37,30 @@
   include_role:
     name: solr
     tasks_from: solr_config_spatial.yml
+
+- name: Restart Solr (RHEL 7+ workaround).
+  command: service {{ solr_service_name }} restart
+  ignore_errors: true
+
+# Postinstall tasks
+- name: Remove the downloaded Solr archive.
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ solr_workspace }}/{{ solr_filename }}.tgz"
+    - "{{ solr_workspace }}/{{ solr_filename }}"
+
+- name: Remove docs, if not needed.
+  file:
+    path: "{{ solr_dir }}/docs"
+    state: absent
+  when: solr_remove_cruft
+
+- name: Remove example dir, if not needed.
+  file:
+    path: "{{ solr_dir }}/example"
+    state: absent
+  when:
+    - solr_remove_cruft
+    - solr_version.split('.')[0] >= '5'

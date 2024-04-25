@@ -39,9 +39,3 @@
           <field name="theme_eu" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
           <field name="resource_relation" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
           <field name="metadata_profile" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
-
-- name: Restart Solr
-  service:
-    name: "{{ solr_service_name }}"
-    state: restarted
-  ignore_errors: true

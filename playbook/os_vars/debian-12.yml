@@ -1,4 +1,32 @@
 ### Packages: https://debian.pkgs.org/12
+### Common packages
+common_pkgs: 
+  - "git"
+  - "sysv-rc-conf"  # equivalent to chkconfig
+  - "policycoreutils"
+  - "libxml2-dev"  # equivalent to libxml2-devel
+  - "libxslt-dev"  # equivalent to libxslt-devel
+  - "libpq-dev"  # equivalent to libpq-devel
+  - "libpcre3"  # equivalent to pcre
+  - "libpcre3-dev"  # equivalent to pcre-devel
+  - "gcc"
+  - "g++"  # equivalent to gcc-c++
+  - "wget"
+  - "curl"
+  - "patch"
+  - "libmagic1"  # equivalent to file-libs
+  - "make"
+  - "cmake"
+  - "automake"
+  - "libgmp-dev"  # equivalent to gmp-devel
+  - "systemd"
+  - "libssl-dev"  # equivalent to openssl-devel
+  - "libffi-dev"
+  - "libtool"
+  - "sudo"
+  - "gzip"
+  - "unzip"
+  - "tar"
 
 ### Supervisor
 supervisord_bin_path: /usr/local/bin/supervisord
@@ -6,6 +34,7 @@ supervisorctl_bin_path: /usr/local/bin/supervisorctl
 supervisord_conf_file: /usr/bin/echo_supervisord_conf
 supervisord_workers_dir : /etc/supervisord.d
 supervisord_service: supervisord
+supervisor_pkg: supervisor
 
 ### Redis
 __redis_package: redis-server
@@ -20,12 +49,49 @@ postgres_version: 15
 python_pkg: python3
 python_bin_path: /usr/bin/python3
 
+### Python packages
+python_deps_pkgs:
+  - "{{ python_pkg }}-dev"
+  - "{{ python_pkg }}-pip"
+
 ### Proj
 proj_gtest_pkg: libgtest-dev
+
+### Spatial packages
+spatial_deps_pkgs:
+  - "libgeos-dev"
+  - "libcurl4-openssl-dev"
+  - "libgeotiff-dev"
+  - "libtiff5-dev"
+  - "sqlite3"
+  - "libsqlite3-dev"
+  - "{{ proj_gtest_pkg }}"
+  - "unzip"
+
+### Solr packages
+solr_deps_pkgs:
+  - "{{ openjdk_pkg }}"
+  - "maven"
+  - "lsof"
+  - "acl"
 
 ### Java
 openjdk_pkg: java-1.8.0-openjdk
 java_bin_path: /usr/lib/jvm
 
+### Postgresql packages
+postgresql_deps_pkgs:
+  - "postgresql-{{ postgres_version }}"
+  - "postgresql-contrib"
+  - "libpq-dev"
+  - "python3-psycopg2"
+postgresqL_python3_psycopg2: python3-psycopg2
+
+### NGINX packages
+nginx_pkg: nginx
+
 ### systemd
 systemd_dir: /lib/systemd/system
+
+### service
+init_dir: /etc/init.d

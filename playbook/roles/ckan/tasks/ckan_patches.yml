@@ -1,0 +1,25 @@
+- name: Copy patches
+  copy:
+    src: roles/ckan/tasks/patches/
+    dest: "{{ ckan_virtualenv }}/patches/"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Apply patches
+  shell: |
+    set -x
+    for d in {{ ckan_virtualenv }}/patches/*; do
+        if [ -d $d ]; then
+            for f in `ls $d/*.patch | sort -g`; do
+                cd {{ ckan_virtualenv }}/src/`basename "$d"` && echo "Applying patch $f to {{ ckan_virtualenv }}/src/`basename $d`" && patch -p1 < "$f" 2>&1;
+            done;
+        fi;
+    done
+  args:
+    executable: /bin/bash
+  register: shell_output
+
+- name: Debug patches output
+  debug:
+    var: shell_output

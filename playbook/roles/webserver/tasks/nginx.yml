@@ -1,8 +1,23 @@
-- name: Install NGINX
+- name: Install NGINX (RHEL/CentOS >= 8)
   dnf:
-    name: nginx
+    name: "{{ nginx_pkg }}"
     state: present
-    update_cache: yes
+    update_cache: true
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
+
+- name: Install NGINX (Debian/Ubuntu)
+  apt:
+    name: "{{ nginx_pkg }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Debian"
+
+- name: Install NGINX (Arch Linux)
+  pacman:
+    name: "{{ nginx_pkg }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Archlinux"
 
 - name: Copy nginx config file
   template:
@@ -15,6 +30,15 @@
     state: absent
   become: true
 
+- name: Remove sites-available and sites-enabled directories
+  file:
+    path: "{{ nginx_dir }}/{{ item }}"
+    state: absent
+  become: true
+  with_items:
+    - "sites-available"
+    - "sites-enabled"
+
 - name: Create NGINX directories
   file:
     path: "{{ item }}"
@@ -26,33 +50,20 @@
     - "{{ nginx_dir }}/sites-available"
     - "{{ nginx_dir }}/sites-enabled"
 
-- name: Copy nginx config file to sites-available
+- name: Copy all site configuration files
   template:
-    src: nginx/ckan.conf.j2
-    dest: "{{ nginx_dir }}/sites-available/ckan.conf"
+    src: "templates/sites-available/{{ item }}.conf.j2"
+    dest: "{{ nginx_dir }}/sites-available/{{ item }}.conf"
     mode: '0644'
+  loop: "{{ sites_enabled }}"
 
-- name: Create a symbolic link to the sites-enabled
+- name: Enable specified sites
   file:
-    src: "{{ nginx_dir }}/sites-available/ckan.conf"
-    dest: "{{ nginx_dir }}/sites-enabled/ckan.conf"
+    src: "{{ nginx_dir }}/sites-available/{{ item }}.conf"
+    dest: "{{ nginx_dir }}/sites-enabled/{{ item }}.conf"
     state: link
     force: yes
-
-- name: Copy pycsw nginx config file to sites-available
-  template:
-    src: nginx/pycsw.conf.j2
-    dest: "{{ nginx_dir }}/sites-available/pycsw.conf"
-    mode: '0644'
-  when: pycsw_enabled
-
-- name: Create a symbolic link for pycsw to the sites-enabled
-  file:
-    src: "{{ nginx_dir }}/sites-available/pycsw.conf"
-    dest: "{{ nginx_dir }}/sites-enabled/pycsw.conf"
-    state: link
-    force: yes
-  when: pycsw_enabled
+  loop: "{{ sites_enabled }}"
 
 - name: Open necessary firewall ports
   firewalld:

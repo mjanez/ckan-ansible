@@ -1,8 +1,13 @@
-- name: Stop Solr
-  service: 
-    name: "{{ solr_service_name }}"
-    state: stopped
-    enabled: no
+- name: Stop solr
+  command: service {{ solr_service_name }} stop
+  failed_when: false
+  when: solr_restart_handler_enabled
+
+- name: Remove solr init.d file from {{ init_dir }}/
+  file: 
+    path: "{{ init_dir }}/{{ solr_service_name }}"
+    state: absent
+  become: true
 
 - name: Remove solr init.d file
   file: 
@@ -13,46 +18,28 @@
   template:
     src: "solr.service.j2"
     dest: "{{ systemd_dir }}/{{ solr_service_name }}.service"
-    owner: "{{ solr_user }}"
-    mode: 0755
+    owner: root
+    group: root
+    mode: 0644
 
 - name: Enable {{ solr_service_name }} service
-  service:
+  systemd:
     name: "{{ solr_service_name }}"
-    enabled: yes
-    masked: no
     daemon_reload: yes
-    state: restarted
-
-- name: Check {{ solr_service_name }} service status
-  service:
-    name: "{{ solr_service_name }}"
-  register: solr_status
-
-- debug:
-    var: solr_status.status.Result
-
-- name: Run systemd daemon_reload (RHEL 7+ workaround).
-  service:
-    name: "{{ solr_service_name }}"
-    daemon_reload: true
-  when:
-    - ansible_os_family == 'RedHat'
-    - ansible_distribution_version.split(".")[0] >= '7'
-    - solr_install_script_result.changed
-  tags: ['skip_ansible_lint']
-
-- name: Restart Solr
-  become: true
-  service: 
-    name: "{{ solr_service_name }}"
-    state: restarted
     enabled: yes
-
-- name: Ensure Solr is started and enabled on boot if configured.
   become: true
-  service:
+  register: solr_systemd
+
+- name: Ensure {{ solr_service_name }} is started and enabled on boot if configured
+  command:
+    cmd: "systemctl enable {{ solr_service_name }}.service"
+  become: true
+  when: solr_systemd.status.UnitFileState == 'enabled-runtime'
+
+- name: Restart "{{ solr_service_name }}"
+  systemd: 
     name: "{{ solr_service_name }}"
-    state: "{{ solr_service_state }}"
+    state: restarted
     enabled: true
+  become: true
   when: solr_service_manage

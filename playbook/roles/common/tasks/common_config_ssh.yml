@@ -19,6 +19,15 @@
     when: item is defined and keypair_filenames.files
     ignore_errors: true
 
+  - name: Ensure .ssh directory exists
+    become: true
+    file:
+      path: "/home/{{ lookup('env','USER') }}/.ssh/"
+      state: directory
+      mode: '0700'
+      owner: "{{ lookup('env','USER') }}"
+      group: "{{ lookup('env','USER') }}"
+  
   - name: Add SSH fingerprint of github.com to known_hosts
     become: true
     shell: ssh-keyscan -H github.com >> /home/{{ lookup('env','USER') }}/.ssh/known_hosts

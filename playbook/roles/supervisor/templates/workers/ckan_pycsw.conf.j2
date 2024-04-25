@@ -1,0 +1,23 @@
+[program:ckan_pycsw]
+command=/bin/bash -c "export PATH=/home/{{ ckan_user }}/.local/bin:$PATH && pdm run python3 ckan2pycsw/ckan2pycsw.py"
+directory={{ pycsw_app_dir }}
+environment=
+    PYCSW_CONFIG=pycsw.conf,
+    TZ={{ timezone }},
+    PYCSW_CRON_DAYS_INTERVAL={{ pycsw_cron_days_interval }},
+    PYCSW_CRON_HOUR_START={{ pycsw_cron_hour_start }},
+    CKAN_URL={{ ckan_url }},
+    PYCSW_PORT={{ pycsw_port }},
+    PYCSW_URL={{ pycsw_url }},
+    APP_DIR={{ pycsw_app_dir }},
+    PYCSW_CKAN_SCHEMA={{ pycsw_ckan_schema }},
+    PYCSW_OUPUT_SCHEMA={{ pycsw_output_schema}},
+user={{ ckan_user }}
+numprocs=1
+stdout_logfile={{ ckan_log_dir }}/ckan_pycsw.log
+stdout_logfile_maxbytes=50MB
+stderr_logfile={{ ckan_log_dir }}/ckan_pycsw.log
+stderr_logfile_maxbytes=50MB
+autostart=true
+autorestart=true
+startsecs=10

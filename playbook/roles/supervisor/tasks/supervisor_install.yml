@@ -1,23 +1,26 @@
-- name: Install supervisor
+- name: Install supervisor (RHEL/CentOS >= 8)
   dnf:
-    name: supervisor
+    name: "{{ supervisor_pkg }}"
     state: present
-    update_cache: yes
+    update_cache: true
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
+
+- name: Install supervisor (Debian/Ubuntu)
+  apt:
+    name: "{{ supervisor_pkg }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Debian"
+
+- name: Install supervisor (Arch Linux)
+  pacman:
+    name: "{{ supervisor_pkg }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Archlinux"
 
 - name: Ensure Supervisor log dir exists.
   file:
     path: "{{ supervisor_log_dir }}"
     state: directory
     mode: 0755
-
-- name: Apply supervisor configuration
-  include_tasks: supervisor_config.yml
-
-- name: "Config supervisor service for {{ ansible_os_family }}"
-  include_tasks: supervisor_setup.yml
-
-- name: Enable {{ supervisord_service }} service
-  service: 
-    name: "{{ supervisord_service }}"
-    state: started 
-    enabled: yes

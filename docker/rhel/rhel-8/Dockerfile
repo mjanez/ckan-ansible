@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi:8.8
+FROM registry.access.redhat.com/ubi8/ubi:latest
 LABEL maintainer="mjanez" \
       name="ckan-ansible" \
       version="rhel-8"
@@ -28,7 +28,10 @@ RUN dnf update -y && \
     useradd -u 92 -m -d /home/ckan -s /bin/bash -g ckan ckan && \
     echo "ckan:${CKAN_USER_SSH_PWD}" | chpasswd && \
     echo "ckan ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/ckan && \
-    chmod 0440 /etc/sudoers.d/ckan
+    chmod 0440 /etc/sudoers.d/ckan && \
+    # Clean up
+    dnf clean all && \
+    rm -rf /root/.cache/pip/*
 
 # SSH setup
 RUN mkdir /var/run/sshd && \

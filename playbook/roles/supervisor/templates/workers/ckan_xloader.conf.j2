@@ -2,7 +2,7 @@
 
 command={{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir}}/ckan.ini jobs worker
 
-user=ckan
+user={{ ckan_user }}
 
 ; Start just a single worker. Increase this number if you have many or
 ; particularly long running background jobs.
@@ -10,8 +10,8 @@ numprocs=1
 process_name=%(program_name)s-%(process_num)02d
 
 ; Log files
-stdout_logfile={{ ckan_log_dir }}/ckan_xloader.stdout.log
-stderr_logfile={{ ckan_log_dir }}/ckan_xloader.stderr.log
+stdout_logfile={{ ckan_log_dir }}/ckan_xloader.log
+stderr_logfile={{ ckan_log_dir }}/ckan_xloader.log
 
 ; Make sure that the worker is started on system start and automatically
 ; restarted if it crashes unexpectedly.

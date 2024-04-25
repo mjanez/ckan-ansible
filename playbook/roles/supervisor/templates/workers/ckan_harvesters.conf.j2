@@ -1,6 +1,6 @@
 [program:ckan_gather_consumer]
 command={{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir}}/ckan.ini harvester gather-consumer
-user=ckan
+user={{ ckan_user }}
 numprocs=1
 stdout_logfile={{ ckan_log_dir }}/gather_consumer.log
 stdout_logfile_maxbytes=50MB
@@ -13,7 +13,7 @@ priority=1
 
 [program:ckan_fetch_consumer]
 command={{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir}}/ckan.ini harvester fetch-consumer
-user=ckan
+user={{ ckan_user }}
 numprocs=1
 stdout_logfile={{ ckan_log_dir }}/fetch_consumer.log
 stdout_logfile_maxbytes=50MB
@@ -26,7 +26,7 @@ priority=2
 
 [program:ckan_harvester_run]
 command={{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir}}/ckan.ini harvester run
-user=ckan
+user={{ ckan_user }}
 numprocs=1
 stdout_logfile={{ ckan_log_dir }}/ckan_harvester.log
 stdout_logfile_maxbytes=25MB
@@ -39,7 +39,7 @@ priority=3
 
 [program:ckan_harvester_clean_log]
 command={{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir}}/ckan.ini harvester clean-harvest-log
-user=ckan
+user={{ ckan_user }}
 numprocs=1
 stdout_logfile={{ ckan_log_dir }}/ckan_harvester_clean_log.log
 stdout_logfile_maxbytes=25MB

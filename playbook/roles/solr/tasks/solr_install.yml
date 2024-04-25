@@ -8,22 +8,6 @@
     solr_filename: "solr-{{ solr_version }}"
   when: "solr_version.split('.')[0] >= '4'"
 
-- name: Ensure service wrapper is installed for RHEL >9.
-  package:
-    name:
-      - initscripts-service
-      - chkconfig
-    state: present
-  when:
-    - ansible_service_mgr == 'systemd'
-    - ansible_os_family == 'RedHat'
-    - ansible_distribution_version.split(".")[0] >= '9'
-
-- name: Set solr_mirror for Solr <9.
-  set_fact:
-    solr_project_mirror: "{{ solr_mirror }}/lucene"
-  when: solr_version.split('.')[0]|int < 9
-
 - name: Set solr_mirror for Solr >9.
   set_fact:
     solr_project_mirror: "{{ solr_mirror }}/solr"
@@ -44,6 +28,15 @@
     copy: false
   when: solr_download_status.changed
   tags: ['skip_ansible_lint']
+
+- name: Show Java version
+  command: java -version
+  register: java_version
+  changed_when: false
+
+- name: Debug Java version
+  debug:
+    var: java_version.stderr
 
 - name: Ensure service wrapper is installed for RHEL >9.
   package:
@@ -75,15 +68,7 @@
     - ansible_service_mgr == 'systemd'
     - ansible_os_family == 'Debian'
 
-- name: Show Java version
-  command: java -version
-  register: java_version
-  changed_when: false
-
-- name: Debug Java version
-  debug:
-    var: java_version.stderr
-
+# We add '-n' to Solr versions beyond 6.3.0 to prevent autostart on install.
 - name: Run Solr installation script.
   command: >
     {{ solr_workspace }}/{{ solr_filename }}/bin/install_solr_service.sh
@@ -96,6 +81,7 @@
     {{ (solr_version is version('6.3.0', '>=')) | ternary('-n','') }}
     {{ (solr_version is version('5.4.0', '>=')) | ternary('-f','') }}
     creates={{ solr_dir }}/bin/solr
+  become: true
   register: solr_install_script_result
   environment:
     JAVA_HOME: "{{ java_home }}"

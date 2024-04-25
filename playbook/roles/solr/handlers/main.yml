@@ -2,4 +2,5 @@
   service:
     name: "{{ solr_service_name }}"
     state: restarted
+  become: true
   when: solr_restart_handler_enabled

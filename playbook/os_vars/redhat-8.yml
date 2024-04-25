@@ -1,4 +1,34 @@
 ### Packages: https://rhel.pkgs.org/8
+### Common packages
+common_pkgs: 
+  - "git-core"
+  - "chkconfig"
+  - "policycoreutils-python-utils"
+  - "libxml2-devel"
+  - "libxslt-devel"
+  - "libpq-devel"
+  - "pcre"
+  - "pcre-devel"
+  - "git"
+  - "gcc"
+  - "gcc-c++"
+  - "wget"
+  - "curl"
+  - "patch"
+  - "file-libs"
+  - "make"
+  - "cmake"
+  - "automake"
+  - "gmp-devel"
+  - "systemd"
+  - "epel-release"
+  - "openssl-devel"
+  - "libffi-devel"
+  - "libtool"
+  - "sudo"
+  - "gzip"
+  - "unzip"
+  - "tar"
 
 ### Supervisor
 supervisord_bin_path: /usr/bin/supervisord
@@ -6,6 +36,7 @@ supervisorctl_bin_path: /usr/bin/supervisorctl
 supervisord_conf_file: /etc/supervisord.conf
 supervisord_workers_dir : /etc/supervisord.d
 supervisord_service: supervisord
+supervisor_pkg: supervisor
 
 ### Redis
 __redis_package: redis
@@ -20,12 +51,49 @@ postgres_version: 15
 python_pkg: python39
 python_bin_path: /usr/bin/python3.9
 
+### Python packages
+python_deps_pkgs:
+  - "{{ python_pkg }}-devel"
+  - "{{ python_pkg }}-pip"
+
 ### Proj
 proj_gtest_pkg: gcc-c++
+
+### Spatial packages
+spatial_deps_pkgs:
+  - "geos-devel"
+  - "libcurl-devel"
+  - "libgeotiff-devel"
+  - "libtiff-devel"
+  - "sqlite"
+  - "sqlite-devel"
+  - "{{ proj_gtest_pkg }}"
+  - "unzip"
 
 ### Java
 openjdk_pkg: java-11-openjdk
 java_bin_path: /usr/lib/jvm
 
+### Solr packages
+solr_deps_pkgs:
+  - "{{ openjdk_pkg }}"
+  - "maven"
+  - "lsof"
+  - "acl"
+
+### Postgresql packages
+postgresql_deps_pkgs:
+  - "@postgresql:{{ postgres_version }}/server"
+  - "postgresql-contrib"
+  - postgresql-devel
+  - "{{ python_pkg }}-psycopg2"
+postgresqL_python3_psycopg2: python3-psycopg2
+
+### NGINX packages
+nginx_pkg: nginx
+
 ### systemd
 systemd_dir: /lib/systemd/system
+
+### service
+init_dir: /etc/init.d

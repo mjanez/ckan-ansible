@@ -1,16 +1,3 @@
-- name: Restart Solr service
-  become: true
-  service:
-    name: "{{ solr_service_name }}"
-    state: restarted
-
-- name: Wait for Solr to restart
-  wait_for:
-    host: "{{ solr_host }}"
-    port: "{{ solr_port }}"
-    delay: 10
-    timeout: 60
-
 - name: Check if Solr core exists
   uri:
     url: "http://{{ solr_host }}:{{ solr_port }}/solr/admin/cores?action=STATUS&core={{ solr_ckan_core_name }}"

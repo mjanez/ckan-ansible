@@ -24,6 +24,11 @@
     name: ckan
     tasks_from: ckan_install_ckan_exts.yml
 
+- name: Apply patches to CKAN core and extensions
+  include_role:
+    name: ckan
+    tasks_from: ckan_patches.yml
+
 - name: Test connections to Solr/DB
   include_role:
     name: ckan

@@ -1,0 +1,9 @@
+- name: Copy pycsw config file
+  template:
+    src: pycsw.conf.j2
+    dest: "{{ pycsw_app_dir }}/pycsw.conf"
+    mode: 0755
+  become: true
+  become_user: "{{ ckan_user }}"
+
+  

@@ -1,17 +1,16 @@
 # supervisord service for systemd
-# Originally by ET-CS (https://github.com/ET-CS)
 [Unit]
 Description=Supervisor daemon
 After=rc-local.service nss-user-lookup.target network-online.target
 
 [Service]
-Type=forking
+Type=simple
 ExecStart={{ supervisord_bin_path }} -n -c {{ supervisord_conf_file }}
 ExecStop={{ supervisorctl_bin_path }} $OPTIONS shutdown
 ExecReload={{ supervisorctl_bin_path }} $OPTIONS reload
-KillMode=process
-Restart=on-failure
-RestartSec=42s
+
+# The service process and all its children can never gain new privileges
+NoNewPrivileges=true
 
 [Install]
 WantedBy=multi-user.target

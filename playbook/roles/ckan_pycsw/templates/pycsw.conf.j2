@@ -1,0 +1,66 @@
+[server]
+home={{ pycsw_app_dir }}
+url={{ pycsw_url }}
+mimetype=application/xml; charset=UTF-8
+encoding=UTF-8
+language=en-US
+maxrecords=10
+#ogc_schemas_base=http://foo
+#federatedcatalogues=http://catalog.data.gov/csw
+#pretty_print=true
+#gzip_compresslevel=9
+#domainquerytype=range
+#domaincounts=true
+#spatial_ranking=true
+profiles=apiso
+
+[manager]
+transactions=false
+allowed_ips=127.0.0.1
+#csw_harvest_pagesize=10
+
+[metadata:main]
+identification_title={{ pycsw_identification_title}}
+identification_abstract={{ pycsw_identification_abstract }}
+identification_keywords={{ pycsw_identification_keywords }}
+identification_keywords_type=theme
+identification_fees=None
+identification_accessconstraints=None
+provider_name={{ pycsw_provider_name }}
+provider_url={{ pycsw_provider_url }}
+contact_name={{ pycsw_contact_name }}
+contact_position={{ pycsw_contact_position }}
+contact_address={{ pycsw_contact_address }}
+contact_city={{ pycsw_contact_city }}
+contact_stateorprovince={{ pycsw_contact_stateorprovince }}
+contact_postalcode={{ pycsw_contact_postalcode }}
+contact_country={{ pycsw_contact_country }}
+contact_phone={{ pycsw_contact_phone }}
+contact_fax={{ pycsw_contact_fax }}
+contact_email={{ pycsw_contact_email }}
+contact_url={{ pycsw_contact_url }}
+contact_hours=Hours of Service
+contact_instructions=During hours of service.  Off on weekends.
+contact_role=pointOfContact
+
+[repository]
+# sqlite
+database=sqlite:///{{ pycsw_app_dir }}/cite.db
+# postgres
+#database=postgresql://ckan:ckan@db/pycsw
+# mysql
+#database=mysql://username:password@localhost/pycsw?charset=utf8
+#mappings=path/to/mappings.py
+table=records
+#filter=type = 'http://purl.org/dc/dcmitype/Dataset'
+
+[metadata:inspire]
+enabled=true
+languages_supported=eng,spa
+default_language=eng
+date={{ pycsw_inspire_date }}
+gemet_keywords={{ pycsw_inspire_gemet_keywords }}
+conformity_service={{ pycsw_inspire_conformity_service }}
+contact_name={{ pycsw_inspire_contact_name }}
+contact_email={{ pycsw_inspire_contact_email }}
+temp_extent={{ pycsw_inspire_temp_extent }}
