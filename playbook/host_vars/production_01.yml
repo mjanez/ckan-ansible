@@ -10,6 +10,7 @@ ansible_host: 192.168.56.20
 ansible_user: sudouser
 ansible_port: 222
 ansible_ssh_pass: sudouserpassword
+timezone: Europe/Madrid
 
 ### Webserver #########################################
 proxy_server_name: localhost
@@ -22,13 +23,14 @@ nginx_dir: /etc/nginx
 nginx_log_dir: /var/log/nginx
 nginx_port: 81
 nginx_sslport: 8443
-proxy_pycsw_proxy_pass: "{{ proxy_server_url }}:{{ pycsw_port }}"
-proxy_ckan_proxy_pass: "{{ proxy_server_url }}:{{ ckan_port }}"
 # PRODUCTION DISABLE AND USE A BALANCER!: Enable or disable the httpd network connect to avoid nginx proxy_pass issues. https://www.nginx.com/blog/using-nginx-plus-with-selinux/
 enable_httpd_network_connect: true
 # URLs [ckan, pycsw]
-ckan_url: "{{ proxy_server_url }}:{{ ckan_port }}{{ proxy_ckan_location }}"
-pycsw_url: "{{ proxy_server_url }}:{{ pycsw_port }}{{ proxy_pycsw_location }}"
+proxy_pycsw_proxy_pass: "{{ proxy_server_url }}:{{ pycsw_port }}"
+proxy_ckan_proxy_pass: "{{ proxy_server_url }}:{{ ckan_port }}"
+proxy_server_port: "{{ nginx_port }}"
+ckan_url: "{{ proxy_server_url }}:{{ proxy_server_port }}{{ proxy_ckan_location }}"
+pycsw_url: "{{ proxy_server_url }}:{{ proxy_server_port }}{{ proxy_pycsw_location }}"
 
 ### Redis Service #########################################
 redis_os_supported: 
@@ -184,9 +186,10 @@ ckanext__pages__about_menu: False
 ckanext__pages__group_menu: True
 ckanext__pages__organization_menu: True
 
-### Services config ###
-### pycsw service #########################################
-pycsw_enabled: false
+### Web Services config ############################################
+### Enable all sites in ckan-ansible/playbook/roles/webserver/templates/sites-available/*.conf.j2
+sites_enabled:
+  - ckan-pycsw
 
 ### CKAN service #########################################
 ckan_version: ckan-2.9.11
@@ -264,12 +267,11 @@ supervisor_inet_http_server_enable: false
 supervisor_inet_http_server_port: '*:9001'
 
 ### ckan-pycsw Service #########################################
-ckan_pycsw_version: latest
+ckan_pycsw_version: v2.6.1
 pycsw_ckan_schema: iso19139_geodcatap
 pycsw_output_schema: iso19139_inspire
 pycsw_cron_days_interval: 2
 pycsw_cron_hour_start: 4
-pycsw_log_dir: /var/log/pycsw
 pycsw_app_dir: "{{ ckan_virtualenv }}/src/ckan-pycsw"
 #### pycsw conf
 pycsw_identification_title: Sample Geospatial Catalogue
