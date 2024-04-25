@@ -11,7 +11,7 @@ ansible_user: sudouser
 ansible_port: 222
 ansible_ssh_pass: sudouserpassword
 timezone: Europe/Madrid
-ssh_keys_enable: False
+ssh_keys_enabled: False
 
 ### Webserver #########################################
 proxy_server_name: localhost
