@@ -27,7 +27,7 @@ Edit the `inventory` folder hosts vars and add the target deployment servers IP 
 Customize the deployment configurations in `host_vars/*` to match your requirements. Modify any necessary variables such as database credentials, CKAN versions, and other specific settings.
 
 >[!IMPORTANT]
-> Also if using a SSH password authentication for private repos [create a SSH key pair](.ssh/keys/README.md) and copy the keys to the `./playbook/roles/common/tasks/files`. The filenames of the keypair files must begin with id_ (e.g. `id_rsa` + `id_rsa.pub`)
+> Also if using a SSH password authentication for private repos [create a SSH key pair](.ssh/keys/README.md) and copy the keys to the `./playbook/roles/common/files/keys`. The filenames of the keypair files must begin with id_ (e.g. `id_rsa` + `id_rsa.pub`)
 
 
 ### Example
@@ -144,7 +144,7 @@ The base configuration uses an NGINX image as the front-end (ie: reverse proxy).
 
 Creating the SSL cert and key files as follows:
 `openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=DE/ST=Berlin/L=Berlin/O=None/CN=localhost" -keyout ckan-local.key -out ckan-local.crt`
-The `ckan-local.*` files will then need to be moved into the `ckan-ansible\playbook\roles\webserver\tasks\files` directory
+The `ckan-local.*` files will then need to be moved into the `ckan-ansible/playbook/roles/webserver/tasks/files` directory
 
 ## Structure of the Ansible playbook
   ```bash
@@ -172,8 +172,8 @@ The `ckan-local.*` files will then need to be moved into the `ckan-ansible\playb
         │   │   └── main.yml
         │   └── ...
         ├── common/
+        │   ├── files/
         │   ├── tasks/
-        │   │   └── files/
         │   │   └── main.yml
         │   └── ...
         ├── database/
@@ -209,7 +209,7 @@ This directory structure organizes `ckan-ansible` project. Here's an explanation
 * `roles/`: Contains Ansible roles for managing different components.
   * `ckan/`: Role for managing CKAN installation and configuration.
   * `ckan_pycsw/`: Role for managing [ckan-pycsw](https://github.com/mjanez/ckan-pycsw) CSW/INSPIRE endpoint.
-  * `common/`: Role for common tasks shared across different components. Also contains the `files/` directory for copying SSH keys to the target server as needed.
+  * `common/`: Role for common tasks shared across different components. Also contains the `files/keys/` directory for copying SSH keys to the target server as needed.
   * `database/`: Role for managing postgresql databases installation and configuration.
   * `redis/`: Role for managing Redis installation and configuration.
   * `solr/`: Role for managing Solr installation and configuration.

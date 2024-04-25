@@ -6,7 +6,8 @@ playbook/config/*.log
 !.ssh/keys/README.md
 
 # SSH keys for Ansible
-playbook/roles/common/tasks/files
+playbook/roles/common/tasks/files/keys
+
 
 # Environment
 .env
