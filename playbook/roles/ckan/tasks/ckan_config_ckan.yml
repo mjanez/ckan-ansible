@@ -40,7 +40,7 @@
   shell: |
     {{ ckan_virtualenv }}/bin/ckan --config={{ ckan_config_dir}}/ckan.ini datastore set-permissions | psql --set ON_ERROR_STOP=1
   environment:
-    PGPASSWORD: "{{ postgres_password }}"
+    PGPASSWORD: "{{ ckan_database.postgres_password }}"
 
 - name: Create webassets storage folder
   file:
