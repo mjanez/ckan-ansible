@@ -40,3 +40,19 @@
       - { role: webserver, tags: webserver }
       - { role: supervisor, tags: supervisor }
 
+  post_tasks:
+    - name: "Change owner and group of {{ ckan_virtualenv }} to {{ ckan_user }}"
+      file:
+        path: "{{ ckan_virtualenv }}"
+        owner: "{{ ckan_user }}"
+        group: "{{ ckan_group }}"
+        recurse: yes
+      become: true
+
+    - name: "Change owner and group of {{ ckan_config_dir }} to {{ ckan_user }}"
+      file:
+        path: "{{ ckan_config_dir }}"
+        owner: "{{ ckan_user }}"
+        group: "{{ ckan_group }}"
+        recurse: yes
+      become: true
