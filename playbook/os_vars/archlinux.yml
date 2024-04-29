@@ -88,3 +88,8 @@ systemd_dir: /usr/lib/systemd
 
 ### service
 init_dir: /etc/init.d
+
+## Ansible collections required
+ansible_collections:
+  - community.general
+  - community.postgresql

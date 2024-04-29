@@ -1,9 +1,9 @@
 
   # If using private repositories a SSH keypair should be placed in the provisioning/files/
   # directory. The filenames of the keypair files must begin with id_ (e.g. id_rsa + id_rsa.pub).
-  - name: Get filenames of {{ role_path }}/tasks/files of SSH keypair to copy
+  - name: Get filenames of {{ role_path }}/tasks/files/keys of SSH keypair to copy
     find:
-      paths: "{{ role_path }}/tasks/files/"
+      paths: "{{ role_path }}/files/keys"
       patterns: "^id_"
       use_regex: yes
     register: keypair_filenames
@@ -26,7 +26,14 @@
       state: directory
       mode: '0700'
       owner: "{{ lookup('env','USER') }}"
-      group: "{{ lookup('env','USER') }}"
+    command: id -gn "{{ lookup('env','USER') }}"
+    register: user_primary_group
+
+  - name: Set correct group ownership for .ssh directory
+    become: true
+    file:
+      path: "/home/{{ lookup('env','USER') }}/.ssh/"
+      group: "{{ user_primary_group.stdout }}"
   
   - name: Add SSH fingerprint of github.com to known_hosts
     become: true

@@ -1,6 +1,6 @@
 - name: Add custom pg_hba file 
   copy:
-    src: files/pg_hba.conf
+    src: "{{ role_path }}/files/pg_hba.conf"
     dest: "{{ postgres_dir }}/pg_hba.conf"
     owner: "{{ ckan_database.postgres_user }}"
     group: "{{ ckan_database.postgres_password }}"

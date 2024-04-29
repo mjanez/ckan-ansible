@@ -47,18 +47,24 @@
   loop: "{{ ckan_constraints.stdout_lines }}"
 
 - name: Install CKAN requirements
+  become: true
+  become_user: "{{ ckan_user }}"
   pip:
     requirements: "{{ ckan_virtualenv }}/src/ckan/requirements.txt"
     virtualenv: "{{ ckan_virtualenv }}"
     state: present
 
 - name: Install CKAN development requirements
+  become: true
+  become_user: "{{ ckan_user }}"
   pip:
     requirements: "{{ ckan_virtualenv }}/src/ckan/dev-requirements.txt"
     virtualenv: "{{ ckan_virtualenv }}"
     state: present
 
 - name: Run setup.py develop for Python3 CKAN
+  become: true
+  become_user: "{{ ckan_user }}"
   pip:
     name: "file://{{ ckan_virtualenv }}/src/ckan"
     virtualenv: "{{ ckan_virtualenv }}"

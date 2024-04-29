@@ -3,6 +3,8 @@
     name: uwsgi
     virtualenv: "{{ ckan_virtualenv }}"
     virtualenv_command: pyvenv
+  become: true
+  become_user: "{{ ckan_user }}"
     
 - name: Copy wsgi.py to configuration folder
   copy:

@@ -11,6 +11,8 @@ ansible_user: sudouser
 ansible_port: 222
 ansible_ssh_pass: sudouserpassword
 timezone: Europe/Madrid
+### Also if using a SSH password authentication for private repos create a SSH key pair and copy the keys to the ./playbook/roles/common/files/keys. The filenames of the keypair files must begin with id_ (e.g. id_rsa + id_rsa.pub)
+ssh_keys_enabled: False
 
 ### Webserver #########################################
 proxy_server_name: localhost
@@ -197,7 +199,7 @@ ckan_virtualenv: /usr/lib/ckan/default
 ckan_config_dir: /etc/ckan/default
 ckan_user: ckan
 ckan_group: ckan
-ckan_pip_constraints: /tmp/ckan_constraints.txt
+ckan_pip_constraints: "{{ ckan_config_dir }}/ckan_constraints.txt"
 ckan_storage_dir: "{{ ckan_config_dir }}/storage"
 ckan_log_dir: /var/log/ckan
 worker_harvester_cron: true
@@ -226,7 +228,7 @@ solr_os_supported:
 solr_version: 9.5.0
 solr_port: 8983
 solr_host: 0.0.0.0
-solr_mirror: "https://dlcdn.apache.org"
+solr_mirror: "https://archive.apache.org/dist"
 solr_workspace: /root
 solr_tmp_dir: /tmp
 solr_schema_ckan_branch: "dev-v2.10"
