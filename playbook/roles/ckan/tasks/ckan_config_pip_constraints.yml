@@ -4,20 +4,24 @@
   block:
     - name: Create constraint file
       copy:
-        content: "cython<3.0.0"
+        content: |
+          cython<3.0.0
+          zope.interface==5.4.0
+          PyYAML==5.4.1
         dest: "{{ ckan_pip_constraints }}"
+        owner: "{{ ckan_user }}"
+        group: "{{ ckan_user }}"
+        mode: '0644'
+      become: true
+      become_user: "{{ ckan_user }}"
 
     - name: Install specific version of zope.interface
       pip:
         name: zope.interface==5.4.0
+        extra_args: "-c '{{ ckan_pip_constraints }}'"
         virtualenv: "{{ ckan_virtualenv }}"
       become: true
       become_user: "{{ ckan_user }}"
-
-    - name: Add zope.interface to constraint file
-      lineinfile:
-        path: "{{ ckan_pip_constraints }}"
-        line: "zope.interface==5.4.0"
 
     - name: Install PyYAML with version constraint
       pip:
@@ -26,8 +30,3 @@
         virtualenv: "{{ ckan_virtualenv }}"
       become: true
       become_user: "{{ ckan_user }}"
-
-    - name: Add PyYAML to constraint file
-      lineinfile:
-        path: "{{ ckan_pip_constraints }}"
-        line: "PyYAML==5.4.1"

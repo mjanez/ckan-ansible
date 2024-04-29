@@ -3,6 +3,8 @@
     virtualenv: "{{ ckan_virtualenv }}"
   block:
     - name: Install ckanext-xloader {{ ckanext_versions.ckanext_xloader }}
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         name: git+https://github.com/ckan/ckanext-xloader.git@{{ ckanext_versions.ckanext_xloader }}#egg=ckanext-xloader
         virtualenv: "{{ ckan_virtualenv }}"
@@ -10,12 +12,16 @@
       register: result
 
     - name: Install ckanext-xloader requirements
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         requirements: "{{ virtualenv }}/src/ckanext-xloader/requirements.txt"
         virtualenv: "{{ virtualenv }}"
       when: result is success
 
     - name: Install ckanext-xloader requests[security]
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         name: requests[security]
         virtualenv: "{{ virtualenv }}"
@@ -29,6 +35,8 @@
     virtualenv: "{{ ckan_virtualenv }}"
   block:
     - name: Install ckanext-harvest {{ ckanext_versions.ckanext_harvest }}
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         name: git+https://github.com/ckan/ckanext-harvest.git@{{ ckanext_versions.ckanext_harvest }}#egg=ckanext-harvest
         virtualenv: "{{ ckan_virtualenv }}"
@@ -36,6 +44,8 @@
       register: result
 
     - name: Install ckanext-harvest requirements
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         requirements: "{{ virtualenv }}/src/ckanext-harvest/requirements.txt"
         virtualenv: "{{ virtualenv }}"
@@ -48,6 +58,8 @@
     virtualenv: "{{ ckan_virtualenv }}"
   block:
     - name: Install ckanext-geoview {{ ckanext_versions.ckanext_geoview }}
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         name: git+https://github.com/ckan/ckanext-geoview.git@{{ ckanext_versions.ckanext_geoview }}#egg=ckanext-geoview
         virtualenv: "{{ ckan_virtualenv }}"
@@ -61,6 +73,8 @@
     virtualenv: "{{ ckan_virtualenv }}"
   block:
     - name: Install ckanext-spatial {{ ckanext_versions.ckanext_spatial }}
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         name: git+https://github.com/ckan/ckanext-spatial.git@{{ ckanext_versions.ckanext_spatial }}#egg=ckanext-spatial
         virtualenv: "{{ ckan_virtualenv }}"
@@ -68,6 +82,8 @@
       register: result
 
     - name: Install ckanext-spatial requirements
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         requirements: "{{ virtualenv }}/src/ckanext-spatial/requirements.txt"
         virtualenv: "{{ virtualenv }}"
@@ -80,6 +96,8 @@
     virtualenv: "{{ ckan_virtualenv }}"
   block:
     - name: Install mjanez/ckanext-dcat {{ ckanext_versions.ckanext_dcat }}
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         name: git+https://github.com/mjanez/ckanext-dcat.git@{{ ckanext_versions.ckanext_dcat }}#egg=ckanext-dcat
         virtualenv: "{{ ckan_virtualenv }}"
@@ -87,6 +105,8 @@
       register: result
 
     - name: Install mjanez/ckanext-dcat requirements
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         requirements: "{{ virtualenv }}/src/ckanext-dcat/requirements.txt"
         virtualenv: "{{ virtualenv }}"
@@ -99,6 +119,8 @@
     virtualenv: "{{ ckan_virtualenv }}"
   block:
     - name: Install ckanext-scheming {{ ckanext_versions.ckanext_scheming }}
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         name: git+https://github.com/ckan/ckanext-scheming.git@{{ ckanext_versions.ckanext_scheming }}#egg=ckanext-scheming
         virtualenv: "{{ ckan_virtualenv }}"
@@ -112,6 +134,8 @@
     virtualenv: "{{ ckan_virtualenv }}"
   block:
     - name: Install mjanez/ckanext-resourcedictionary {{ ckanext_versions.ckanext_resourcedictionary }}
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         name: git+https://github.com/mjanez/ckanext-resourcedictionary.git@{{ ckanext_versions.ckanext_resourcedictionary }}#egg=ckanext-resourcedictionary
         virtualenv: "{{ ckan_virtualenv }}"
@@ -125,6 +149,8 @@
     virtualenv: "{{ ckan_virtualenv }}"
   block:
     - name: Install ckanext-pages {{ ckanext_versions.ckanext_pages }}
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         name: git+https://github.com/ckan/ckanext-pages.git@{{ ckanext_versions.ckanext_pages }}#egg=ckanext-pages
         virtualenv: "{{ ckan_virtualenv }}"
@@ -138,6 +164,8 @@
     virtualenv: "{{ ckan_virtualenv }}"
   block:
     - name: Install ckanext-pdfview {{ ckanext_versions.ckanext_pdfview }}
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         name: git+https://github.com/ckan/ckanext-pdfview.git@{{ ckanext_versions.ckanext_pdfview }}#egg=ckanext-pdfview
         virtualenv: "{{ ckan_virtualenv }}"
@@ -151,6 +179,8 @@
     virtualenv: "{{ ckan_virtualenv }}"
   block:
     - name: Install mjanez/ckanext-fluent {{ ckanext_versions.ckanext_fluent }}
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         name: git+https://github.com/mjanez/ckanext-fluent.git@{{ ckanext_versions.ckanext_fluent }}#egg=ckanext-fluent
         virtualenv: "{{ ckan_virtualenv }}"
@@ -164,6 +194,8 @@
     virtualenv: "{{ ckan_virtualenv }}"
   block:
     - name: Install mjanez/ckanext-schemingdcat {{ ckanext_versions.ckanext_schemingdcat }}
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         name: git+https://github.com/mjanez/ckanext-schemingdcat.git@{{ ckanext_versions.ckanext_schemingdcat }}#egg=ckanext-schemingdcat
         virtualenv: "{{ ckan_virtualenv }}"
@@ -171,6 +203,8 @@
       register: result
 
     - name: Install mjanez/ckanext-schemingdcat requirements
+      become: true
+      become_user: "{{ ckan_user }}"
       pip:
         requirements: "{{ virtualenv }}/src/ckanext-schemingdcat/requirements.txt"
         virtualenv: "{{ virtualenv }}"

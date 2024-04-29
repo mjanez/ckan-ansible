@@ -199,7 +199,7 @@ ckan_virtualenv: /usr/lib/ckan/default
 ckan_config_dir: /etc/ckan/default
 ckan_user: ckan
 ckan_group: ckan
-ckan_pip_constraints: /tmp/ckan_constraints.txt
+ckan_pip_constraints: "{{ ckan_config_dir }}/ckan_constraints.txt"
 ckan_storage_dir: "{{ ckan_config_dir }}/storage"
 ckan_log_dir: /var/log/ckan
 worker_harvester_cron: true
