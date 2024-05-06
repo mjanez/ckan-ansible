@@ -44,7 +44,7 @@ Customize the deployment configurations in `host_vars/*` to match your requireme
     export ANSIBLE_CONFIG=$HOME/ckan-ansible/playbook/ansible.cfg
 
     # Run the ansible playbook, Verbose with  -vvv
-    ansible-playbook $(pwd)/playbook/playbook.yml
+    ansible-playbook $HOME/ckan-ansible/playbook/playbook.yml
     ```
 
     The `ANSIBLE_CONFIG` environment variable is used to specify the location of the `ansible.cfg` file. This is useful when you have multiple Ansible configurations and you want to specify which one to use, eg. `rhel-9`, `ubuntu-20.04`, etc.
