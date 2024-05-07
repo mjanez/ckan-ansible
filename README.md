@@ -17,8 +17,7 @@ Clone this repository to your local machine and edit the variables of the `playb
 > Remember to change the CKAN configuration variables before running the Ansible playbook. Specifically the host user/pwd info (`ansible_user`, `ansible_password`, etc.) and CKAN configuration:  `ckan_sysadmin_name`, `ckan_sysadmin_password` and `ckan_sysadmin_email`. Also the `proxy_server_name` and `nginx_port` for correct deployment.
 
 ```bash
-git clone https://github.com/mjanez/ckan-ansible.git
-cd ckan-ansible
+git clone https://github.com/mjanez/ckan-ansible.git && cd ckan-ansible
 ```
 
 Edit the `inventory` folder hosts vars and add the target deployment servers IP addresses or `hostname` for the specific environment.
@@ -44,7 +43,7 @@ Customize the deployment configurations in `host_vars/*` to match your requireme
     export ANSIBLE_CONFIG=$HOME/ckan-ansible/playbook/ansible.cfg
 
     # Run the ansible playbook, Verbose with  -vvv
-    ansible-playbook $(pwd)/playbook/playbook.yml
+    ansible-playbook $HOME/ckan-ansible/playbook/playbook.yml
     ```
 
     The `ANSIBLE_CONFIG` environment variable is used to specify the location of the `ansible.cfg` file. This is useful when you have multiple Ansible configurations and you want to specify which one to use, eg. `rhel-9`, `ubuntu-20.04`, etc.

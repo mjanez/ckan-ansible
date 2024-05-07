@@ -13,3 +13,4 @@ playbook/roles/common/tasks/files/keys
 .env
 .vscode
 .vagrant
+doc/deployments/*
