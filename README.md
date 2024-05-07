@@ -17,8 +17,7 @@ Clone this repository to your local machine and edit the variables of the `playb
 > Remember to change the CKAN configuration variables before running the Ansible playbook. Specifically the host user/pwd info (`ansible_user`, `ansible_password`, etc.) and CKAN configuration:  `ckan_sysadmin_name`, `ckan_sysadmin_password` and `ckan_sysadmin_email`. Also the `proxy_server_name` and `nginx_port` for correct deployment.
 
 ```bash
-git clone https://github.com/mjanez/ckan-ansible.git
-cd ckan-ansible
+git clone https://github.com/mjanez/ckan-ansible.git && cd ckan-ansible
 ```
 
 Edit the `inventory` folder hosts vars and add the target deployment servers IP addresses or `hostname` for the specific environment.
