@@ -163,11 +163,6 @@ ckanext__scheming__group_schemas: "ckanext.schemingdcat:schemas/geodcatap_es/geo
 ckanext__scheming__organization_schemas: "ckanext.schemingdcat:schemas/geodcatap_es/geodcatap_es_org.json"
 ckanext__scheming__presets: "ckanext.schemingdcat:schemas/default_presets.json ckanext.fluent:presets.json"
 
-#### ckanext-schemingdcat
-ckanext__schemingdcat__facet_list: "theme groups theme_es dcat_type groups publisher_name publisher_type spatial_uri owner_org res_format frequency tags tag_uri conforms_to"
-ckanext__schemingdcat__organization_custom_facets: true
-ckanext__schemingdcat__group_custom_facets: true
-ckanext__schemingdcat__geometadata_base_uri: "{{ ckan_site_url }}{{ proxy_pycsw_location }}"
 
 #### ckanext-spatial (Solr Backend - solr9-spatial: https://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#choosing-a-backend-for-the-spatial-search)
 ckan__search__solr_allowed_query_parsers: field
@@ -187,6 +182,12 @@ ckanext__pages__group: True
 ckanext__pages__about_menu: False
 ckanext__pages__group_menu: True
 ckanext__pages__organization_menu: True
+
+#### ckanext-schemingdcat
+ckanext__schemingdcat__facet_list: "theme groups theme_es dcat_type groups publisher_name publisher_type spatial_uri owner_org res_format frequency tags tag_uri conforms_to"
+ckanext__schemingdcat__organization_custom_facets: true
+ckanext__schemingdcat__group_custom_facets: true
+ckanext__schemingdcat__geometadata_base_uri: "{{ ckan_site_url }}{{ proxy_pycsw_location }}"
 
 ### Web Services config ############################################
 ### Enable all sites in ckan-ansible/playbook/roles/webserver/templates/sites-available/*.conf.j2
@@ -218,7 +219,11 @@ ckanext_versions:
   ckanext_pages: v0.5.2
   ckanext_pdfview: 0.0.8
   ckanext_fluent: v1.0.1
-  ckanext_schemingdcat: v3.0.0
+
+### CKAN custom plugins #########################################
+# This is a dictionary of custom plugins to install. The key is the github user/repo and the value is the version to install.
+ckanext_custom_plugins:
+  mjanez/ckanext-schemingdcat: v3.1.0
 
 ### Solr Service #########################################
 solr_os_supported: 

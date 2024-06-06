@@ -50,3 +50,25 @@
     virtualenv: "{{ ckan_virtualenv }}"
   become: true
   become_user: "{{ ckan_user }}"
+
+- name: Ensure {{ ckan_virtualenv }}/src exists
+  file:
+    path: "{{ ckan_virtualenv }}/src"
+    state: directory
+  become: true
+  become_user: "{{ ckan_user }}"
+
+- name: Find directories in {{ ckan_virtualenv }}/src that are not 'ckan' or 'ckan-pycsw'
+  find:
+    paths: "{{ ckan_virtualenv }}/src"
+    file_type: directory
+    excludes: ['ckan', 'ckan-pycsw']
+  register: dirs_to_remove
+
+- name: Remove directories in {{ ckan_virtualenv }}/src that are not 'ckan'
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ dirs_to_remove.files }}"
+  become: true
+  become_user: "{{ ckan_user }}"

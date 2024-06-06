@@ -50,6 +50,8 @@ Customize the deployment configurations in `host_vars/*` to match your requireme
 
 > [!IMPORTANT] Configuration
 > The `*/host_vars/*.yml` file contain customizable configuration variables for deployment, including database credentials, CKAN version, and web server configuration. Review and modify these before running the Ansible playbook.
+
+
 ## Test
 ### Vagrant
 Once you have [Vagrant](https://www.vagrantup.com/docs/installation), [VirtualBox](https://www.virtualbox.org/wiki/Downloads)  installed, run the following commands under your [project directory](https://learn.hashicorp.com/tutorials/vagrant/getting-started-project-setup?in=vagrant/getting-started):

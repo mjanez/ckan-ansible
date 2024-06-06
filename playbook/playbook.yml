@@ -9,6 +9,11 @@
       private: true
       default: ""
 
+    - name: "user_deployment_version"
+      prompt: "Select the deployment version\n 1. Development (Desarrollo)\n 2. Staging (Preproducción)\n 3. Production (Certificación)\n"
+      private: false
+      default: "1"
+
     - name: "setup_local_database"
       prompt: "Do you want to setup a local PostgresSQL Database? \nWARNING: This may delete an existing PostgreSQL database! (y/n)"
       private: false
@@ -29,6 +34,15 @@
       fail:
         msg: "Currently, it only supports CentOS and RedHat distributions."
       when: ansible_distribution | lower not in ['centos', 'redhat']
+
+    - name: Validate user_deployment_version
+      fail:
+        msg: "Deployment version must be '1', '2', or '3'"
+      when: user_deployment_version not in ['1', '2', '3']
+
+    - name: Set deployment version name
+      set_fact:
+        deployment_version_name: "{% if user_deployment_version == '1' %}Desarrollo{% elif user_deployment_version == '2' %}Preproducción{% elif user_deployment_version == '3' %}Certificación{% else %}0{% endif %}"
 
   roles:
       - { role: common, tags: common }

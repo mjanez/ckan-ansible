@@ -228,13 +228,13 @@ ckan.resource_proxy.max_file_size = 1048576
 ckan.resource_proxy.chunk_size = 8192
 
 ## Front-End Settings 
-ckan.site_title = CKAN
-ckan.site_description = 
-ckan.site_intro_text = 
-ckan.site_logo = /images/default/ckan-logo.png
-ckan.site_about = 
+ckan.site_title = {{ ckan_site_title }}
+ckan.site_description = {{ ckan_site_description }}
+ckan.site_intro_text = {{ ckan_site_intro_text }}
+ckan.site_logo = {{ ckan_site_logo }}
+ckan.site_about = {{ ckan_site_about }}
 ckan.theme = css/main
-ckan.favicon = /base/images/ckan.ico
+ckan.favicon = {{ ckan_favicon }}
 ckan.datasets_per_page = 20
 package_hide_extras = 
 ckan.dumps_url = 
