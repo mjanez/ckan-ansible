@@ -189,25 +189,27 @@
   become: true
   become_user: "{{ ckan_user }}"
 
-- name: Install mjanez/ckanext-schemingdcat {{ ckanext_versions.ckanext_schemingdcat }}
+- name: Installation of custom CKAN extensions for enhancements and theme improvements
   vars:
     virtualenv: "{{ ckan_virtualenv }}"
   block:
-    - name: Install mjanez/ckanext-schemingdcat {{ ckanext_versions.ckanext_schemingdcat }}
+    - name: "Install custom extensions"
       become: true
       become_user: "{{ ckan_user }}"
       pip:
-        name: git+https://github.com/mjanez/ckanext-schemingdcat.git@{{ ckanext_versions.ckanext_schemingdcat }}#egg=ckanext-schemingdcat
+        name: git+https://github.com/{{ item.key }}.git@{{ item.value }}#egg={{ item.key.split('/')[-1] }}
         virtualenv: "{{ ckan_virtualenv }}"
         extra_args: -e
       register: result
+      loop: "{{ ckanext_custom_plugins | dict2items }}"
 
-    - name: Install mjanez/ckanext-schemingdcat requirements
+    - name: Install requirements
       become: true
       become_user: "{{ ckan_user }}"
       pip:
-        requirements: "{{ virtualenv }}/src/ckanext-schemingdcat/requirements.txt"
+        requirements: "{{ virtualenv }}/src/{{ item.key.split('/')[-1] }}/requirements.txt"
         virtualenv: "{{ virtualenv }}"
       when: result is success
+      loop: "{{ ckanext_custom_plugins | dict2items }}"
   become: true
   become_user: "{{ ckan_user }}"
