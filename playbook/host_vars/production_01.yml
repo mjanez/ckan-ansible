@@ -115,7 +115,7 @@ ckan_sysadmin_email: ckan_admin@localhost
 ckan_sysadmin_password: test1234
 
 #### Plugins
-ckan_plugins: "stats text_view image_view webpage_view recline_view resourcedictionary datastore xloader harvest spatial_metadata spatial_query spatial_harvest_metadata_api csw_harvester waf_harvester doc_harvester resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat schemingdcat_ckan_harvester schemingdcat_xls_harvester pdf_view pages fluent"
+ckan_plugins: "stats text_view image_view webpage_view recline_view resourcedictionary datastore xloader harvest spatial_metadata spatial_query spatial_harvest_metadata_api resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat schemingdcat_ckan_harvester schemingdcat_xls_harvester pdf_view pages fluent"
 
 #### Previews formats
 ckan__preview__json_formats: "json jsonld"
@@ -162,7 +162,6 @@ ckanext__scheming__dataset_schemas: "ckanext.schemingdcat:schemas/geodcatap_es/g
 ckanext__scheming__group_schemas: "ckanext.schemingdcat:schemas/geodcatap_es/geodcatap_es_group.json"
 ckanext__scheming__organization_schemas: "ckanext.schemingdcat:schemas/geodcatap_es/geodcatap_es_org.json"
 ckanext__scheming__presets: "ckanext.schemingdcat:schemas/default_presets.json ckanext.fluent:presets.json"
-
 
 #### ckanext-spatial (Solr Backend - solr9-spatial: https://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#choosing-a-backend-for-the-spatial-search)
 ckan__search__solr_allowed_query_parsers: field
@@ -215,7 +214,7 @@ ckanext_versions:
   ckanext_harvest: v1.5.6
   ckanext_geoview: v0.1.0
   ckanext_spatial: v2.1.1
-  ckanext_dcat: v1.6.0
+  ckanext_dcat: v1.7.0
   ckanext_scheming: release-3.0.0
   ckanext_resourcedictionary: v1.0.1
   ckanext_pages: v0.5.2
