@@ -184,10 +184,12 @@ ckanext__pages__group_menu: True
 ckanext__pages__organization_menu: True
 
 #### ckanext-schemingdcat
-ckanext__schemingdcat__facet_list: "theme groups theme_es dcat_type groups publisher_name publisher_type spatial_uri owner_org res_format frequency tags tag_uri conforms_to"
+ckanext__schemingdcat__facet_list: "dataset_scope theme groups theme_es dcat_type groups publisher_name publisher_type spatial_uri owner_org res_format frequency tags tag_uri conforms_to"
 ckanext__schemingdcat__organization_custom_facets: true
 ckanext__schemingdcat__group_custom_facets: true
 ckanext__schemingdcat__geometadata_base_uri: "{{ ckan_site_url }}{{ proxy_pycsw_location }}"
+ckanext__schemingdcat_default_package_item_icon: "theme"
+ckanext__schemingdcat_default_package_item_show_spatial: True
 
 ### Web Services config ############################################
 ### Enable all sites in ckan-ansible/playbook/roles/webserver/templates/sites-available/*.conf.j2
@@ -223,7 +225,7 @@ ckanext_versions:
 ### CKAN custom plugins #########################################
 # This is a dictionary of custom plugins to install. The key is the github user/repo and the value is the version to install.
 ckanext_custom_plugins:
-  mjanez/ckanext-schemingdcat: v3.1.0
+  mjanez/ckanext-schemingdcat: v3.2.0
 
 ### Solr Service #########################################
 solr_os_supported: 
