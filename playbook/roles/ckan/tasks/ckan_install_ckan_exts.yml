@@ -85,7 +85,8 @@
       become: true
       become_user: "{{ ckan_user }}"
       pip:
-        requirements: "{{ virtualenv }}/src/ckanext-spatial/requirements.txt"
+        # Use a fixed version of requirements to avoid issues with Numpy 2.0
+        requirements: https://raw.githubusercontent.com/mjanez/ckan-docker/ckan-2.9.11/ckan/req_fixes/ckanext-spatial/requirements.txt
         virtualenv: "{{ virtualenv }}"
       when: result is success
   become: true
