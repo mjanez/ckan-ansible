@@ -32,8 +32,8 @@ enable_httpd_network_connect: true
 proxy_pycsw_proxy_pass: "{{ proxy_local_services_url }}:{{ pycsw_port }}"
 proxy_ckan_proxy_pass: "{{ proxy_local_services_url }}:{{ ckan_port }}"
 proxy_server_port: "{{ nginx_port }}"
-ckan_url: "{{ proxy_server_url }}{{ proxy_ckan_location }}"
-pycsw_url: "{{ proxy_server_url }}{{ proxy_pycsw_location }}"
+ckan_url: "{{ proxy_server_url }}:{{ proxy_server_port }}{{ proxy_ckan_location }}"
+pycsw_url: "{{ proxy_server_url }}:{{ proxy_server_port }}{{ proxy_pycsw_location }}"
 
 ### Redis Service #########################################
 redis_os_supported: 
@@ -116,7 +116,7 @@ ckan_sysadmin_email: ckan_admin@localhost
 ckan_sysadmin_password: test1234
 
 #### Plugins
-ckan_plugins: "stats image_view text_view datatables_view webpage_view resourcedictionary datastore xloader spatial_metadata spatial_query resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat schemingdcat_ckan_harvester schemingdcat_xls_harvester harvest pdf_view pages fluent"
+ckan_plugins: "stats image_view text_view recline_view webpage_view resourcedictionary datastore xloader spatial_metadata spatial_query resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat schemingdcat_ckan_harvester schemingdcat_xls_harvester harvest pdf_view pages fluent"
 
 #### Previews formats
 ckan__preview__json_formats: "json jsonld"
@@ -136,9 +136,9 @@ ckan__resource_proxy__timeout: 10
 ckan_views_default_views: "image_view webpage_view text_view recline_view wmts_view geojson_view geo_view shp_view pdf_view" 
 
 #### Localization
-ckan_locale_default: en
-ckan_locale_order: "en es pt_BR ja it cs_CZ ca fr el sv sr sr@latin no sk fi ru de pl nl bg ko_KR hu sa sl lv"
-ckan_locales_offered: "en es pt_BR ja it cs_CZ ca fr el sv sr sr@latin no sk fi ru de pl nl bg ko_KR hu sa sl lv"
+ckan_locale_default: es
+ckan_locale_order: "es en pt_BR ja it cs_CZ ca fr el sv sr sr@latin no sk fi ru de pl nl bg ko_KR hu sa sl lv"
+ckan_locales_offered: "es en pt_BR ja it cs_CZ ca fr el sv sr sr@latin no sk fi ru de pl nl bg ko_KR hu sa sl lv"
 
 #### ckanext-harvest
 ckan__harvest__mq__type: redis
