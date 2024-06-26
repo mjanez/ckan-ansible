@@ -17,6 +17,7 @@ ssh_keys_enabled: False
 ### Webserver #########################################
 proxy_server_name: localhost
 proxy_server_url: http://{{ proxy_server_name }}
+proxy_local_services_url: http://localhost
 proxy_ckan_location: /catalog
 proxy_pycsw_location: /csw
 pycsw_port: 8000
@@ -28,11 +29,11 @@ nginx_sslport: 8443
 # PRODUCTION DISABLE AND USE A BALANCER!: Enable or disable the httpd network connect to avoid nginx proxy_pass issues. https://www.nginx.com/blog/using-nginx-plus-with-selinux/
 enable_httpd_network_connect: true
 # URLs [ckan, pycsw]
-proxy_pycsw_proxy_pass: "{{ proxy_server_url }}:{{ pycsw_port }}"
-proxy_ckan_proxy_pass: "{{ proxy_server_url }}:{{ ckan_port }}"
+proxy_pycsw_proxy_pass: "{{ proxy_local_services_url }}:{{ pycsw_port }}"
+proxy_ckan_proxy_pass: "{{ proxy_local_services_url }}:{{ ckan_port }}"
 proxy_server_port: "{{ nginx_port }}"
-ckan_url: "{{ proxy_server_url }}:{{ proxy_server_port }}{{ proxy_ckan_location }}"
-pycsw_url: "{{ proxy_server_url }}:{{ proxy_server_port }}{{ proxy_pycsw_location }}"
+ckan_url: "{{ proxy_server_url }}{{ proxy_ckan_location }}"
+pycsw_url: "{{ proxy_server_url }}{{ proxy_pycsw_location }}"
 
 ### Redis Service #########################################
 redis_os_supported: 
@@ -115,7 +116,7 @@ ckan_sysadmin_email: ckan_admin@localhost
 ckan_sysadmin_password: test1234
 
 #### Plugins
-ckan_plugins: "stats text_view image_view webpage_view recline_view resourcedictionary datastore xloader harvest spatial_metadata spatial_query spatial_harvest_metadata_api resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat schemingdcat_ckan_harvester schemingdcat_xls_harvester pdf_view pages fluent"
+ckan_plugins: "stats image_view text_view datatables_view webpage_view resourcedictionary datastore xloader spatial_metadata spatial_query resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat schemingdcat_ckan_harvester schemingdcat_xls_harvester harvest pdf_view pages fluent"
 
 #### Previews formats
 ckan__preview__json_formats: "json jsonld"
@@ -189,6 +190,7 @@ ckanext__schemingdcat__group_custom_facets: true
 ckanext__schemingdcat__geometadata_base_uri: "{{ ckan_site_url }}{{ proxy_pycsw_location }}"
 ckanext__schemingdcat_default_package_item_icon: "theme"
 ckanext__schemingdcat_default_package_item_show_spatial: True
+ckanext__schemingdcat_show_metadata_templates_toolbar: True
 
 ### Web Services config ############################################
 ### Enable all sites in ckan-ansible/playbook/roles/webserver/templates/sites-available/*.conf.j2
