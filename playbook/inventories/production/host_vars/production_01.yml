@@ -12,7 +12,7 @@ ssh_keys_enabled: False
 # Retrieve all the packages and versions installed on the target host
 gather_package_facts: true
 deployment_version: production
-deployment_version_name: Producción
+deployment_version_name: Production
 
 ### Webserver #########################################
 proxy_server_name: localhost
@@ -108,8 +108,8 @@ ckan_site_name: "{{ proxy_server_url }}"
 ## Check if the ckan_site_url is correctly configured. Default uses the proxy_server_name and nginx_port
 ckan_site_url: "{{ ckan_site_name }}:{{ nginx_port }}"
 ckan_root_path: "{{ proxy_ckan_location }}/{% raw %}{{LANG}}{% endraw %}"
-ckan_site_title: "CKAN Test site"
-ckan_site_description: "CKAN site to test Open Data portals."
+ckan_site_title: "CKAN site - {{ deployment_version_name }}"
+ckan_site_description: "CKAN site - {{ deployment_version_name }}"
 ckan_sysadmin_name: ckan_admin
 ckan_sysadmin_email: ckan_admin@localhost
 ckan_sysadmin_password: test1234
