@@ -77,7 +77,7 @@ Deployments available for the following OS:
     ...
     ```
 
-> [!CAUTION] Configuration
+>[!CAUTION]
 > The `playbook/inventories/*/host_vars/*.yml` file contain customizable configuration variables for deployment. Remember to change before running the Ansible playbook. Specifically the host users/pwds info, and CKAN configuration:  `ckan_sysadmin_name`, `ckan_sysadmin_password` and `ckan_sysadmin_email`. Also the `proxy_server_name` and `nginx_port` for correct deployment.
 
 >[!IMPORTANT]
