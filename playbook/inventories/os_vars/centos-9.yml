@@ -1,4 +1,4 @@
-### Packages: https://rhel.pkgs.org/8
+### Packages: https://rhel.pkgs.org/9
 ### Common packages
 common_pkgs: 
   - "git-core"
@@ -43,10 +43,12 @@ redis_package: redis
 redis_daemon: redis
 redis_conf_path: /etc/redis.conf
 redis_conf_mode: '0644'
+redis_enablerepo: epel
+redis_version: 6.2.7
 
 ### Python
-python_pkg: python39
-python_bin_path: /usr/bin/python3.9
+python_pkg: python3
+python_bin_path: /usr/bin/python3
 
 ### Python packages
 python_deps_pkgs:
@@ -55,6 +57,7 @@ python_deps_pkgs:
 
 ### Proj
 proj_gtest_pkg: gtest-devel
+proj_version: proj-9.1.1
 
 ### Spatial packages
 spatial_deps_pkgs:
@@ -77,8 +80,11 @@ solr_deps_pkgs:
   - "maven"
   - "lsof"
   - "acl"
+solr_version: 9.5.0
+jts_version: 1.19.0
 
-### Postgresql packages
+### PostgreSQL
+postgres_version: 15
 postgresql_deps_pkgs:
   - "@postgresql:{{ postgres_version }}/server"
   - "postgresql-contrib"
@@ -88,6 +94,7 @@ postgresqL_python3_psycopg2: python3-psycopg2
 
 ### NGINX packages
 nginx_pkg: nginx
+nginx_version: 1.20.1
 
 ### systemd
 systemd_dir: /lib/systemd/system
@@ -99,3 +106,6 @@ init_dir: /etc/init.d
 ansible_collections:
   - community.general
   - community.postgresql
+
+## uWSGI
+uwsgi_version: "2.0.25.1"

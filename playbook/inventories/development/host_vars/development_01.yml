@@ -5,14 +5,14 @@
 ansible_connection: local
 
 ### Ansible Target host  #########################################
-server_name: production
-ansible_host: 192.168.56.20
-ansible_user: sudouser
-ansible_port: 222
-ansible_ssh_pass: sudouserpassword
+server_name: development
 timezone: Europe/Madrid
 ### Also if using a SSH password authentication for private repos create a SSH key pair and copy the keys to the ./playbook/roles/common/files/keys. The filenames of the keypair files must begin with id_ (e.g. id_rsa + id_rsa.pub)
 ssh_keys_enabled: False
+# Retrieve all the packages and versions installed on the target host
+gather_package_facts: true
+deployment_version: development
+deployment_version_name: Development
 
 ### Webserver #########################################
 proxy_server_name: localhost
@@ -41,7 +41,6 @@ redis_os_supported:
   - "CentOS"
   - "Debian"
   - "Archlinux"
-redis_enablerepo: epel
 redis_port: 6379
 redis_bind_interface: 127.0.0.1
 redis_unixsocket: ''
@@ -109,8 +108,8 @@ ckan_site_name: "{{ proxy_server_url }}"
 ## Check if the ckan_site_url is correctly configured. Default uses the proxy_server_name and nginx_port
 ckan_site_url: "{{ ckan_site_name }}:{{ nginx_port }}"
 ckan_root_path: "{{ proxy_ckan_location }}/{% raw %}{{LANG}}{% endraw %}"
-ckan_site_title: "CKAN Test site"
-ckan_site_description: "CKAN site to test Open Data portals."
+ckan_site_title: "CKAN site - {{ deployment_version_name }}"
+ckan_site_description: "CKAN site - {{ deployment_version_name }}"
 ckan_sysadmin_name: ckan_admin
 ckan_sysadmin_email: ckan_admin@localhost
 ckan_sysadmin_password: test1234
@@ -234,14 +233,12 @@ solr_os_supported:
   - "RedHat"
   - "CentOS"
   - "Debian"
-solr_version: 9.5.0
 solr_port: 8983
 solr_host: 0.0.0.0
 solr_mirror: "https://archive.apache.org/dist"
 solr_workspace: /root
 solr_tmp_dir: /tmp
 solr_schema_ckan_branch: "dev-v2.10"
-jts_version: 1.19.0
 jts_jar_file: "{{ solr_dir }}/server/solr-webapp/webapp/WEB-INF/lib/jts-core-{{ jts_version }}.jar"
 solr_user: solr
 solr_group: "{{ solr_user }}"
@@ -314,6 +311,3 @@ test_redis_ckan_url: "redis://{{ redis_bind_interface }}:{{ redis_port }}/1"
 test_ckan_sqlalchemy_url: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}/{{ ckan_database.ckan_db }}"
 test_ckan_datastore_ro_url: "postgresql://{{ ckan_database.datastore_readonly_user }}:{{ ckan_database.datastore_readonly_password }}@{{ ckan_database.datastore_host }}/{{ ckan_database.ckan_datastore_db }}"
 test_ckan_datastore_url: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.datastore_host }}/{{ ckan_database.ckan_datastore_db }}"
-
-### Other packages
-proj_version: proj-9.1.1
