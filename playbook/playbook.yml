@@ -9,11 +9,6 @@
       private: true
       default: ""
 
-    - name: "user_deployment_version"
-      prompt: "Select the deployment version\n 1. Development (Desarrollo)\n 2. Staging (Preproducción)\n 3. Production (Certificación)\n"
-      private: false
-      default: "1"
-
     - name: "setup_local_database"
       prompt: "Do you want to setup a local PostgresSQL Database? \nWARNING: This may delete an existing PostgreSQL database! (y/n)"
       private: false
@@ -35,15 +30,32 @@
         msg: "Currently, it only supports CentOS and RedHat distributions."
       when: ansible_distribution | lower not in ['centos', 'redhat']
 
-    - name: Validate user_deployment_version
-      fail:
-        msg: "Deployment version must be '1', '2', or '3'"
-      when: user_deployment_version not in ['1', '2', '3']
+    - name: "Include global variables for all hosts (group_vars/all.yml)"
+      include_vars: "inventories/group_vars/all.yml"
 
-    - name: Set deployment version name
+    - name: Set deployment_version_name
       set_fact:
-        deployment_version_name: "{% if user_deployment_version == '1' %}Desarrollo{% elif user_deployment_version == '2' %}Preproducción{% elif user_deployment_version == '3' %}Certificación{% else %}0{% endif %}"
+        deployment_version_name: "{{ deployment_version_name_map[inventory_dir | basename] }}"
+    
+    - name: "Debug {{ inventory_dir | basename }} deployment version"
+      debug:
+        msg: "Deployment version is: {{ deployment_version_name }}"
 
+    - name: Ensure ckan-ansible log directory exists
+      file:
+        path: "{{ ckan_ansible_log_path }}"
+        state: directory
+        mode: '0777'
+      become: true
+
+    - name: "Change owner and group of {{ ckan_ansible_log_path }} to {{ ckan_user }}"
+      file:
+        path: "{{ ckan_ansible_log_path }}"
+        owner: "{{ ckan_user }}"
+        group: "{{ ckan_group }}"
+        recurse: yes
+      become: true
+    
   roles:
       - { role: common, tags: common }
       - { role: database, tags: database, when: setup_local_database == "y" }
@@ -70,3 +82,49 @@
         group: "{{ ckan_group }}"
         recurse: yes
       become: true
+
+    # Log package versions of ckan-ansible components and common packages to a file if gather_package_facts is enabled
+    - block:
+        - name: Gather package facts
+          package_facts:
+    
+        - name: Get Nginx version
+          command: nginx -v
+          register: nginx_version_output
+          failed_when: false
+          changed_when: false
+    
+        - name: Extract Nginx version
+          set_fact:
+            nginx_version: "{{ nginx_version_output.stderr | regex_search('nginx/([0-9.]+)', '\\1') }}"
+
+        - name: Get Supervisor version
+          command: supervisord -v
+          register: supervisor_version_output
+          failed_when: false
+          changed_when: false
+    
+        - name: Extract Supervisor version
+          set_fact:
+            supervisor_version: "{{ supervisor_version_output.stdout }}"
+    
+        - name: Define versions dictionary of ckan-ansible components
+          set_fact:
+            versions_dict:
+              ckan: "{{ ckan_version | string }}"
+              ckanext: "{{ ckanext_versions }}"
+              ckan-pycsw: "{{ ckan_pycsw_version | string }}"
+              postgresql: "{{ postgres_version | string }}"
+              solr: "{{ solr_version | string }}"
+              supervisor: "{{ supervisor_version | string }}"
+              nginx: "{{ nginx_version }}"
+              uwsgi: "{{ uwsgi_version | string }}"
+    
+        - name: Save package versions to a file in {{ ckan_ansible_log_path }}
+          copy:
+            content: "{{ {'common-packages': ansible_facts.packages, 'ckan-ansible-components': versions_dict} | to_nice_json }}"
+            dest: "{{ ckan_ansible_log_path }}/{{ inventory_hostname }}_ckan_ansible_pkgs_{{ ansible_date_time.iso8601 }}.json"
+            owner: "{{ ckan_user }}"
+            group: "{{ ckan_group }}"
+            mode: '0644'
+      when: gather_package_facts

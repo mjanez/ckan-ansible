@@ -41,9 +41,7 @@ __redis_package: redis-server
 redis_daemon: redis-server
 redis_conf_path: /etc/redis/redis.conf
 redis_conf_mode: 0640
-
-### PostgreSQL
-postgres_version: 15
+redis_version: 6.2.7
 
 ### Python
 python_pkg: python3
@@ -56,6 +54,7 @@ python_deps_pkgs:
 
 ### Proj
 proj_gtest_pkg: libgtest-dev
+proj_version: proj-9.1.1
 
 ### Spatial packages
 spatial_deps_pkgs:
@@ -74,12 +73,15 @@ solr_deps_pkgs:
   - "maven"
   - "lsof"
   - "acl"
+solr_version: 9.5.0
+jts_version: 1.19.0
 
 ### Java
 openjdk_pkg: java-1.8.0-openjdk
 java_bin_path: /usr/lib/jvm
 
-### Postgresql packages
+### PostgreSQL
+postgres_version: 15
 postgresql_deps_pkgs:
   - "postgresql-{{ postgres_version }}"
   - "postgresql-contrib"
@@ -89,6 +91,7 @@ postgresqL_python3_psycopg2: python3-psycopg2
 
 ### NGINX packages
 nginx_pkg: nginx
+nginx_version: 1.20.1
 
 ### systemd
 systemd_dir: /lib/systemd/system
@@ -100,3 +103,6 @@ init_dir: /etc/init.d
 ansible_collections:
   - community.general
   - community.postgresql
+
+## uWSGI
+uwsgi_version: "2.0.25.1"

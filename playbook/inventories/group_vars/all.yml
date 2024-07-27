@@ -1,0 +1,9 @@
+
+# Path: group_vars/all.yml
+timezone: UTC
+http_port: 80
+ckan_ansible_log_path: /var/log/ckan_ansible
+deployment_version_name_map:
+  development: Desarrollo
+  staging: Preproducción
+  production: Producción

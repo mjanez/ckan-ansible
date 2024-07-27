@@ -1,6 +1,6 @@
 - name: Install uWSGI
   pip:
-    name: uwsgi
+    name: "uwsgi=={{ uwsgi_version }}"
     virtualenv: "{{ ckan_virtualenv }}"
     virtualenv_command: pyvenv
   become: true

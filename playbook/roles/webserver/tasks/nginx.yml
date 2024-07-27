@@ -1,20 +1,20 @@
-- name: Install NGINX (RHEL/CentOS >= 8)
+- name: "Install NGINX {{ nginx_version }} (RHEL/CentOS >= 8)"
   dnf:
-    name: "{{ nginx_pkg }}"
+    name: "nginx-{{ nginx_version }}"
     state: present
     update_cache: true
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
 
-- name: Install NGINX (Debian/Ubuntu)
+- name: "Install NGINX {{ nginx_version }} (Debian/Ubuntu)"
   apt:
-    name: "{{ nginx_pkg }}"
+    name: "nginx={{ nginx_version }}"
     state: present
     update_cache: true
   when: ansible_os_family == "Debian"
 
-- name: Install NGINX (Arch Linux)
+- name: "Install NGINX {{ nginx_version }} (Arch Linux)"
   pacman:
-    name: "{{ nginx_pkg }}"
+    name: "nginx={{ nginx_version }}"
     state: present
     update_cache: true
   when: ansible_os_family == "Archlinux"

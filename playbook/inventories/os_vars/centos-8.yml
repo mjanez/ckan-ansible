@@ -1,23 +1,29 @@
-### Packages: https://archlinux.pkgs.org/rolling
+### Packages: https://rhel.pkgs.org/8
+### Common packages
 common_pkgs: 
-  - "git"
-  - "inetutils"  # provides the 'hostname' command, equivalent to chkconfig
-  - "libxml2"
-  - "libxslt"
-  - "postgresql-libs"  # equivalent to libpq-devel
+  - "git-core"
+  - "chkconfig"
+  - "policycoreutils-python-utils"
+  - "libxml2-devel"
+  - "libxslt-devel"
+  - "libpq-devel"
   - "pcre"
+  - "pcre-devel"
+  - "git"
   - "gcc"
+  - "gcc-c++"
   - "wget"
   - "curl"
   - "patch"
-  - "file"
+  - "file-libs"
   - "make"
   - "cmake"
   - "automake"
-  - "gmp"
+  - "gmp-devel"
   - "systemd"
-  - "openssl"
-  - "libffi"
+  - "epel-release"
+  - "openssl-devel"
+  - "libffi-devel"
   - "libtool"
   - "sudo"
   - "gzip"
@@ -33,12 +39,12 @@ supervisord_service: supervisord
 supervisor_pkg: supervisor
 
 ### Redis
-__redis_package: redis
+redis_package: redis
 redis_daemon: redis
 redis_conf_path: /etc/redis.conf
-
-### PostgreSQL
-postgres_version: 15
+redis_conf_mode: '0644'
+redis_enablerepo: epel
+redis_version: 6.2.7
 
 ### Python
 python_pkg: python39
@@ -46,19 +52,21 @@ python_bin_path: /usr/bin/python3.9
 
 ### Python packages
 python_deps_pkgs:
-  - "{{ python_pkg }}"
+  - "{{ python_pkg }}-devel"
   - "{{ python_pkg }}-pip"
 
 ### Proj
-proj_gtest_pkg: gtest-dev
+proj_gtest_pkg: gtest-devel
+proj_version: proj-9.1.1
 
 ### Spatial packages
 spatial_deps_pkgs:
-  - "geos"
-  - "curl"
-  - "libgeotiff"
-  - "libtiff"
+  - "geos-devel"
+  - "libcurl-devel"
+  - "libgeotiff-devel"
+  - "libtiff-devel"
   - "sqlite"
+  - "sqlite-devel"
   - "{{ proj_gtest_pkg }}"
   - "unzip"
 
@@ -72,19 +80,24 @@ solr_deps_pkgs:
   - "maven"
   - "lsof"
   - "acl"
+solr_version: 9.5.0
+jts_version: 1.19.0
 
-### Postgresql packages
+### PostgreSQL
+postgres_version: 15
 postgresql_deps_pkgs:
-  - "postgresql"
-  - "postgresql-libs"
-  - "python-psycopg2"
+  - "@postgresql:{{ postgres_version }}/server"
+  - "postgresql-contrib"
+  - postgresql-devel
+  - "{{ python_pkg }}-psycopg2"
 postgresqL_python3_psycopg2: python3-psycopg2
 
 ### NGINX packages
 nginx_pkg: nginx
+nginx_version: 1.20.1
 
 ### systemd
-systemd_dir: /usr/lib/systemd
+systemd_dir: /lib/systemd/system
 
 ### service
 init_dir: /etc/init.d
@@ -93,3 +106,6 @@ init_dir: /etc/init.d
 ansible_collections:
   - community.general
   - community.postgresql
+
+## uWSGI
+uwsgi_version: "2.0.25.1"
