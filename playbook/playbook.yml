@@ -87,13 +87,13 @@
     - block:
         - name: Gather package facts
           package_facts:
-    
+
         - name: Get Nginx version
           command: nginx -v
           register: nginx_version_output
           failed_when: false
           changed_when: false
-    
+
         - name: Extract Nginx version
           set_fact:
             nginx_version: "{{ nginx_version_output.stderr | regex_search('nginx/([0-9.]+)', '\\1') }}"
@@ -103,11 +103,21 @@
           register: supervisor_version_output
           failed_when: false
           changed_when: false
-    
+
         - name: Extract Supervisor version
           set_fact:
             supervisor_version: "{{ supervisor_version_output.stdout }}"
-    
+
+        - name: Get pip packages in CKAN virtualenv
+          command: "{{ ckan_virtualenv }}/bin/pip list --format=json"
+          register: pip_packages_output
+          failed_when: false
+          changed_when: false
+
+        - name: Convert pip packages output to dictionary
+          set_fact:
+            ckan_virtualenv_pip_pkgs: "{{ pip_packages_output.stdout | from_json | items2dict(key_name='name', value_name='version') }}"
+
         - name: Define versions dictionary of ckan-ansible components
           set_fact:
             versions_dict:
@@ -119,11 +129,16 @@
               supervisor: "{{ supervisor_version | string }}"
               nginx: "{{ nginx_version }}"
               uwsgi: "{{ uwsgi_version | string }}"
-    
+              ckan_virtualenv_pip_pkgs: "{{ ckan_virtualenv_pip_pkgs }}"
+
+        - name: Extract formatted date and time
+          set_fact:
+            formatted_datetime: "{{ ansible_date_time.iso8601 | regex_replace('T', '_') | regex_replace(':', '-') | regex_replace('\\..*', '') }}"
+
         - name: Save package versions to a file in {{ ckan_ansible_log_path }}
           copy:
             content: "{{ {'common-packages': ansible_facts.packages, 'ckan-ansible-components': versions_dict} | to_nice_json }}"
-            dest: "{{ ckan_ansible_log_path }}/{{ inventory_hostname }}_ckan_ansible_pkgs_{{ ansible_date_time.iso8601 }}.json"
+            dest: "{{ ckan_ansible_log_path }}/{{ inventory_hostname }}_ckan_ansible_pkgs_{{ formatted_datetime }}.json"
             owner: "{{ ckan_user }}"
             group: "{{ ckan_group }}"
             mode: '0644'
