@@ -83,7 +83,7 @@ Deployments available for the following OS:
 >[!IMPORTANT]
 > Also if using a SSH password authentication for private repos [create a SSH key pair](.ssh/keys/README.md) and copy the keys to the `./playbook/roles/common/files/keys`. The filenames of the keypair files must begin with id_ (e.g. `id_rsa` + `id_rsa.pub`)
 
-1. Run the Ansible playbook to deploy CKAN on the target server. The following command will deploy CKAN on the target server using the playbook configuration. The `-vvv` flag is used for verbose output:
+5. Last, run the Ansible playbook to deploy CKAN on the target server. The following command will deploy CKAN on the target server using the playbook configuration. The `-vvv` flag is used for verbose output:
 
     ```bash
     # Location of the ansible.cfg file based on the clone directory
@@ -125,6 +125,9 @@ Once you have [Vagrant](https://www.vagrantup.com/docs/installation), [VirtualBo
 2. In the virtual machine, run the following commands to deploy CKAN with Ansible:
 
   ```bash
+  # ckan-ansible has been cloned into the home directory
+  export ANSIBLE_CONFIG=$HOME/ckan-ansible/playbook/ansible.cfg
+
   # Verbose with  -vvv
   ansible-playbook $HOME/ckan-ansible/playbook/playbook.yml
   ```
