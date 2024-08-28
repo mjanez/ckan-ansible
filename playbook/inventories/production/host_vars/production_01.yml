@@ -139,6 +139,11 @@ ckan_locale_default: es
 ckan_locale_order: "es en pt_BR ja it cs_CZ ca fr el sv sr sr@latin no sk fi ru de pl nl bg ko_KR hu sa sl lv"
 ckan_locales_offered: "es en pt_BR ja it cs_CZ ca fr el sv sr sr@latin no sk fi ru de pl nl bg ko_KR hu sa sl lv"
 
+#### Datasets
+# Enables or disable collaborators in individual datasets (https://docs.ckan.org/en/2.9/maintaining/authorization.html#dataset-collaborators)
+ckan__auth__allow_dataset_collaborators: false
+ckan__auth__allow_admin_collaborators: false
+
 #### ckanext-harvest
 ckan__harvest__mq__type: redis
 ckan__harvest__mq__hostname: "{{ redis_bind_interface }}"
