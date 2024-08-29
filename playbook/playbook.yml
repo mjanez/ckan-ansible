@@ -64,7 +64,7 @@
       when: use_external_postgres_database
 
   roles:
-      # - { role: common, tags: common }
+      - { role: common, tags: common }
       - { role: database, tags: database }
       - { role: solr, tags: solr, when: setup_local_solr == "y" }
       - { role: redis, tags: redis, when: setup_local_redis == "y" }
