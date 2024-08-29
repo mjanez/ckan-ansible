@@ -318,5 +318,5 @@ pycsw_inspire_temp_extent: 2023-12-31/2030-12-31
 test_solr_ckan_url: "http://{{ solr_host }}:{{ solr_port }}/solr/{{ solr_ckan_core_name }}"
 test_redis_ckan_url: "redis://{{ redis_bind_interface }}:{{ redis_port }}/1"
 test_ckan_sqlalchemy_url: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}:{{ ckan_database.postgres_port }}/{{ ckan_database.ckan_db }}"
-test_ckan_datastore_ro_url: "postgresql://{{ ckan_database.datastore_readonly_user }}:{{ ckan_database.datastore_readonly_password }}@{{ ckan_database.datastore_host }}:{{ ckan_database.datastore_port }}/{{ ckan_database.ckan_datastore_db }}"
-test_ckan_datastore_url: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.datastore_host }}:{{ ckan_database.datastore_port }}/{{ ckan_database.ckan_datastore_db }}"
+test_ckan_datastore_ro_url: "postgresql://{{ ckan_datastore.datastore_readonly_user }}:{{ ckan_datastore.datastore_readonly_password }}@{{ ckan_database.datastore_host }}:{{ ckan_datastore.datastore_port }}/{{ ckan_datastore.ckan_datastore_db }}"
+test_ckan_datastore_url: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_datastore.datastore_host }}:{{ ckan_datastore.datastore_port }}/{{ ckan_datastore.ckan_datastore_db }}"
