@@ -80,6 +80,7 @@ postgresql_deps_pkgs:
   - "postgresql"
   - "postgresql-libs"
   - "python-psycopg2"
+postgresql_client_pkg: postgresql
 postgresqL_python3_psycopg2: python3-psycopg2
 
 ### NGINX packages

@@ -9,11 +9,6 @@
       private: true
       default: ""
 
-    - name: "setup_local_database"
-      prompt: "Do you want to setup a local PostgresSQL Database? \nWARNING: This may delete an existing PostgreSQL database! (y/n)"
-      private: false
-      default: "n"
-      
     - name: "setup_local_solr"
       prompt: "Do you want to setup a local Solr instance with spatial capabilities? (y/n)"
       private: false
@@ -33,6 +28,13 @@
     - name: "Include global variables for all hosts (group_vars/all.yml)"
       include_vars: "inventories/group_vars/all.yml"
 
+    - name: "Include OS-specific variables (os_vars) for OS: {{ ansible_os_family }}-{{ ansible_distribution_major_version }}.{{ ansible_distribution_minor_version }}"
+      include_vars: "{{ item }}"
+      with_first_found:
+        - "inventories/os_vars/{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.{{ ansible_distribution_minor_version }}.yml"
+        - "inventories/os_vars/{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+        - "inventories/os_vars/{{ ansible_os_family | lower }}.yml"
+
     - name: Set deployment_version_name
       set_fact:
         deployment_version_name: "{{ deployment_version_name_map[inventory_dir | basename] }}"
@@ -48,17 +50,22 @@
         mode: '0777'
       become: true
 
-    - name: "Change owner and group of {{ ckan_ansible_log_path }} to {{ ckan_user }}"
+    - name: "Change owner and group of {{ ckan_ansible_log_path }} to the current user"
       file:
         path: "{{ ckan_ansible_log_path }}"
-        owner: "{{ ckan_user }}"
-        group: "{{ ckan_group }}"
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
         recurse: yes
       become: true
-    
+
+    - name: "Check if use_external_postgres_database is true"
+      debug:
+        msg: "'use_external_postgres_database: true', configuring only the PostgreSQL client to allow connections and validate the existence of the database."
+      when: use_external_postgres_database
+
   roles:
-      - { role: common, tags: common }
-      - { role: database, tags: database, when: setup_local_database == "y" }
+      # - { role: common, tags: common }
+      - { role: database, tags: database }
       - { role: solr, tags: solr, when: setup_local_solr == "y" }
       - { role: redis, tags: redis, when: setup_local_redis == "y" }
       - { role: ckan, tags: ckan }

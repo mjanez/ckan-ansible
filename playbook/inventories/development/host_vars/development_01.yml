@@ -86,6 +86,8 @@ redis_extra_config: ""
 ### Database service #########################################
 postgres_port: 5432
 postgres_dir: "/var/lib/pgsql/data"
+# Using an external PostgreSQL server or setup a local one
+use_external_postgres_database: false
 ckan_database: {
   postgres_user: "postgres",
   postgres_password: "postgres",

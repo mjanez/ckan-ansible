@@ -1,15 +1,24 @@
 
-- name: Install PostgreSQL
+- name: Install PostgreSQL server
   include_role:
     name: database
     tasks_from: database_install_psql.yml
+  when: not use_external_postgres_database
 
-- name: Config PostgreSQL database
+- name: Config PostgreSQL database server
   include_role:
     name: database
     tasks_from: database_config_psql.yml
+  when: not use_external_postgres_database
 
-- name: Config CKAN databases
+- name: Config PostgreSQL database client
+  include_role:
+    name: database
+    tasks_from: database_config_psql_client.yml
+  when: use_external_postgres_database
+
+- name: Config CKAN databases (not external)
   include_role:
     name: database
     tasks_from: database_config_ckan.yml
+  when: not use_external_postgres_database

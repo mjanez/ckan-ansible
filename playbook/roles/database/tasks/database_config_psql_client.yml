@@ -1,0 +1,32 @@
+- name: Install PostgreSQL client (RHEL/CentOS >= 8)
+  dnf:
+    name: "{{ postgresql_client_pkg }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
+
+- name: Install PostgreSQL client (Debian/Ubuntu)
+  apt:
+    name: "{{ postgresql_deps_pkgs }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Debian"
+
+- name: Install PostgreSQL client (Arch Linux)
+  pacman:
+    name: "{{ postgresql_deps_pkgs }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == "Archlinux"
+
+- name: "Check if database {{ ckan_database.ckan_db }} exists"
+  shell: PGPASSWORD={{ ckan_database.ckan_db_password }} psql -h {{ ckan_database.postgres_host }} -U {{ ckan_database.ckan_db_user }} -lqt | cut -d \| -f 1 | grep -qw {{ ckan_database.ckan_db }}
+  register: database_exists
+  failed_when: false
+  changed_when: false
+
+- name: "Check if database {{ ckan_datastore.datastore_db }} exists"
+  shell: PGPASSWORD={{ ckan_database.ckan_db_password }} psql -h {{ ckan_database.postgres_host }} -U {{ ckan_database.ckan_db_user }} -lqt | cut -d \| -f 1 | grep -qw {{ ckan_datastore.datastore_db }}
+  register: database_exists
+  failed_when: false
+  changed_when: false
