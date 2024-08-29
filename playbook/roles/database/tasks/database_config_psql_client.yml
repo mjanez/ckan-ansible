@@ -20,13 +20,25 @@
   when: ansible_os_family == "Archlinux"
 
 - name: "Check if database {{ ckan_database.ckan_db }} exists"
-  shell: PGPASSWORD={{ ckan_database.ckan_db_password }} psql -h {{ ckan_database.postgres_host }} -p {{ ckan_database.postgres_port }} -U {{ ckan_database.ckan_db_user }} -lqt | cut -d \| -f 1 | grep -qw {{ ckan_database.ckan_db }}
-  register: database_exists
-  failed_when: false
+  shell: |
+    PGPASSWORD={{ ckan_database.ckan_db_password }} \
+    psql -h {{ ckan_database.postgres_host }} -p {{ ckan_database.postgres_port }} -U {{ ckan_database.ckan_db_user }} -d {{ ckan_database.ckan_db }} -c '\q'
+  register: ckan_db_exists
+  failed_when: ckan_db_exists.rc != 0
   changed_when: false
 
+- name: Debug ckan_db_exists
+  debug:
+    var: ckan_db_exists
+
 - name: "Check if database {{ ckan_datastore.datastore_db }} exists"
-  shell: PGPASSWORD={{ ckan_database.ckan_db_password }} psql -h {{ ckan_datastore.datastore_host }} -p {{ ckan_datastore.datastore_port }} -U {{ ckan_database.ckan_db_user }} -lqt | cut -d \| -f 1 | grep -qw {{ ckan_datastore.datastore_db }}
-  register: database_exists
-  failed_when: false
+  shell: |
+    PGPASSWORD={{ ckan_database.ckan_db_password }} \
+    psql -h {{ ckan_datastore.datastore_host }} -p {{ ckan_datastore.datastore_port }} -U {{ ckan_database.ckan_db_user }} -d {{ ckan_datastore.datastore_db }} -c '\q'
+  register: datastore_db_exists
+  failed_when: datastore_db_exists.rc != 0
   changed_when: false
+
+- name: Debug datastore_db_exists
+  debug:
+    var: datastore_db_exists
