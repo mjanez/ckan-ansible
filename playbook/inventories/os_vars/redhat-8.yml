@@ -23,6 +23,7 @@ common_pkgs:
   - "systemd"
   - "epel-release"
   - "openssl-devel"
+  - "compat-openssl11"
   - "libffi-devel"
   - "libtool"
   - "sudo"
