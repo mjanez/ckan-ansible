@@ -55,6 +55,8 @@ Deployments available for the following OS:
 
 4. Modify the host variables in `playbook/inventories/*/host_vars/*_01.yml`, for instance, [`staging_01.yml`](./playbook/inventories/staging/host_vars/staging_01.yml). Check any necessary variables such as database credentials, CKAN versions, and other specific settings.
 
+**By default, a local PostgreSQL database is set up.** To use an external PostgreSQL database, set `use_external_postgres_database` to `true`.
+
     ```yaml
     ### Webserver #########################################
     proxy_server_name: localhost
@@ -65,6 +67,8 @@ Deployments available for the following OS:
     ### Database service #########################################
     postgres_port: 5432
     postgres_dir: "/var/lib/pgsql/data"
+    # Using an external PostgreSQL server or setup a local one
+    use_external_postgres_database: false
     ckan_database: {
       postgres_user: "postgres",
       postgres_password: "postgres",
