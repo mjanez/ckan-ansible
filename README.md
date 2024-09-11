@@ -57,29 +57,29 @@ Deployments available for the following OS:
 
 **By default, a local PostgreSQL database is set up.** To use an external PostgreSQL database, set `use_external_postgres_database` to `true`.
 
-    ```yaml
-    ### Webserver #########################################
-    proxy_server_name: localhost
-    proxy_server_url: http://{{ proxy_server_name }}
-    proxy_local_services_url: http://localhost
-    ...
+```yaml
+### Webserver #########################################
+proxy_server_name: localhost
+proxy_server_url: http://{{ proxy_server_name }}
+proxy_local_services_url: http://localhost
+...
 
-    ### Database service #########################################
-    postgres_port: 5432
-    postgres_dir: "/var/lib/pgsql/data"
-    # Using an external PostgreSQL server or setup a local one
-    use_external_postgres_database: false
-    ckan_database: {
-      postgres_user: "postgres",
-      postgres_password: "postgres",
-      ckan_db_user: "ckandbuser",
-      ckan_db_password: "ckandbpassword",
-      ckan_db: "ckan_db",
-      postgres_host: "localhost",
-    }
+### Database service #########################################
+postgres_port: 5432
+postgres_dir: "/var/lib/pgsql/data"
+# Using an external PostgreSQL server or setup a local one
+use_external_postgres_database: false
+ckan_database: {
+  postgres_user: "postgres",
+  postgres_password: "postgres",
+  ckan_db_user: "ckandbuser",
+  ckan_db_password: "ckandbpassword",
+  ckan_db: "ckan_db",
+  postgres_host: "localhost",
+}
 
-    ...
-    ```
+...
+```
 
 >[!CAUTION]
 > The `playbook/inventories/*/host_vars/*.yml` file contain customizable configuration variables for deployment. Remember to change before running the Ansible playbook. Specifically the host users/pwds info, and CKAN configuration:  `ckan_sysadmin_name`, `ckan_sysadmin_password` and `ckan_sysadmin_email`. Also the `proxy_server_name` and `nginx_port` for correct deployment.
