@@ -76,7 +76,7 @@
       become: true
       become_user: "{{ ckan_user }}"
       pip:
-        name: git+https://github.com/ckan/ckanext-spatial.git@{{ ckanext_versions.ckanext_spatial }}#egg=ckanext-spatial
+        name: git+https://github.com/mjanez/ckanext-spatial.git@{{ ckanext_versions.ckanext_spatial }}#egg=ckanext-spatial
         virtualenv: "{{ ckan_virtualenv }}"
         extra_args: -e
       register: result

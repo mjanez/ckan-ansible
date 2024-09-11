@@ -15,3 +15,6 @@ playbook/roles/common/tasks/files/keys
 .vagrant
 doc/deployments/*
 playbook/inventories/*/host_vars/test*.yml
+playbook/inventories/development/host_vars/dev-*.yml
+playbook/inventories/staging/host_vars/sta-*.yml
+playbook/inventories/staging/host_vars/pro-*.yml
