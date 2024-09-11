@@ -23,6 +23,7 @@ common_pkgs:
   - "systemd"
   - "epel-release"
   - "openssl-devel"
+  - "compat-openssl11"
   - "libffi-devel"
   - "libtool"
   - "sudo"
@@ -90,6 +91,7 @@ postgresql_deps_pkgs:
   - "postgresql-contrib"
   - postgresql-devel
   - "{{ python_pkg }}-psycopg2"
+postgresql_client_pkg: postgresql
 postgresqL_python3_psycopg2: python3-psycopg2
 
 ### NGINX packages

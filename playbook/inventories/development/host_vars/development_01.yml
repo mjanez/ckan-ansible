@@ -86,6 +86,8 @@ redis_extra_config: ""
 ### Database service #########################################
 postgres_port: 5432
 postgres_dir: "/var/lib/pgsql/data"
+# Using an external PostgreSQL server or setup a local one
+use_external_postgres_database: false
 ckan_database: {
   postgres_user: "postgres",
   postgres_password: "postgres",
@@ -93,6 +95,7 @@ ckan_database: {
   ckan_db_password: "ckandbpassword",
   ckan_db: "ckan_db",
   postgres_host: "localhost",
+  postgres_port: "5432"
 }
 
 ckan_datastore: {
@@ -100,6 +103,7 @@ ckan_datastore: {
   datastore_readonly_password: "datastoredbpassword",
   datastore_db: "ckan_datastore",
   datastore_host: "localhost",
+  datastore_port: "5432"
 }
 
 ### CKAN configuration variables #########################################
@@ -178,7 +182,7 @@ ckanext__spatial__common_map__attribution: "Map tiles by <a href=\"http://openst
 
 #### ckanext-xloader
 ckanext__xloader__api_token: api_token
-ckanext__xloader__jobs_db__uri: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}/{{ ckan_database.ckan_db }}"
+ckanext__xloader__jobs_db__uri: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}:{{ ckan_database.postgres_port }}/{{ ckan_database.ckan_db }}"
 
 #### ckanext-pages
 ckanext__pages__organization: True
@@ -313,6 +317,6 @@ pycsw_inspire_temp_extent: 2023-12-31/2030-12-31
 ### Test URLs
 test_solr_ckan_url: "http://{{ solr_host }}:{{ solr_port }}/solr/{{ solr_ckan_core_name }}"
 test_redis_ckan_url: "redis://{{ redis_bind_interface }}:{{ redis_port }}/1"
-test_ckan_sqlalchemy_url: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}/{{ ckan_database.ckan_db }}"
-test_ckan_datastore_ro_url: "postgresql://{{ ckan_database.datastore_readonly_user }}:{{ ckan_database.datastore_readonly_password }}@{{ ckan_database.datastore_host }}/{{ ckan_database.ckan_datastore_db }}"
-test_ckan_datastore_url: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.datastore_host }}/{{ ckan_database.ckan_datastore_db }}"
+test_ckan_sqlalchemy_url: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}:{{ ckan_database.postgres_port }}/{{ ckan_database.ckan_db }}"
+test_ckan_datastore_ro_url: "postgresql://{{ ckan_datastore.datastore_readonly_user }}:{{ ckan_datastore.datastore_readonly_password }}@{{ ckan_datastore.datastore_host }}:{{ ckan_datastore.datastore_port }}/{{ ckan_datastore.ckan_datastore_db }}"
+test_ckan_datastore_url: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_datastore.datastore_host }}:{{ ckan_datastore.datastore_port }}/{{ ckan_datastore.ckan_datastore_db }}"
