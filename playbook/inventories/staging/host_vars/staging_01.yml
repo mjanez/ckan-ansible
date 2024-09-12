@@ -12,7 +12,7 @@ ssh_keys_enabled: False
 # Retrieve all the packages and versions installed on the target host
 gather_package_facts: true
 deployment_version: staging
-deployment_version_name: Staging
+deployment_version_name: Certificación
 
 ### Webserver #########################################
 proxy_server_name: localhost
@@ -112,14 +112,14 @@ ckan_site_name: "{{ proxy_server_url }}"
 ## Check if the ckan_site_url is correctly configured. Default uses the proxy_server_name and nginx_port
 ckan_site_url: "{{ ckan_site_name }}:{{ nginx_port }}"
 ckan_root_path: "{{ proxy_ckan_location }}/{% raw %}{{LANG}}{% endraw %}"
-ckan_site_title: "CKAN site - {{ deployment_version_name }}"
-ckan_site_description: "CKAN site - {{ deployment_version_name }}"
+ckan_site_title: "SIG MITECO CKAN - {{ deployment_version_name }}"
+ckan_site_description: "Portal de datos abiertos CKAN - {{ deployment_version_name }}"
 ckan_sysadmin_name: ckan_admin
 ckan_sysadmin_email: ckan_admin@localhost
 ckan_sysadmin_password: test1234
 
 #### Plugins
-ckan_plugins: "stats image_view text_view recline_view webpage_view resourcedictionary datastore xloader spatial_metadata spatial_query resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat schemingdcat_ckan_harvester schemingdcat_xls_harvester harvest pdf_view pages fluent"
+ckan_plugins: "stats image_view text_view recline_view webpage_view resourcedictionary datastore xloader spatial_metadata spatial_query resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface miteco schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat schemingdcat_ckan_harvester schemingdcat_xls_harvester harvest pdf_view pages fluent"
 
 #### Previews formats
 ckan__preview__json_formats: "json jsonld"
@@ -131,9 +131,9 @@ ckan__preview__loadable: "html htm rdf+xml owl+xml xml n3 n-triples turtle plain
 ### Preview size limit, default: 1MB
 ckan__resource_proxy__max_file_size: 50048576
 ## Size of chunks to read/write__
-ckan__resource_proxy__chunk_size: 4096
+ckan__resource_proxy__chunk_size: 8192
 ## Default timeout for fetching proxied items
-ckan__resource_proxy__timeout: 10
+ckan__resource_proxy__timeout: 25
 
 #### Views
 ckan_views_default_views: "image_view webpage_view text_view recline_view wmts_view geojson_view geo_view shp_view pdf_view" 
@@ -181,7 +181,6 @@ ckanext__spatial__common_map__custom_url: http://a.tile.openstreetmap.org/{z}/{x
 ckanext__spatial__common_map__attribution: "Map tiles by <a href=\"http://openstreetmap.org\">OpenStreetMap</a> (<a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>)"
 
 #### ckanext-xloader
-
 ckanext__xloader__jobs_db__uri: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}:{{ ckan_database.postgres_port }}/{{ ckan_database.ckan_db }}"
 
 #### ckanext-pages
@@ -199,7 +198,13 @@ ckanext__schemingdcat__geometadata_base_uri: "{{ ckan_site_url }}{{ proxy_pycsw_
 ckanext__schemingdcat_default_package_item_icon: "theme"
 ckanext__schemingdcat_default_package_item_show_spatial: True
 ckanext__schemingdcat_show_metadata_templates_toolbar: True
-ckanext__schemingdcat_metadata_templates_search_identifier: "schemingdcat_xls-template"
+ckanext__schemingdcat_metadata_templates_search_identifier: "miteco-plantilla"
+
+#### ckanext-miteco
+ckan_site_logo: "images/default/header-logo.png"
+ckan_favicon: images/default/favicon.ico
+ckan_site_intro_text: "[#en#]The open data portal of the [**Ministry for the Ecological Transition and the Demographic Challenge**](https://www.miteco.gob.es/) consists of an application using CKAN technology for the distribution of maps, data and spatial metadata and a [**CSW Catalog**]({{ pycsw_url }}) (OGC standard) for the metadata publication and discovery about spatial resources on the web. [#es#]El portal de datos abiertos del [**Ministerio para la Transición Ecológica y el Reto Demográfico**](https://www.miteco.gob.es/) es una aplicación que utiliza la tecnología CKAN para la distribución de mapas, datos y metadatos espaciales y un [**Catálogo CSW**]({{ pycsw_url }}) (estándar OGC) para la publicación y descubrimiento de metadatos sobre recursos espaciales en la web."
+ckan_site_about: "[#en#]The open data portal of the [**Ministry for the Ecological Transition and the Demographic Challenge**](https://www.miteco.gob.es/) consists of an application using CKAN technology for the distribution of maps, data and spatial metadata and a [**CSW Catalog**]({{ pycsw_url }}) (OGC standard) for the metadata publication and discovery about spatial resources on the web. [#es#]El portal de datos abiertos del [**Ministerio para la Transición Ecológica y el Reto Demográfico**](https://www.miteco.gob.es/) es una aplicación que utiliza la tecnología CKAN para la distribución de mapas, datos y metadatos espaciales y un [**Catálogo CSW**]({{ pycsw_url }}) (estándar OGC) para la publicación y descubrimiento de metadatos sobre recursos espaciales en la web."
 
 ### Web Services config ############################################
 ### Enable all sites in ckan-ansible/playbook/roles/webserver/templates/sites-available/*.conf.j2
@@ -236,6 +241,7 @@ ckanext_versions:
 # This is a dictionary of custom plugins to install. The key is the github user/repo and the value is the version to install.
 ckanext_custom_plugins:
   mjanez/ckanext-schemingdcat: v3.2.2
+  opendatagis/ckanext-miteco: v0.1.1
 
 ### Solr Service #########################################
 solr_os_supported: 
@@ -291,7 +297,7 @@ pycsw_cron_days_interval: 2
 pycsw_cron_hour_start: 4
 pycsw_app_dir: "{{ ckan_virtualenv }}/src/ckan-pycsw"
 #### pycsw conf
-pycsw_identification_title: Sample Geospatial Catalogue
+pycsw_identification_title: SIG MITECO Geospatial Catalogue
 pycsw_identification_abstract: OGC CSW server powered by pycsw
 pycsw_identification_keywords: "catalogue,discovery,metadata"
 pycsw_provider_name: Sample

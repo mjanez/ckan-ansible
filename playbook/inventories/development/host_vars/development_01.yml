@@ -181,7 +181,6 @@ ckanext__spatial__common_map__custom_url: http://a.tile.openstreetmap.org/{z}/{x
 ckanext__spatial__common_map__attribution: "Map tiles by <a href=\"http://openstreetmap.org\">OpenStreetMap</a> (<a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>)"
 
 #### ckanext-xloader
-
 ckanext__xloader__jobs_db__uri: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}:{{ ckan_database.postgres_port }}/{{ ckan_database.ckan_db }}"
 
 #### ckanext-pages
