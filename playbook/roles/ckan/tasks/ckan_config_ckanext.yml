@@ -1,0 +1,36 @@
+# Create ckanext-xloader API_TOKEN
+- name: Revoke previous xloader tokens
+  shell: |
+    TOKEN_NAME="xloader"
+    TOKEN_IDS=$({{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini user token list ckan_admin | grep "$TOKEN_NAME" | awk -F'[][]' '{print $2}' | tr -d '[]')
+    for TOKEN_ID in $TOKEN_IDS
+    do
+      if [ -z "$TOKEN_ID" ]; then
+        echo "[ansible-setup-xloader] No API Token to revoke"
+        continue
+      fi
+      {{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini user token revoke -- $TOKEN_ID
+      if [ $? -eq 0 ]; then
+        echo "[ansible-setup-xloader] API Token $TOKEN_ID has been revoked"
+      fi
+    done
+  register: revoke_tokens
+  become: true
+
+- name: Generate ckanext-xloader API token and capture full output
+  shell: |
+    {{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini user token add ckan_admin xloader
+  register: xloader_api_token_full
+  become: true
+
+- name: Extract API token from full output
+  set_fact:
+    xloader_api_token: "{{ xloader_api_token_full.stdout | regex_search('eyJ[^\\n]+') }}"
+
+- name: Set ckanext.xloader.api_token in ckan.ini
+  lineinfile:
+    path: "{{ ckan_config_dir }}/ckan.ini"
+    regexp: "^ckanext.xloader.api_token =.*"
+    line: "ckanext.xloader.api_token = {{ xloader_api_token }}"
+  become: true
+  when: xloader_api_token is defined and xloader_api_token != ""

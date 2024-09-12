@@ -181,7 +181,6 @@ ckanext__spatial__common_map__custom_url: http://a.tile.openstreetmap.org/{z}/{x
 ckanext__spatial__common_map__attribution: "Map tiles by <a href=\"http://openstreetmap.org\">OpenStreetMap</a> (<a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>)"
 
 #### ckanext-xloader
-ckanext__xloader__api_token: api_token
 ckanext__xloader__jobs_db__uri: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}:{{ ckan_database.postgres_port }}/{{ ckan_database.ckan_db }}"
 
 #### ckanext-pages
@@ -221,11 +220,11 @@ uwsgi_unix_http_server_socket_path: "{{ ckan_tmp_dir }}/uwsgi.sock"
 
 ### CKAN extension versions #########################################
 ckanext_versions:
-  ckanext_xloader: 1.0.1
+  ckanext_xloader: 1.0.1-qgov.15
   ckanext_harvest: v1.5.6
   ckanext_geoview: v0.1.0
   ckanext_spatial: v2.1.1
-  ckanext_dcat: v1.7.0
+  ckanext_dcat: v1.8.0
   ckanext_scheming: release-3.0.0
   ckanext_resourcedictionary: v1.0.1
   ckanext_pages: v0.5.2
@@ -235,7 +234,7 @@ ckanext_versions:
 ### CKAN custom plugins #########################################
 # This is a dictionary of custom plugins to install. The key is the github user/repo and the value is the version to install.
 ckanext_custom_plugins:
-  mjanez/ckanext-schemingdcat: v3.2.0
+  mjanez/ckanext-schemingdcat: v3.2.2
 
 ### Solr Service #########################################
 solr_os_supported: 
