@@ -117,6 +117,8 @@ ckan_site_description: "Portal de datos abiertos CKAN - {{ deployment_version_na
 ckan_sysadmin_name: ckan_admin
 ckan_sysadmin_email: ckan_admin@localhost
 ckan_sysadmin_password: test1234
+# Default number of facets shown in search results. Default 10.
+ckan_search_facets_default: 4
 
 #### Plugins
 ckan_plugins: "stats image_view text_view recline_view webpage_view resourcedictionary datastore xloader spatial_metadata spatial_query resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface miteco schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat schemingdcat_ckan_harvester schemingdcat_xls_harvester harvest pdf_view pages fluent"
