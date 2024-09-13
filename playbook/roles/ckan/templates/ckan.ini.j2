@@ -65,7 +65,7 @@ ckanext.geoview.ol_viewer.formats = {{ ckanext__geoview__ol_viewer_formats }}
 ckanext.geoview.geojson.max_file_size = {{ ckanext__geoview__geojson__max_file_size }}
 
 ### ckanext-xloader
-ckanext.xloader.api_token = {{ ckanext__xloader__api_token }}
+ckanext.xloader.api_token = xloader_api_token
 ckanext.xloader.jobs_db.uri={{ ckanext__xloader__jobs_db__uri }}
 
 ### ckanext-pages
@@ -140,6 +140,7 @@ ckan.valid_url_schemes = http https ftp
 ckan.requests.timeout = 5
 ckan.hide_version = false
 ckan.redirect_to_login_if_not_authorized = true
+ckanext.stats.cache_enabled = true
 
 ## Authorization Settings
 ckan.auth.anon_create_dataset = false
@@ -204,7 +205,7 @@ ckan.search.default_include_private = true
 ckan.search.default_package_sort = score desc, metadata_modified desc
 search.facets = organization groups tags res_format license_id
 search.facets.limit = 50
-search.facets.default = 10
+search.facets.default = {{ ckan_search_facets_default }}
 ckan.extra_resource_fields = 
 ckan.search.rows_max = 1000
 ckan.group_and_organization_list_max = 1000

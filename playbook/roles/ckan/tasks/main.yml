@@ -39,6 +39,11 @@
     name: ckan
     tasks_from: ckan_config_ckan.yml
 
+- name: Setup ckanext config
+  include_role:
+    name: ckan
+    tasks_from: ckan_config_ckanext.yml
+
 - name: "Change owner and group of {{ ckan_virtualenv }} to {{ ckan_user }}"
   file:
     path: "{{ ckan_virtualenv }}"
