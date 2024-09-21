@@ -3,6 +3,11 @@
   become: true
   gather_facts: true
 
+  vars:
+      supported_ckan_versions:
+        - ckan-2.9.11
+        - ckan-2.10.5
+
   vars_prompt:
     - name: "ansible_become_password"
       prompt: "Enter your sudo password (or press Enter to proceed without a password)"
@@ -19,11 +24,21 @@
       private: false
       default: "n"
 
+    - name: "always_ckan_origin_code"
+      prompt: "Do you want to clean the local CKAN repository ('src/ckan') with the origin? Remove all local changes. (y/n)"
+      private: false
+      default: "n"
+
   pre_tasks:
-    - name: Verify distribution
+    - name: "Verify distribution: {{ ansible_distribution }}"
       fail:
         msg: "Currently, it only supports CentOS and RedHat distributions."
       when: ansible_distribution | lower not in ['centos', 'redhat']
+
+    - name: "Verify ckan-ansible compat with CKAN version: {{ ckan_version }}"
+      fail:
+        msg: "Unsupported CKAN version: {{ ckan_version }}. Supported versions are: {{ supported_ckan_versions | join(', ') }}."
+      when: ckan_version not in supported_ckan_versions
 
     - name: "Include global variables for all hosts (group_vars/all.yml)"
       include_vars: "inventories/group_vars/all.yml"
@@ -62,6 +77,17 @@
       debug:
         msg: "'use_external_postgres_database: true', configuring only the PostgreSQL client to allow connections and validate the existence of the database."
       when: use_external_postgres_database
+
+    - name: "Check for '%' character in sensitive variables"
+      assert:
+        that:
+          - "(ckan_sysadmin_name | default('')) is not regex('%')"
+          - "(ckan_sysadmin_password | default('')) is not regex('%')"
+          - "(ckan_database.postgres_password | default('')) is not regex('%')"
+          - "(ckan_database.ckan_db_password | default('')) is not regex('%')"
+          - "(ckan_smtp_password | default('')) is not regex('%')"
+          - "(ckan_datastore.datastore_readonly_password | default('')) is not regex('%')"
+        fail_msg: "The '%' character is not allowed in sensitive variables as it is an escape character in Ansible."
 
   roles:
       - { role: common, tags: common }
