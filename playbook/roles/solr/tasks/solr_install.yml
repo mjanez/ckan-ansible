@@ -13,7 +13,7 @@
     solr_project_mirror: "{{ solr_mirror }}/solr"
   when: solr_version.split('.')[0]|int >= 9
 
-- name: Download Solr.
+- name: "Download Solr: {{ solr_project_mirror }}/solr/{{ solr_version }}/{{ solr_filename }}.tgz"
   get_url:
     url: "{{ solr_project_mirror }}/solr/{{ solr_version }}/{{ solr_filename }}.tgz"
     dest: "{{ solr_workspace }}/{{ solr_filename }}.tgz"

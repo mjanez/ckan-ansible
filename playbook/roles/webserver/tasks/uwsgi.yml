@@ -9,7 +9,7 @@
 - name: Copy wsgi.py to configuration folder
   copy:
     remote_src: yes
-    src: "{{ ckan_virtualenv }}/src/ckan/wsgi.py"
+    src: "{{ ckan_src_dir }}/ckan/wsgi.py"
     dest: "{{ ckan_config_dir}}/wsgi.py"
     mode: 0755
   become: true
