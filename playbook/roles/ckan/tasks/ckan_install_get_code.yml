@@ -23,14 +23,42 @@
     git -C {{ ckan_src_dir }}/ckan clean -fdx
   when: ckan_src_dir_exists.stat.exists and (force_get_ckan_code | default(false)) and (always_ckan_origin_code == 'y')
 
-- name: Pull CKAN {{ ckan_version }} from GitHub
-  become: true
-  become_user: "{{ ckan_user }}"
-  git:
-    repo: https://github.com/ckan/ckan
-    dest: "{{ ckan_src_dir }}/ckan"
-    version: "{{ ckan_version }}"
-  when: not repo.stat.exists or (repo.stat.exists and ckan_version is version(current_version.stdout, 'gt')) or force_get_ckan_code | default(false)
+- block:
+    - name: Pull CKAN {{ ckan_version }} from GitHub
+      become: true
+      become_user: "{{ ckan_user }}"
+      git:
+        repo: https://github.com/ckan/ckan
+        dest: "{{ ckan_src_dir }}/ckan"
+        version: "{{ ckan_version }}"
+      register: git_pull_result
+      when: not repo.stat.exists or (repo.stat.exists and ckan_version is version(current_version.stdout, 'gt')) or force_get_ckan_code | default(false)
+      failed_when: git_pull_result.failed and "Local modifications exist" in git_pull_result.msg
+
+  rescue:
+    - name: Inform user about local modifications
+      pause:
+        prompt: "Local modifications exist in the destination: {{ ckan_src_dir }}/ckan. Do you want to clean the local CKAN repository ('src/ckan') with the origin? Remove all local changes. (y/n)"
+        echo: yes
+      register: confirm_clean
+      when: git_pull_result.failed and "Local modifications exist" in git_pull_result.msg
+
+    - name: Clean CKAN repository based on user confirmation
+      become: true
+      become_user: "{{ ckan_user }}"
+      shell: |
+        git -C {{ ckan_src_dir }}/ckan reset --hard
+        git -C {{ ckan_src_dir }}/ckan clean -fdx
+      when: confirm_clean.user_input | lower == 'y'
+
+    - name: Retry pulling CKAN {{ ckan_version }} from GitHub
+      become: true
+      become_user: "{{ ckan_user }}"
+      git:
+        repo: https://github.com/ckan/ckan
+        dest: "{{ ckan_src_dir }}/ckan"
+        version: "{{ ckan_version }}"
+      when: confirm_clean.user_input | lower == 'y'
 
 - name: Confirm update
   pause:
