@@ -17,6 +17,12 @@
     name: "Start ckan_harvester_clean_log"
     state: absent
 
+- name: Remove existing ckan_email_notifications cron job
+  become: true
+  cron:
+    name: "Start ckan_email_notifications"
+    state: absent
+
 - name: Add harvester background processes to crontab
   cron:
     name: "Start ckan_harvester_run"
@@ -32,3 +38,11 @@
     day: "*/30"
     job: "{{ supervisorctl_bin_path }} start ckan_harvester_clean_log"
   when: worker_harvester_cron
+
+- name: Add email notifications background processes to crontab
+  cron:
+    name: "Start ckan_email_notifications"
+    minute: "0"
+    hour: "*/2"
+    job: "{{ supervisorctl_bin_path }} start ckan_email_notifications"
+  when: ckan_smpt_active and worker_email_notifications_cron

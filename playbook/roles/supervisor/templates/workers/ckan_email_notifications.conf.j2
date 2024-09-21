@@ -1,0 +1,25 @@
+[program:ckan_email_notifications]
+
+command={{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini notify send_emails
+
+user={{ ckan_user }}
+
+; Run the email notifications command every hour
+numprocs=1
+
+; Log files
+stdout_logfile={{ ckan_log_dir }}/ckan_email_notifications.log
+stderr_logfile={{ ckan_log_dir }}/ckan_email_notifications.log
+
+; Make sure that the worker is started on system start and automatically
+; restarted if it crashes unexpectedly.
+autostart=true
+autorestart=true
+
+; Number of seconds the process has to run before it is considered to have
+; started successfully.
+startsecs=5
+
+; Need to wait for currently executing tasks to finish at shutdown.
+; Increase this if you have very long running tasks.
+stopwaitsecs = 600
