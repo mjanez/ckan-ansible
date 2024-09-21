@@ -2,7 +2,7 @@
 - name: Revoke previous xloader tokens
   shell: |
     TOKEN_NAME="xloader"
-    TOKEN_IDS=$({{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini user token list ckan_admin | grep "$TOKEN_NAME" | awk -F'[][]' '{print $2}' | tr -d '[]')
+    TOKEN_IDS=$({{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini user token list {{ ckan_sysadmin_name }} | grep "$TOKEN_NAME" | awk -F'[][]' '{print $2}' | tr -d '[]')
     for TOKEN_ID in $TOKEN_IDS
     do
       if [ -z "$TOKEN_ID" ]; then
@@ -19,7 +19,7 @@
 
 - name: Generate ckanext-xloader API token and capture full output
   shell: |
-    {{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini user token add ckan_admin xloader
+    {{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini user token add {{ ckan_sysadmin_name }} xloader
   register: xloader_api_token_full
   become: true
 

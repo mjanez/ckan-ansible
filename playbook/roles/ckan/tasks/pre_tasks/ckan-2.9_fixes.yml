@@ -1,6 +1,6 @@
 # Deps fixes
 # Temp fix PyYaml Cython 3 errors: https://github.com/yaml/pyyaml/issues/724 | fix zope-interface
-- name: Workaround for CKAN <2.10 deps
+- name: Workaround for CKAN 2.9 deps
   block:
     - name: Create constraint file
       copy:
@@ -30,3 +30,9 @@
         virtualenv: "{{ ckan_virtualenv }}"
       become: true
       become_user: "{{ ckan_user }}"
+
+    - name: Get package versions from constraints file
+      shell: cat "{{ ckan_pip_constraints }}"
+      register: ckan_constraints
+
+  when: ckan_version is match('^ckan-2\.9\..*')

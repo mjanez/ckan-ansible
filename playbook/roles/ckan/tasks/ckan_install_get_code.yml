@@ -1,0 +1,49 @@
+- name: Check if CKAN repo exists
+  stat:
+    path: "{{ ckan_src_dir }}/ckan/.git"
+  register: repo
+
+- name: Get current CKAN version
+  become: true
+  become_user: "{{ ckan_user }}"
+  shell: "git -C {{ ckan_src_dir }}/ckan describe --tags"
+  register: current_version
+  when: repo.stat.exists
+
+- name: Check if CKAN source directory exists
+  stat:
+    path: "{{ ckan_src_dir }}/ckan"
+  register: ckan_src_dir_exists
+
+- name: "Clean CKAN repository '{{ ckan_src_dir }}/ckan' to remove local changes and avoid conflicts"
+  become: true
+  become_user: "{{ ckan_user }}"
+  shell: |
+    git -C {{ ckan_src_dir }}/ckan reset --hard
+    git -C {{ ckan_src_dir }}/ckan clean -fdx
+  when: ckan_src_dir_exists.stat.exists and (force_get_ckan_code | default(false)) and (always_ckan_origin_code == 'y')
+
+- name: Pull CKAN {{ ckan_version }} from GitHub
+  become: true
+  become_user: "{{ ckan_user }}"
+  git:
+    repo: https://github.com/ckan/ckan
+    dest: "{{ ckan_src_dir }}/ckan"
+    version: "{{ ckan_version }}"
+  when: not repo.stat.exists or (repo.stat.exists and ckan_version is version(current_version.stdout, 'gt')) or force_get_ckan_code | default(false)
+
+- name: Confirm update
+  pause:
+    prompt: "Do you want to update CKAN to version {{ ckan_version }}? (y/n)"
+    echo: yes
+  register: confirm_update
+  when: repo.stat.exists and ckan_version is version(current_version.stdout, 'gt') and not force_get_ckan_code | default(false)
+
+- name: "Update CKAN to version:{{ ckan_version }}"
+  become: true
+  become_user: "{{ ckan_user }}"
+  git:
+    repo: https://github.com/ckan/ckan
+    dest: "{{ ckan_src_dir }}/ckan"
+    version: "{{ ckan_version }}"
+  when: confirm_update is defined and confirm_update.user_input is defined and confirm_update.user_input | lower == 'y'
