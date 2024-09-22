@@ -47,6 +47,11 @@ schemingdcat.default_package_item_icon = {{ ckanext__schemingdcat_default_packag
 schemingdcat.default_package_item_show_spatial = {{ ckanext__schemingdcat_default_package_item_show_spatial }}
 schemingdcat.show_metadata_templates_toolbar = {{ ckanext__schemingdcat_show_metadata_templates_toolbar }}
 schemingdcat.metadata_templates_search_identifier = {{ ckanext__schemingdcat_metadata_templates_search_identifier }}
+schemingdcat.endpoints_yaml = {{ ckanext__schemingdcat_endpoints_yaml }}
+schemingdcat.social_github = {{ ckanext__schemingdcat_social_github }}
+schemingdcat.social_x = {{ ckanext__schemingdcat_social_x }}
+schemingdcat.social_linkedin = {{ ckanext__schemingdcat_social_linkedin }}
+
 
 ### ckanext-spatial
 # Allow Solr local params
@@ -119,7 +124,7 @@ sqlalchemy.url = postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.
 
 ckan.datastore.write_url = postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_datastore.datastore_host }}:{{ ckan_datastore.datastore_port }}/{{ ckan_datastore.datastore_db }}
 ckan.datastore.read_url = postgresql://{{ ckan_datastore.datastore_readonly_user }}:{{ ckan_datastore.datastore_readonly_password }}@{{ ckan_datastore.datastore_host }}:{{ ckan_datastore.datastore_port }}/{{ ckan_datastore.datastore_db }}
-ckan.datastore.sqlsearch.enabled = true
+ckan.datastore.sqlsearch.enabled = {{ ckan_datastore_sqlsearch_enabled }}
 sqlalchemy.pool_pre_ping = true
 # sqlalchemy.<OPTION> = 
 
@@ -221,8 +226,8 @@ ckan.redis.url = redis://localhost:6379/0
 # ckan.cors.origin_allow_all = true
 # cors.origin_whitelist is a space separated list of allowed domains.
 # ckan.cors.origin_whitelist = http://example1.com http://example2.com
-ckan.cors.origin_whitelist =
-ckan.cors.origin_allow_all = true 
+ckan.cors.origin_whitelist = {{ ckan_cors_origin_whitelist }}
+ckan.cors.origin_allow_all = {{ ckan_cors_origin_allow_all }} 
 
 ## Plugins Settings
 ckan.plugins = {{ ckan_plugins }}
@@ -300,7 +305,7 @@ ckan.user_reset_landing_page = home.index
 ## Activity Streams Settings 
 ckan.activity_streams_enabled = true
 ### More info:https://docs.ckan.org/en/latest/maintaining/email-notifications.html#email-notifications
-ckan.activity_streams_email_notifications = false
+ckan.activity_streams_email_notifications = true
 ckan.activity_list_limit = 31
 ckan.activity_list_limit_max = 100
 ckan.email_notifications_since = 2 days
@@ -324,7 +329,7 @@ ckan.i18n.extra_gettext_domain =
 ckan.i18n.extra_locales = 
 ckan.i18n.rtl_languages = he ar fa_IR
 ckan.i18n.rtl_theme = css/main-rtl
-ckan.resource_formats = {{ ckan_virtualenv }}/src/ckan/ckan/config/resource_formats.json
+ckan.resource_formats = {{ ckan_src_dir }}/ckan/ckan/config/resource_formats.json
 
 ## Form Settings
 # package_hide_extras = for_search_index_only
@@ -337,12 +342,12 @@ licenses_group_url = https://licenses.opendefinition.org/licenses/groups/ckan.js
 ## Email settings
 #email_to = errors@example.com
 #error_email_from = ckan-errors@example.com
-#smtp.server = localhost
-#smtp.starttls = False
-#smtp.user = username@example.com
-#smtp.password = your_password
-#smtp.mail_from =
-#smtp.reply_to =
+#smtp.server = {{ ckan_smtp_server }}
+#smtp.starttls = {{ ckan_smpt_starttls }}
+#smtp.user = {{ ckan_smtp_user }}
+#smtp.password = {{ ckan_smtp_password }}
+#smtp.mail_from = {{ ckan_smtp_mail_from }}
+#smtp.reply_to = noreply.example.com
 ## Background Job Settings
 ckan.jobs.timeout = 180
 

@@ -1,56 +1,16 @@
-- name: Check if CKAN repo exists
-  stat:
-    path: "{{ ckan_virtualenv }}/src/ckan/.git"
-  register: repo
-
-- name: Get current CKAN version
-  become: true
-  become_user: "{{ ckan_user }}"
-  shell: "git -C {{ ckan_virtualenv }}/src/ckan describe --tags"
-  register: current_version
-  when: repo.stat.exists
-
-- name: Pull CKAN {{ ckan_version }} from GitHub
-  become: true
-  become_user: "{{ ckan_user }}"
-  git:
-    repo: https://github.com/ckan/ckan
-    dest: "{{ ckan_virtualenv }}/src/ckan"
-    version: "{{ ckan_version }}"
-  when: not repo.stat.exists or (repo.stat.exists and ckan_version is version(current_version.stdout, 'gt'))
-
-- name: Confirm update
-  pause:
-    prompt: "Do you want to update CKAN to version {{ ckan_version }}? (y/n)"
-    echo: yes
-  register: confirm_update
-  when: repo.stat.exists and ckan_version is version(current_version.stdout, 'gt')
-
-- name: "Update CKAN to version:{{ ckan_version }}"
-  become: true
-  become_user: "{{ ckan_user }}"
-  git:
-    repo: https://github.com/ckan/ckan
-    dest: "{{ ckan_virtualenv }}/src/ckan"
-    version: "{{ ckan_version }}"
-  when: confirm_update is defined and confirm_update.user_input is defined and confirm_update.user_input | lower == 'y'
-
-- name: Get package versions from constraints file
-  shell: cat "{{ ckan_pip_constraints }}"
-  register: ckan_constraints
-
 - name: Update package versions in CKAN requirements
   lineinfile:
-    path: "{{ ckan_virtualenv }}/src/ckan/requirements.txt"
+    path: "{{ ckan_src_dir }}/ckan/requirements.txt"
     regexp: "^{{ item.split('==')[0] }}=="
     line: "{{ item }}"
   loop: "{{ ckan_constraints.stdout_lines }}"
+  when: ckan_constraints is defined and ckan_constraints.stdout_lines | length > 0
 
 - name: Install CKAN requirements
   become: true
   become_user: "{{ ckan_user }}"
   pip:
-    requirements: "{{ ckan_virtualenv }}/src/ckan/requirements.txt"
+    requirements: "{{ ckan_src_dir }}/ckan/requirements.txt"
     virtualenv: "{{ ckan_virtualenv }}"
     state: present
 
@@ -58,7 +18,7 @@
   become: true
   become_user: "{{ ckan_user }}"
   pip:
-    requirements: "{{ ckan_virtualenv }}/src/ckan/dev-requirements.txt"
+    requirements: "{{ ckan_src_dir }}/ckan/dev-requirements.txt"
     virtualenv: "{{ ckan_virtualenv }}"
     state: present
 
@@ -66,7 +26,7 @@
   become: true
   become_user: "{{ ckan_user }}"
   pip:
-    name: "file://{{ ckan_virtualenv }}/src/ckan"
+    name: "file://{{ ckan_src_dir }}/ckan"
     virtualenv: "{{ ckan_virtualenv }}"
     editable: true
 

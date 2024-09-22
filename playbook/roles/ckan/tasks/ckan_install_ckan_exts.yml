@@ -6,7 +6,7 @@
       become: true
       become_user: "{{ ckan_user }}"
       pip:
-        name: git+https://github.com/qld-gov-au/ckanext-xloader.git@{{ ckanext_versions.ckanext_xloader }}#egg=ckanext-xloader
+        name: git+https://github.com/mjanez/ckanext-xloader.git@{{ ckanext_versions.ckanext_xloader }}#egg=ckanext-xloader
         virtualenv: "{{ ckan_virtualenv }}"
         extra_args: -e
       register: result

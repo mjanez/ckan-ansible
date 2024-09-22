@@ -35,3 +35,46 @@
     line: "api_token.jwt.decode.secret = {{ jwt_secret.stdout }}"
   become: true
   when: jwt_secret.rc == 0
+
+- name: "Uncomment SMTP settings if {{ ckan_smpt_active | default(false) }} is true"
+  block:
+    - name: "Uncomment smtp.server"
+      lineinfile:
+        path: "{{ ckan_config_dir }}/ckan.ini"
+        regexp: '^#smtp.server = {{ ckan_smtp_server }}'
+        line: 'smtp.server = {{ ckan_smtp_server }}'
+        state: present
+      become: true
+
+    - name: "Uncomment smtp.starttls"
+      lineinfile:
+        path: "{{ ckan_config_dir }}/ckan.ini"
+        regexp: '^#smtp.starttls = {{ ckan_smpt_starttls }}'
+        line: 'smtp.starttls = {{ ckan_smpt_starttls }}'
+        state: present
+      become: true
+
+    - name: "Uncomment smtp.user"
+      lineinfile:
+        path: "{{ ckan_config_dir }}/ckan.ini"
+        regexp: '^#smtp.user = {{ ckan_smtp_user }}'
+        line: 'smtp.user = {{ ckan_smtp_user }}'
+        state: present
+      become: true
+
+    - name: "Uncomment smtp.password"
+      lineinfile:
+        path: "{{ ckan_config_dir }}/ckan.ini"
+        regexp: '^#smtp.password = {{ ckan_smtp_password }}'
+        line: 'smtp.password = {{ ckan_smtp_password }}'
+        state: present
+      become: true
+
+    - name: "Uncomment smtp.mail_from"
+      lineinfile:
+        path: "{{ ckan_config_dir }}/ckan.ini"
+        regexp: '^#smtp.mail_from = {{ ckan_smtp_mail_from }}'
+        line: 'smtp.mail_from = {{ ckan_smtp_mail_from }}'
+        state: present
+      become: true
+  when: ckan_smpt_active | default(false)

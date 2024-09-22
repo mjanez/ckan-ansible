@@ -9,10 +9,15 @@
     name: ckan
     tasks_from: ckan_virtualenv.yml
 
-- name: Install Virtualenv pip constraints
+- name: Apply fixes for CKAN core before installation
   include_role:
     name: ckan
-    tasks_from: ckan_config_pip_constraints.yml
+    tasks_from: ckan_install_pre_tasks.yml
+
+- name: Get CKAN code from GitHub
+  include_role:
+    name: ckan
+    tasks_from: ckan_install_get_code.yml
 
 - name: Install CKAN
   include_role:

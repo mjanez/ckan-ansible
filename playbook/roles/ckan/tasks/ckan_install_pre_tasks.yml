@@ -1,0 +1,31 @@
+- name: Define fixes for CKAN major versions
+  set_fact:
+    ckan_fixes:
+      ckan-2.9.*: ./pre_tasks/ckan-2.9_fixes.yml
+
+- name: Apply CKAN fixes
+  block:
+    - name: "Log CKAN fixes to be applied"
+      debug:
+        msg: "Applying fixes for CKAN version {{ ckan_version }} using {{ ckan_fixes[item] }}"
+      when: ckan_version is search(item)
+      loop: "{{ ckan_fixes.keys() }}"
+      loop_control:
+        label: "{{ item }}"
+
+    - name: "Apply fixes for CKAN version {{ ckan_version }}"
+      include_tasks: "{{ ckan_fixes[item] }}"
+      when: ckan_version is search(item)
+      loop: "{{ ckan_fixes.keys() }}"
+      loop_control:
+        label: "{{ item }}"
+
+    - name: "Log no CKAN fixes to be applied"
+      debug:
+        msg: "No fixes to be applied for CKAN version {{ ckan_version }}"
+      when: ckan_fixes.keys() | select('search', ckan_version) | list | length == 0
+
+    - name: "Set force_get_ckan_code if no fixes applied"
+      set_fact:
+        force_get_ckan_code: true
+      when: ckan_fixes.keys() | select('search', ckan_version) | list | length == 0
