@@ -2,23 +2,35 @@
 Ansible playbook for the deployment of a custom CKAN for spatial data management in different environments.
 
 Deployments available for the following OS:
-  - RedHat Enterprise Linux 9 ([RHEL 9](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9))
-  - RedHat Enterprise Linux 8 ([RHEL 8](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8))
-  - [WIP] Debian 12 ([Bookworm](https://www.debian.org/releases/bookworm/))
-  - [WIP] Ubuntu 20.04 ([Focal Fossa](https://releases.ubuntu.com/20.04/))
+| OS | Compatibility                                                                | Versions | Remarks |
+|--------------|-----------------------------------------------------------------------------|--|--|
+| Arch Linux           | 🚧 WIP |        -                                                   | - |
+| CentOS           | 🚧 WIP | [`CentOS 8`](https://www.centos.org/download/), [`CentOS Stream 9`](https://centos.org/stream9/)| - |
+| Debian          | 🚧 WIP |  [`12 - Bookworm`](https://www.debian.org/releases/bookworm/)                                                       | - |
+| RedHat Enterprise Linux         | ✅ Yes | [`RHEL 8`](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8), [`RHEL 9`](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9) | - |
+| Ubuntu          | 🚧 WIP |  [`20.04 - Focal Fossa`](https://releases.ubuntu.com/20.04/)| - |
+
+
+And CKAN versions:
+| CKAN version | Compatibility                                                                 | Versions | Remarks |
+|-------------|-----------------------------------------------------------------------------|--|--|
+| 2.8          | ❌ No         |             -                                      | Incompatible with [`Python 3`](https://docs.ckan.org/en/2.9/maintaining/upgrading/upgrade-to-python3.html#upgrading-a-ckan-install-from-python-2-to-python-3) |
+| 2.9          | ✅ Yes |  [`ckan-2.9.11`](https://docs.ckan.org/en/2.9/changelog.html#v-2-9-11-2024-03-13) | - |
+| 2.10         | ✅ Yes |  [`ckan-2.10.5`](https://docs.ckan.org/en/2.10/changelog.html#v-2-10-5-2024-08-21) | - |
+
 
 ## Requirements
 - [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 
 ## CKAN Ansible Deployment
-1. Clone this repository to your local machine and edit the `ansible.cfg` to use the env what you want, by default `staging`:
+1. Clone this repository to your local machine and edit the `ansible.cfg` to use the env what you want, by default `development`:
 
     ```bash
     git clone https://github.com/mjanez/ckan-ansible.git && cd ckan-ansible
     vi playbook/ansible.cfg
     ```
 
-2. Ensure that `inventory` and `hostfile` point to the desired hosts files, e.g., for `staging` (default):
+2. Ensure that `inventory` and `hostfile` point to the desired hosts files, e.g., for `development` (default):
 
     ```ini
     [defaults]
@@ -27,8 +39,8 @@ Deployments available for the following OS:
     # Common destinations
     ########################################
 
-    inventory = ./inventories/staging/hosts.ini
-    hostfile = ./inventories/staging/hosts.ini
+    inventory = ./inventories/development/hosts.ini
+    hostfile = ./inventories/development/hosts.ini
     roles_path = ./roles/common:./roles/ckan:./roles/database:./roles/webserver:./roles/solr:./roles/redis:./roles/supervisor
     retry_files_save_path = ./config/tmp/retry/
     log_path = ./config/ansible.log
@@ -38,22 +50,22 @@ Deployments available for the following OS:
 3. Edit the `hosts.ini` and add the target deployment servers IP addresses or `hostname` for the specific environment.
 
     ```bash
-    vi playbook/inventories/staging/hosts.ini
+    vi playbook/inventories/development/hosts.ini
     ```
 
     ```ini
     [ckan_servers]
-    staging_01 ansible_host=192.168.68.01 ansible_user=sudouser ansible_port=222 ansible_ssh_pass=sudouserpassword ansible_connection=ssh
+    development_01 ansible_host=192.168.68.01 ansible_user=sudouser ansible_port=222 ansible_ssh_pass=sudouserpassword ansible_connection=ssh
     ```
 
     Or for local use:
 
     ```ini
     [ckan_servers]
-    staging_01 ansible_connection=local
+    development_01 ansible_connection=local
     ```
 
-4. Modify the host variables in `playbook/inventories/*/host_vars/*_01.yml`, for instance, [`staging_01.yml`](./playbook/inventories/staging/host_vars/staging_01.yml). Check any necessary variables such as database credentials, CKAN versions, and other specific settings.
+4. Modify the host variables in `playbook/inventories/*/host_vars/*_01.yml`, for instance, [`development_01.yml`](./playbook/inventories/development/host_vars/development_01.yml). Check any necessary variables such as database credentials, CKAN versions, and other specific settings.
 
 **By default, a local PostgreSQL database is set up.** To use an external PostgreSQL database, set `use_external_postgres_database` to `true`.
 
@@ -116,7 +128,7 @@ Once you have [Vagrant](https://www.vagrantup.com/docs/installation), [VirtualBo
   cd vagrant/rhel/rhel-9
 
   # Edit the host_vars file: ansible_host, ansible_port, ansible_user, ansible_ssh_pass with the Vagrantfile values and .env file as needed
-  vi playbook/inventories/staging/host_vars/staging_01.yml
+  vi playbook/inventories/development/host_vars/development_01.yml
   vi .env
 
   # Start the virtual machine, vagrant copy the playbook to the VM
@@ -219,10 +231,10 @@ The `ckan-local.*` files will then need to be moved into the `ckan-ansible/playb
     │   │   ├── hosts.ini
     │   │   └── host_vars/
     │   │       ├── production_01.yml
-    │   ├── staging/
+    │   ├── development/
     │       ├── hosts.ini
     │       └── host_vars/
-    │           └── staging_01.yml
+    │           └── development_01.yml
     └── roles/
         ├── ckan/
         │   ├── tasks/
@@ -263,14 +275,14 @@ This directory structure organizes the `ckan-ansible` project. Here's an explana
 
 * `ansible.cfg`: Ansible configuration file. This file sets global configurations for Ansible, such as the inventory file location, roles path, logging, and other settings. It ensures that Ansible knows where to find the necessary files and how to execute the playbooks.
 * `playbook.yml`: Ansible playbook for deploying CKAN. This file contains a series of tasks and roles that define the steps required to set up and configure CKAN and its dependencies. It orchestrates the deployment process by specifying which roles to apply and in what order.
-* `inventories/`: Inventory files for different environments (e.g., production, staging). These files list the servers (hosts) that Ansible will manage. Each environment has its own directory containing the relevant inventory files.
+* `inventories/`: Inventory files for different environments (e.g., development, staging, production, etc.). These files list the servers (hosts) that Ansible will manage. Each environment has its own directory containing the relevant inventory files.
   * `group_vars/`: Group-specific variables. These files define variables that apply to groups of hosts, allowing for centralized configuration management.
   * `os_vars/`: OS-specific variables. These files define variables specific to different operating systems, ensuring that tasks are executed correctly on different OS types.
   * `production/`: Production environment inventory.
     * `hosts.ini`: Hosts file for production.
     * `host_vars/`: Host-specific variables.
-  * `staging/`: Staging environment inventory.
-    * `hosts.ini`: Hosts file for staging.
+  * `development/`: Development environment inventory.
+    * `hosts.ini`: Hosts file for development.
     * `host_vars/`: Host-specific variables.
 * `roles/`: Ansible roles for different components.
   * `ckan/`: CKAN installation and configuration.
@@ -284,14 +296,14 @@ This directory structure organizes the `ckan-ansible` project. Here's an explana
 
 ### How They Work Together
 1. **Configuration (`ansible.cfg`)**:
-   - Sets the default inventory file location (`inventories/staging/hosts.ini` or `inventories/production/hosts.ini`).
+   - Sets the default inventory file location (`inventories/development/hosts.ini` or `inventories/production/hosts.ini`).
    - Defines the roles path, so Ansible knows where to find the roles.
    - Configures logging and other settings to control Ansible's behavior.
 
 2. **Inventory (`hosts.ini`)**:
    - Lists the servers that Ansible will manage.
    - Specifies connection details for each server (e.g., IP address, SSH user, port).
-   - Can be environment-specific (e.g., `staging`, `production`).
+   - Can be environment-specific (e.g., `development`, `staging`, `production`).
 
 3. **Playbook (`playbook.yml`)**:
    - Defines the sequence of tasks and roles to be executed on the servers listed in the inventory.
