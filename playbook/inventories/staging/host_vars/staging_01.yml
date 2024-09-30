@@ -118,7 +118,7 @@ ckan_site_title: "CKAN site - {{ deployment_version_name }}"
 ckan_site_description: "CKAN site - {{ deployment_version_name }}"
 ckan_site_logo: "images/default/ckan-logo.png"
 ckan_favicon: base/images/ckan.ico
-ckan_site_intro_text: "[![ckan-docker-spatial](https://img.shields.io/badge/ckan_docker_spatial-CKAN_${CKAN_VERSION}-brightgreen?style=social&logo=github#center)](https://github.com/mjanez/ckan-docker)\n[`ckan-docker *spatial`](https://github.com/mjanez/ckan-docker) is a ready-to-use development environment for [CKAN](https://github.com/ckan/ckan), the world’s leading open-source data portal platform."
+ckan_site_intro_text: "[![ckan-docker-spatial](https://img.shields.io/badge/ckan_docker_spatial-CKAN_${CKAN_VERSION}-brightgreen?style=social&logo=github#center)](https://github.com/mjanez/ckan-docker)[`ckan-docker *spatial`](https://github.com/mjanez/ckan-docker) is a ready-to-use development environment for [CKAN](https://github.com/ckan/ckan), the world’s leading open-source data portal platform."
 ckan_site_about: "{{ ckan_site_intro_text }}"
 ckan_sysadmin_name: ckan_admin
 ckan_sysadmin_email: ckan_admin@localhost
