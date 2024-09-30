@@ -18,3 +18,16 @@ playbook/inventories/*/host_vars/test*.yml
 playbook/inventories/development/host_vars/dev-*.yml
 playbook/inventories/staging/host_vars/sta-*.yml
 playbook/inventories/staging/host_vars/pro-*.yml
+
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyz
+*.pywz
+.env
+.venv
+venv/
+env/

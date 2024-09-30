@@ -32,7 +32,7 @@
   include_tasks: ckan_config_ckan_ini.yml
 
 - name: Initializing or upgrading CKAN database
-  command: "{{ ckan_virtualenv }}/bin/ckan --config={{ ckan_config_dir}}/ckan.ini db init"
+  command: "{{ ckan_virtualenv }}/bin/ckan --config={{ ckan_config_dir}}/ckan.ini db upgrade"
 
 - name: Initializing datastore database
   shell: |

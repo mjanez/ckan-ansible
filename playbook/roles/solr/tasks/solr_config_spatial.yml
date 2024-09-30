@@ -39,3 +39,11 @@
           <field name="theme_eu" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
           <field name="resource_relation" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
           <field name="metadata_profile" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="dcat_type" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="applicable_legislation" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="is_referenced_by" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="hvd_category" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="language" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="documentation" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+          <field name="dataset_scope" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+           
