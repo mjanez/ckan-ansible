@@ -129,7 +129,7 @@ ckan_licenses_group_url: "file://{{ ckan_src_dir }}/src/ckanext-schemingdcat/cka
 ckan_datastore_sqlsearch_enabled: false
 
 #### Plugins
-ckan_plugins: "activity stats image_view video_view audio_view webpage_view text_view datatables_view resourcedictionary datastore xloader spatial_metadata spatial_query spatial_harvest_metadata_api csw_harvester waf_harvester doc_harvester resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface schemingdcat schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat_ckan_harvester schemingdcat_xls_harvester harvest pdf_view pages fluent"
+ckan_plugins: "activity stats image_view video_view audio_view webpage_view text_view datatables_view resourcedictionary datastore xloader spatial_metadata spatial_query spatial_harvest_metadata_api resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface miteco schemingdcat schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat_ckan_harvester schemingdcat_xls_harvester schemingdcat_postgres_harvester schemingdcat_open_data_statistics harvest pdf_view pages fluent"
 
 #### Previews formats
 ckan__preview__json_formats: "json jsonld"
