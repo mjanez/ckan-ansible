@@ -214,6 +214,8 @@ ckanext__schemingdcat_social_github: "https://github.com/mjanez/ckanext-scheming
 ckanext__schemingdcat_social_x: "https://x.com/ckanproject"
 ckanext__schemingdcat_social_linkedin: "https://www.linkedin.com/company/ckanproject"
 
+ckanext__schemingdcat__postgres__geojson_chars_limit: 1000
+ckanext__schemingdcat__postgres__geojson_tolerance: 0.001
 
 ### Web Services config ############################################
 ### Enable all sites in ckan-ansible/playbook/roles/webserver/templates/sites-available/*.conf.j2
@@ -252,7 +254,7 @@ ckanext_versions:
   ckanext_spatial: v2.1.1
   ckanext_dcat: v1.8.0
   ckanext_scheming: release-3.0.0
-  ckanext_resourcedictionary: v1.0.1
+  ckanext_resourcedictionary: v1.0.2
   ckanext_pages: v0.5.2
   ckanext_pdfview: 0.0.8
   ckanext_fluent: v1.0.1
@@ -260,7 +262,7 @@ ckanext_versions:
 ### CKAN custom plugins #########################################
 # This is a dictionary of custom plugins to install. The key is the github user/repo and the value is the version to install.
 ckanext_custom_plugins:
-  mjanez/ckanext-schemingdcat: v4.0.0
+  mjanez/ckanext-schemingdcat: v4.1.0
 
 ### Solr Service #########################################
 solr_os_supported: 

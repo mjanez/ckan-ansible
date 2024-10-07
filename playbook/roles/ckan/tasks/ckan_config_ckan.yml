@@ -13,6 +13,7 @@
     mode: 0755
   become: true
   become_user: "{{ ckan_user }}"
+  when: ckan_version is match('^ckan-2\.9\..*')
 
 - name: "Create a symbolic link to the ckan.ini file in {{ ckan_virtualenv}}"
   file:
