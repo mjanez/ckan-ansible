@@ -16,16 +16,19 @@
     done
   register: revoke_tokens
   become: true
+  when: deployment_action != "update"
 
 - name: Generate ckanext-xloader API token and capture full output
   shell: |
     {{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini user token add {{ ckan_sysadmin_name }} xloader
   register: xloader_api_token_full
   become: true
+  when: deployment_action != "update"
 
 - name: Extract API token from full output
   set_fact:
     xloader_api_token: "{{ xloader_api_token_full.stdout | regex_search('eyJ[^\\n]+') }}"
+  when: deployment_action != "update"
 
 - name: Set ckanext.xloader.api_token in ckan.ini
   lineinfile:
@@ -33,4 +36,4 @@
     regexp: "^ckanext.xloader.api_token =.*"
     line: "ckanext.xloader.api_token = {{ xloader_api_token }}"
   become: true
-  when: xloader_api_token is defined and xloader_api_token != ""
+  when: xloader_api_token is defined and xloader_api_token != "" and deployment_action != "update"

@@ -1,3 +1,18 @@
+- name: Copy CKAN config file
+  template:
+    src: ckan.ini.j2
+    dest: "{{ ckan_config_dir }}/ckan.ini"
+    mode: 0755
+  become: true
+  become_user: "{{ ckan_user }}"
+
+- name: "Create a symbolic link to the ckan.ini file in {{ ckan_virtualenv}}"
+  file:
+    src: "{{ ckan_config_dir }}/ckan.ini" 
+    dest: "{{ ckan_virtualenv}}/ckan.ini" 
+    state: link
+    force: yes
+
 # WTF CSRF token 
 - name: Generate 
   command: "{{ ckan_virtualenv }}/bin/ckan config-tool {{ ckan_config_dir }}/ckan.ini 'WTF_CSRF_SECRET_KEY=$(python3 -c \"import secrets; print(secrets.token_urlsafe())\")'"
@@ -77,4 +92,29 @@
         line: 'smtp.mail_from = {{ ckan_smtp_mail_from }}'
         state: present
       become: true
+
+    - name: "Uncomment smtp.reply_to"
+      lineinfile:
+        path: "{{ ckan_config_dir }}/ckan.ini"
+        regexp: '^#smtp.reply_to = {{ ckan_smtp_reply_to }}'
+        line: 'smtp.reply_to = {{ ckan_smtp_reply_to }}'
+        state: present
+      become: true
+
+    - name: "Uncomment email_to"
+      lineinfile:
+        path: "{{ ckan_config_dir }}/ckan.ini"
+        regexp: '^#email_to = {{ ckan_email_to }}'
+        line: 'email_to = {{ ckan_email_to }}'
+        state: present
+      become: true
+
+    - name: "Uncomment error_email_from"
+      lineinfile:
+        path: "{{ ckan_config_dir }}/ckan.ini"
+        regexp: '^#error_email_from = {{ ckan_error_email_from }}'
+        line: 'error_email_from = {{ ckan_error_email_from }}'
+        state: present
+      become: true
+
   when: ckan_smpt_active | default(false)

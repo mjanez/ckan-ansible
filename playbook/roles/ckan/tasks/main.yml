@@ -39,10 +39,16 @@
     name: ckan
     tasks_from: ckan_test_conns.yml
 
+- name: Update CKAN config file
+  include_role:
+    name: ckan
+    tasks_from: ckan_config_ckan_ini.yml
+
 - name: Setup CKAN config
   include_role:
     name: ckan
     tasks_from: ckan_config_ckan.yml
+  when: deployment_action != "update"
 
 - name: Setup ckanext config
   include_role:
@@ -56,6 +62,7 @@
     group: "{{ ckan_group }}"
     recurse: yes
   become: true
+  when: deployment_action != "update"
 
 - name: "Change owner and group of {{ ckan_config_dir }} to {{ ckan_user }}"
   file:
@@ -64,3 +71,4 @@
     group: "{{ ckan_group }}"
     recurse: yes
   become: true
+  when: deployment_action != "update"

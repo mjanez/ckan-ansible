@@ -17,8 +17,8 @@
 
 - name: Copy ckan_uwsgi.ini to configuration folder
   template:
-    src: ckan_uwsgi.ini.j2
-    dest: "{{ ckan_config_dir}}/ckan_uwsgi.ini"
+    src: "{{ 'pro.ckan_uwsgi.ini.j2' if deployment_version == 'production' else 'ckan_uwsgi.ini.j2' }}"
+    dest: "{{ ckan_config_dir }}/ckan_uwsgi.ini"
     mode: 0755
   become: true
   become_user: "{{ ckan_user }}"
