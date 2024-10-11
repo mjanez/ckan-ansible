@@ -20,7 +20,61 @@ And CKAN versions:
 
 
 ## Requirements
-- [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+- [`ansible`](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) which adds a community-curated selection of Ansible Collections.
+
+>[!WARNING]
+> **Do not** install the `ansible-core` minimalist version. Install `ansible` using `pip` or `pipx`:
+>    ```sh
+>    python3 -m pip install --user ansible
+>    ```
+> 
+> The full `ansible` package includes a community-curated selection of Ansible Collections, which helps avoid issues with unavailable `ansible-galaxy` modules in the `ansible-core` version.
+
+Check the `ansible` version and collection list:
+```sh
+ansible --version
+
+ansible-galaxy collection list 
+```
+
+### Updating Ansible collection paths
+After installing Ansible collections using ansible-galaxy, ensure their directories are included in the collections_paths within [`ansible.cfg`](./playbook/ansible.cfg). Follow these steps:
+
+
+1. **List Installed Collections:**
+Run the following command to display all installed Ansible collections and their respective paths:
+
+```sh
+ansible-galaxy collection list
+```
+
+2. **Identify Collection Directories:**
+From the output, note the directories where the collections are installed. Each collection entry will display its path.
+
+3. **Update `collections_paths` in `ansible.cfg`:**
+If the collection directories are not already included in the `collections_paths`, add them. Edit the `ansible.cfg` file to include these paths, separated by colons (`:`). 
+
+Replace `/path/to/your/collection` with the actual paths obtained from the `ansible-galaxy collection list` output.
+
+For example:
+
+```yml
+[defaults]
+
+########################################
+# Common destinations
+########################################
+
+inventory = ./inventories/development/hosts.ini
+hostfile = ./inventories/development/hosts.ini
+roles_path = ./roles/common:./roles/ckan:./roles/database:./roles/webserver:./roles/solr:./roles/redis:./roles/supervisor
+retry_files_save_path = ./config/tmp/retry/
+log_path = ./config/ansible.log
+stdout_callback = yaml
+
+### Custom ansible-galaxy collection paths
+collections_paths = ~/.ansible/collections:/usr/share/ansible/collections:/lib/python3.9/site-packages/ansible_collections:/path/to/your/collection
+```
 
 ## CKAN Ansible Deployment
 1. Clone this repository to your local machine and edit the `ansible.cfg` to use the env what you want, by default `development`:
@@ -114,6 +168,18 @@ ckan_database: {
 
     The `ANSIBLE_CONFIG` environment variable is used to specify the location of the `ansible.cfg` file. This is useful when you have multiple Ansible configurations and you want to specify which one to use, eg. `rhel-9`, `ubuntu-20.04`, etc.
 
+6. You can manage the deployment of CKAN using two primary commands: `deploy` and `update`. More info at [deployment options](#deployment-options)
+
+>[!TIP]
+>**Use `deploy`** when:
+>  * You are installing CKAN for the first time.
+>  * You need to perform a complete reinstallation, including resetting databases.
+>
+>**Use `update`** when:
+>  * You want to update CKAN's codebase, extensions, and associated services without affecting the existing databases.
+>  * You need to apply patches, upgrades, or new features to your current CKAN deployment.
+
+
 ## Test
 ### Vagrant
 Once you have [Vagrant](https://www.vagrantup.com/docs/installation), [VirtualBox](https://www.virtualbox.org/wiki/Downloads)  installed, run the following commands under your [project directory](https://learn.hashicorp.com/tutorials/vagrant/getting-started-project-setup?in=vagrant/getting-started):
@@ -178,6 +244,29 @@ RHEL info:
 
 
 ## Information
+### Deployment Options
+You can manage the deployment of CKAN using two primary commands: `deploy` and `update`. Each serves a distinct purpose depending on your current setup and desired outcome.
+
+### `deploy`
+The `deploy` command performs a **fresh deployment** of CKAN. This process involves:
+
+- **Setting up the environment from scratch**: Configuring all necessary components and dependencies required for CKAN to run.
+- **Initializing databases**: This can **suppress or reset the CKAN and Datastore databases**, effectively clearing existing data. Use this option when:
+  - Setting up CKAN for the first time.
+  - Performing a complete teardown and reinstall of your CKAN environment.
+
+**Caution**: Running `deploy` will erase existing data in the CKAN and Datastore databases. Ensure you have backups if you need to preserve existing data.
+
+### `update`
+The `update` command is designed to **upgrade an existing CKAN installation** without affecting the databases. This process includes:
+
+- **Updating the CKAN codebase**: Pulling the latest changes and applying updates to the CKAN application.
+- **Refreshing extensions**: Updating any CKAN extensions to their latest versions.
+- **Updating `ckan-pycsw` and workers/supervisors**: Ensuring that auxiliary services are up-to-date.
+- **Restarting web services**: Applying the changes by restarting the necessary web services, ensuring minimal downtime.
+
+By default, `update` is the preferred method when you want to apply updates or changes to your CKAN instance **without disrupting your existing data**.
+
 ### Vagrant commands
 ```bash
 # To obtain info of the SSH connection
