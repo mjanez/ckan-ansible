@@ -1,10 +1,13 @@
 - name: Check if Solr core exists
   uri:
-    url: "http://{{ solr_host }}:{{ solr_port }}/solr/admin/cores?action=STATUS&core={{ solr_ckan_core_name }}"
+    url: "http://{{ solr_test_host }}:{{ solr_port }}/solr/admin/cores?action=STATUS&core={{ solr_ckan_core_name }}"
     method: GET
     return_content: yes
   register: solr_core_status
   become: true
+  retries: 5
+  delay: 10
+  until: solr_core_status.status == 200
 
 - name: Print Solr core status
   debug:
