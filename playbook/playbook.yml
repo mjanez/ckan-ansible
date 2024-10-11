@@ -4,42 +4,83 @@
   gather_facts: true
 
   vars:
-      supported_ckan_versions:
-        - ckan-2.9.11
-        - ckan-2.10.5
+    supported_ckan_versions:
+      - ckan-2.9.11
+      - ckan-2.10.5
 
   vars_prompt:
+    - name: "deployment_action"
+      prompt: "Do you want to deploy from scratch or update CKAN? (deploy/update)"
+      private: false
+      default: "update"
+
     - name: "ansible_become_password"
       prompt: "Enter your sudo password (or press Enter to proceed without a password)"
       private: true
       default: ""
 
-    - name: "setup_local_solr"
-      prompt: "Do you want to setup a local Solr instance with spatial capabilities? (y/n)"
-      private: false
-      default: "n"
-
-    - name: "setup_local_redis"
-      prompt: "Do you want to setup a local Redis instance? (y/n)"
-      private: false
-      default: "n"
-
-    - name: "always_ckan_origin_code"
-      prompt: "Do you want to clean the local CKAN repository ('src/ckan') with the origin? Remove all local changes. (y/n)"
-      private: false
-      default: "n"
-
   pre_tasks:
+    - name: Convert deployment action to lower case
+      set_fact:
+        deployment_action: "{{ deployment_action | lower }}"
+
+    - name: Validate deployment action option
+      fail:
+        msg: "Invalid deployment action: '{{ deployment_action | lower }}'. Must be 'deploy' or 'update'."
+      when: deployment_action not in ['deploy', 'update']
+
+    # Check OS and CKAN version compatibility 
     - name: "Verify distribution: {{ ansible_distribution }}"
       fail:
         msg: "Currently, it only supports CentOS and RedHat distributions."
       when: ansible_distribution | lower not in ['centos', 'redhat']
 
-    - name: "Verify ckan-ansible compat with CKAN version: {{ ckan_version }}"
+    - name: "Verify ckan-ansible compatibility with CKAN version: {{ ckan_version }}"
       fail:
         msg: "Unsupported CKAN version: {{ ckan_version }}. Supported versions are: {{ supported_ckan_versions | join(', ') }}."
       when: ckan_version not in supported_ckan_versions
 
+    # Conditional Prompts for Deploy Action
+    - name: Prompt for setup_local_solr if deploying from scratch
+      pause:
+        prompt: "Do you want to setup a local Solr instance with spatial capabilities? (y/n)"
+      register: prompt_solr
+      when: deployment_action == "deploy"
+      no_log: false
+      run_once: true
+
+    - name: Set setup_local_solr fact
+      set_fact:
+        setup_local_solr: "{{ prompt_solr.user_input | default('n') }}"
+      when: deployment_action == "deploy"
+
+    - name: Prompt for setup_local_redis if deploying from scratch
+      pause:
+        prompt: "Do you want to setup a local Redis instance? (y/n)"
+      register: prompt_redis
+      when: deployment_action == "deploy"
+      no_log: false
+      run_once: true
+
+    - name: Set setup_local_redis fact
+      set_fact:
+        setup_local_redis: "{{ prompt_redis.user_input | default('n') }}"
+      when: deployment_action == "deploy"
+
+    - name: Prompt for always_ckan_origin_code if deploying from scratch
+      pause:
+        prompt: "Do you want to clean the local CKAN repository ('src/ckan') with the origin? Remove all local changes. (y/n)"
+      register: prompt_origin
+      when: deployment_action == "deploy"
+      no_log: false
+      run_once: true
+
+    - name: Set always_ckan_origin_code fact
+      set_fact:
+        always_ckan_origin_code: "{{ prompt_origin.user_input | default('n') }}"
+      when: deployment_action == "deploy"
+
+    # Variables for deployment version
     - name: "Include global variables for all hosts (group_vars/all.yml)"
       include_vars: "inventories/group_vars/all.yml"
 
@@ -53,7 +94,7 @@
     - name: Set deployment_version_name
       set_fact:
         deployment_version_name: "{{ deployment_version_name_map[inventory_dir | basename] }}"
-    
+
     - name: "Debug {{ inventory_dir | basename }} deployment version"
       debug:
         msg: "Deployment version is: {{ deployment_version_name }}"
@@ -89,15 +130,23 @@
           - "(ckan_datastore.datastore_readonly_password | default('')) is not regex('%')"
         fail_msg: "The '%' character is not allowed in sensitive variables as it is an escape character in Ansible."
 
+    # Override Variables for Update Action
+    - name: Override setup variables if updating
+      set_fact:
+        setup_local_solr: "n"
+        setup_local_redis: "n"
+        always_ckan_origin_code: "y"
+      when: deployment_action == "update"
+
   roles:
-      - { role: common, tags: common }
-      - { role: database, tags: database }
-      - { role: solr, tags: solr, when: setup_local_solr == "y" }
-      - { role: redis, tags: redis, when: setup_local_redis == "y" }
-      - { role: ckan, tags: ckan }
-      - { role: ckan_pycsw, tags: ckan_pycsw }
-      - { role: webserver, tags: webserver }
-      - { role: supervisor, tags: supervisor }
+    - { role: common, tags: common, when: 'deployment_action == "deploy"' }
+    - { role: database, tags: database, when: 'deployment_action == "deploy"' }
+    - { role: solr, tags: solr, when: 'setup_local_solr == "y" and deployment_action == "deploy"' }
+    - { role: redis, tags: redis, when: 'setup_local_redis == "y" and deployment_action == "deploy"' }
+    - { role: ckan, tags: ckan }
+    - { role: ckan_pycsw, tags: ckan_pycsw }
+    - { role: webserver, tags: webserver }
+    - { role: supervisor, tags: supervisor }
 
   post_tasks:
     - name: "Change owner and group of {{ ckan_virtualenv }} to {{ ckan_user }}"
