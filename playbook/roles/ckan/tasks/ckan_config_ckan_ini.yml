@@ -77,4 +77,29 @@
         line: 'smtp.mail_from = {{ ckan_smtp_mail_from }}'
         state: present
       become: true
+
+    - name: "Uncomment smtp.reply_to"
+      lineinfile:
+        path: "{{ ckan_config_dir }}/ckan.ini"
+        regexp: '^#smtp.reply_to = {{ ckan_smtp_reply_to }}'
+        line: 'smtp.reply_to = {{ ckan_smtp_reply_to }}'
+        state: present
+      become: true
+
+    - name: "Uncomment email_to"
+      lineinfile:
+        path: "{{ ckan_config_dir }}/ckan.ini"
+        regexp: '^#email_to = {{ ckan_email_to }}'
+        line: 'email_to = {{ ckan_email_to }}'
+        state: present
+      become: true
+
+    - name: "Uncomment error_email_from"
+      lineinfile:
+        path: "{{ ckan_config_dir }}/ckan.ini"
+        regexp: '^#error_email_from = {{ ckan_error_email_from }}'
+        line: 'error_email_from = {{ ckan_error_email_from }}'
+        state: present
+      become: true
+
   when: ckan_smpt_active | default(false)
