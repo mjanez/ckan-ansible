@@ -208,7 +208,7 @@ ckanext__schemingdcat__geometadata_base_uri: "{{ ckan_site_url }}{{ proxy_pycsw_
 ckanext__schemingdcat_default_package_item_icon: "theme"
 ckanext__schemingdcat_default_package_item_show_spatial: True
 ckanext__schemingdcat_show_metadata_templates_toolbar: False
-ckanext__schemingdcat_metadata_templates_search_identifier: "miteco-plantilla"
+ckanext__schemingdcat_metadata_templates_search_identifier: "schemingdcat_xls-template"
 ckanext__schemingdcat_endpoints_yaml: "endpoints.yaml"
 ckanext__schemingdcat_social_github: "https://github.com/mjanez/ckanext-schemingdcat"
 ckanext__schemingdcat_social_x: "https://x.com/ckanproject"
