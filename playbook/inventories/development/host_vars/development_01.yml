@@ -271,6 +271,7 @@ solr_os_supported:
   - "Debian"
 solr_port: 8983
 solr_host: 0.0.0.0
+solr_test_host: 127.0.0.1
 solr_mirror: "https://archive.apache.org/dist"
 solr_workspace: /root
 solr_tmp_dir: /tmp
