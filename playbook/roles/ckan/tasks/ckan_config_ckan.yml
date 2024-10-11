@@ -1,11 +1,3 @@
-- name: Copy CKAN config file
-  template:
-    src: ckan.ini.j2
-    dest: "{{ ckan_config_dir }}/ckan.ini"
-    mode: 0755
-  become: true
-  become_user: "{{ ckan_user }}"
-
 - name: Copy WHO config file
   template:
     src: who.ini.j2
@@ -15,13 +7,6 @@
   become_user: "{{ ckan_user }}"
   when: ckan_version is match('^ckan-2\.9\..*')
 
-- name: "Create a symbolic link to the ckan.ini file in {{ ckan_virtualenv}}"
-  file:
-    src: "{{ ckan_config_dir }}/ckan.ini" 
-    dest: "{{ ckan_virtualenv}}/ckan.ini" 
-    state: link
-    force: yes
-
 - name: "Create a symbolic link to the who.ini file in {{ ckan_virtualenv}} for CKAN 2.9"
   file:
     src: "{{ ckan_config_dir}}/who.ini" 
@@ -29,9 +14,6 @@
     state: link
     force: yes
   when: ckan_version is match('^ckan-2\.9\..*')
-
-- name: Update CKAN config file
-  include_tasks: ckan_config_ckan_ini.yml
 
 - name: Initializing or upgrading CKAN database
   command: "{{ ckan_virtualenv }}/bin/ckan --config={{ ckan_config_dir}}/ckan.ini db upgrade"

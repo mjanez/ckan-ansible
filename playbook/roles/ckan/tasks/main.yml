@@ -39,6 +39,11 @@
     name: ckan
     tasks_from: ckan_test_conns.yml
 
+- name: Update CKAN config file
+  include_role:
+    name: ckan
+    tasks_from: ckan_config_ckan_ini.yml
+
 - name: Setup CKAN config
   include_role:
     name: ckan
