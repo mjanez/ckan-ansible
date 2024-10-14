@@ -88,7 +88,7 @@ postgresql_deps_pkgs:
   - "libpq-dev"
   - "python3-psycopg2"
 postgresql_client_pkg: postgresql
-postgresqL_python3_psycopg2: python3-psycopg2
+postgresql_python3_psycopg: python3-psycopg2
 
 ### NGINX packages
 nginx_pkg: nginx

@@ -21,19 +21,19 @@
 
 - name: Install python3-psycopg2 if python_pkg is not python3 (RHEL/CentOS)
   dnf:
-    name: "{{ postgresqL_python3_psycopg2 }}"
+    name: "{{ postgresql_python3_psycopg }}"
     state: present
   when: python_pkg != 'python3' and ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
 
 - name: Install python3-psycopg2 if python_pkg is not python3 (Debian/Ubuntu)
   apt:
-    name: "{{ postgresqL_python3_psycopg2 }}"
+    name: "{{ postgresql_python3_psycopg }}"
     state: present
   when: python_pkg != 'python3' and ansible_os_family == "Debian"
 
 - name: Install python3-psycopg2 if python_pkg is not python3 (Arch Linux)
   pacman:
-    name: "{{ postgresqL_python3_psycopg2 }}"
+    name: "{{ postgresql_python3_psycopg }}"
     state: present
   when: python_pkg != 'python3' and ansible_os_family == "Archlinux"
 
