@@ -21,19 +21,19 @@
 
 - name: Install python3-psycopg2 (RHEL/CentOS >= 8)
   dnf:
-    name: "{{ postgresql_python3_psycopg2['RedHat'] }}"
+    name: "{{ postgresql_python3_psycopg }}"
     state: present
   when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
 
 - name: Install python3-psycopg2 (Debian/Ubuntu)
   apt:
-    name: "{{ postgresql_python3_psycopg2['Debian'] }}"
+    name: "{{ postgresql_python3_psycopg }}"
     state: present
   when: ansible_os_family == "Debian"
 
 - name: Install python3-psycopg2 (Arch Linux)
   pacman:
-    name: "{{ postgresql_python3_psycopg2['Archlinux'] }}"
+    name: "{{ postgresql_python3_psycopg }}"
     state: present
   when: ansible_os_family == "Archlinux"
 
