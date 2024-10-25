@@ -216,6 +216,9 @@ ckanext__schemingdcat_social_linkedin: "https://www.linkedin.com/company/ckanpro
 ckanext__schemingdcat__postgres__geojson_chars_limit: 1000
 ckanext__schemingdcat__postgres__geojson_tolerance: 0.001
 
+#### ckanext-openapi
+ckanext__openapi__endpoints: '[{"url":"https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/examples/v3.0/api-with-examples.json","name":"sample","title":{"en":"OpenAPI sample 1","es":"Ejemplo de OpenAPI 1"},"description":{"en":"API with examples.","es":"API con ejemplos."}},{"url":"https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/examples/v3.0/petstore.json","name":"petstore","title":{"en":"Petstore OpenAPI example","es":"Ejemplo OpenAPI Petstore"},"description":{"en":"This is a sample Pet Store Server based on the OpenAPI 3.0 specification.","es":"Este es un ejemplo de Servidor de Tienda de Mascotas basado en la especificación OpenAPI 3.0."}}]'
+
 ### Web Services config ############################################
 ### Enable all sites in ckan-ansible/playbook/roles/webserver/templates/sites-available/*.conf.j2
 sites_enabled:
@@ -265,6 +268,7 @@ ckanext_versions:
 # This is a dictionary of custom plugins to install. The key is the github user/repo and the value is the version to install.
 ckanext_custom_plugins:
   mjanez/ckanext-schemingdcat: v4.2.1
+  mjanez/ckanext-openapi: v1.0.0
 
 ### Solr Service #########################################
 solr_os_supported: 
