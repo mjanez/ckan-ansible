@@ -190,6 +190,21 @@
   become: true
   become_user: "{{ ckan_user }}"
 
+- name: Install ckan/ckanext-hierarchy {{ ckanext_versions.ckanext_hierarchy }}
+  vars:
+    virtualenv: "{{ ckan_virtualenv }}"
+  block:
+    - name: Install ckan/ckanext-hierarchy {{ ckanext_versions.ckanext_hierarchy }}
+      become: true
+      become_user: "{{ ckan_user }}"
+      pip:
+        name: git+https://github.com/ckan/ckanext-hierarchy.git@{{ ckanext_versions.ckanext_hierarchy }}#egg=ckanext-hierarchy
+        virtualenv: "{{ ckan_virtualenv }}"
+        extra_args: -e
+      register: result
+  become: true
+  become_user: "{{ ckan_user }}"
+
 - name: Installation of custom CKAN extensions for enhancements and theme improvements
   vars:
     virtualenv: "{{ ckan_virtualenv }}"

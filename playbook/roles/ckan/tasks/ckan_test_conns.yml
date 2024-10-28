@@ -20,10 +20,14 @@
     login_user: "{{ ckan_database.ckan_db_user }}"
     login_password: "{{ ckan_database.ckan_db_password }}"
     login_port: "{{ ckan_database.postgres_port }}"
-  register: db_conn
-  until: db_conn.is_available
+  register: main_db_conn
+  until: main_db_conn.is_available
   retries: 5
   delay: 10
+
+- name: Debug main_db_conn
+  debug:
+    var: main_db_conn
 
 - name: "Check datastore DB ({{ ckan_datastore.datastore_db }}) connection"
   postgresql_ping:
@@ -32,7 +36,11 @@
     login_user: "{{ ckan_database.ckan_db_user }}"
     login_password: "{{ ckan_database.ckan_db_password }}"
     login_port: "{{ ckan_datastore.datastore_port }}"
-  register: db_conn
-  until: db_conn.is_available
+  register: datastore_db_conn
+  until: datastore_db_conn.is_available
   retries: 5
   delay: 10
+
+- name: Debug datastore_db_conn
+  debug:
+    var: datastore_db_conn
