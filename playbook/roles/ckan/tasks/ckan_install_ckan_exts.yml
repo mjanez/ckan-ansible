@@ -38,7 +38,7 @@
       become: true
       become_user: "{{ ckan_user }}"
       pip:
-        name: git+https://github.com/ckan/ckanext-harvest.git@{{ ckanext_versions.ckanext_harvest }}#egg=ckanext-harvest
+        name: git+https://github.com/mjanez/ckanext-harvest.git@{{ ckanext_versions.ckanext_harvest }}#egg=ckanext-harvest
         virtualenv: "{{ ckan_virtualenv }}"
         extra_args: -e
       register: result
