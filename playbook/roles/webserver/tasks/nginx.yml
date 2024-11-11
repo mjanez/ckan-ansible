@@ -29,6 +29,11 @@
     src: nginx/index.html.j2
     dest: "/usr/share/nginx/html/index.html"
 
+- name: Copy robots.txt
+  template:
+    src: nginx/robots.txt.j2
+    dest: "/usr/share/nginx/html/robots.txt"
+
 - name: Remove default nginx site if it exists
   file:
     path: "{{ nginx_dir }}/sites-enabled/default"
@@ -86,8 +91,6 @@
     dest: "{{ item.dest }}"
   become: true
   with_items:
-    - src: "{{ role_path }}/files/robots.txt"
-      dest: /usr/share/nginx/html/robots.txt"
     - src: "{{ role_path }}/files/ckan-local.crt"
       dest: "{{ nginx_dir }}/certs/"
     - src: "{{ role_path }}/files/ckan-local.key"
