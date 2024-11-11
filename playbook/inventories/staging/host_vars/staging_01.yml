@@ -263,6 +263,7 @@ ckanext_versions:
   ckanext_pages: v0.5.2
   ckanext_pdfview: 0.0.8
   ckanext_fluent: v1.0.1
+  ckanext_hierarchy: v1.2.1
 
 ### CKAN custom plugins #########################################
 # This is a dictionary of custom plugins to install. The key is the github user/repo and the value is the version to install.
