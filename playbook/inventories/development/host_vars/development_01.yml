@@ -192,6 +192,8 @@ ckanext__spatial__common_map__attribution: "Map tiles by <a href=\"http://openst
 
 #### ckanext-xloader
 ckanext__xloader__jobs_db__uri: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}:{{ ckan_database.postgres_port }}/{{ ckan_database.ckan_db }}"
+#### Enable or disable SSL certificate verification.  Setting verify to False should only be enabled during local development or testing.
+ckanext__xloader__ssl_verify: True
 
 #### ckanext-pages
 ckanext__pages__organization: True
