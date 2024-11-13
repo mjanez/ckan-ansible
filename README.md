@@ -25,6 +25,7 @@ And CKAN versions:
 >[!WARNING]
 > **Do not** install the `ansible-core` minimalist version. Install `ansible` using `pip` or `pipx`:
 >    ```sh
+>    python3 -m ensurepip --upgrade
 >    python3 -m pip install --user ansible
 >    ```
 > 
