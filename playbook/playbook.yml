@@ -67,6 +67,19 @@
         setup_local_redis: "{{ prompt_redis.user_input | default('n') }}"
       when: deployment_action == "deploy"
 
+    - name: Prompt for setup_local_ckan_pycsw if updating
+      pause:
+        prompt: "Do you want to update local ckan-pycsw instance? (y/n)"
+      register: prompt_ckan_pycsw
+      when: deployment_action == "update"
+      no_log: false
+      run_once: true
+
+    - name: Set setup_local_ckan_pycsw fact
+      set_fact:
+        setup_local_ckan_pycsw: "{{ prompt_ckan_pycsw.user_input | default('n') }}"
+      when: deployment_action == "update"
+
     - name: Prompt for always_ckan_origin_code if deploying from scratch
       pause:
         prompt: "Do you want to clean the local CKAN repository ('src/ckan') with the origin? Remove all local changes. (y/n)"
@@ -144,7 +157,7 @@
     - { role: solr, tags: solr, when: 'setup_local_solr == "y" and deployment_action == "deploy"' }
     - { role: redis, tags: redis, when: 'setup_local_redis == "y" and deployment_action == "deploy"' }
     - { role: ckan, tags: ckan }
-    - { role: ckan_pycsw, tags: ckan_pycsw }
+    - { role: ckan_pycsw, tags: ckan_pycsw, when: 'setup_local_ckan_pycsw == "y" or deployment_action == "deploy"' }
     - { role: webserver, tags: webserver }
     - { role: supervisor, tags: supervisor }
 

@@ -192,6 +192,8 @@ ckanext__spatial__common_map__attribution: "Map tiles by <a href=\"http://openst
 
 #### ckanext-xloader
 ckanext__xloader__jobs_db__uri: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}:{{ ckan_database.postgres_port }}/{{ ckan_database.ckan_db }}"
+#### Enable or disable SSL certificate verification.  Setting verify to False should only be enabled during local development or testing.
+ckanext__xloader__ssl_verify: True
 
 #### ckanext-pages
 ckanext__pages__organization: True
@@ -263,11 +265,12 @@ ckanext_versions:
   ckanext_pages: v0.5.2
   ckanext_pdfview: 0.0.8
   ckanext_fluent: v1.0.1
+  ckanext_hierarchy: v1.2.1
 
 ### CKAN custom plugins #########################################
 # This is a dictionary of custom plugins to install. The key is the github user/repo and the value is the version to install.
 ckanext_custom_plugins:
-  mjanez/ckanext-schemingdcat: v4.2.1
+  mjanez/ckanext-schemingdcat: v4.2.3
   mjanez/ckanext-openapi: v1.0.0
 
 ### Solr Service #########################################
