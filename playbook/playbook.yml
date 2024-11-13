@@ -146,15 +146,21 @@
     # Override Variables for Update Action
     - name: Override setup variables if updating
       set_fact:
-        setup_local_solr: "n"
+        setup_local_solr: "y"
         setup_local_redis: "n"
         always_ckan_origin_code: "y"
       when: deployment_action == "update"
 
+    # Override Variables for Deploy Action
+    - name: Override setup variables if updating
+      set_fact:
+        setup_local_ckan_pycsw: "y"
+      when: deployment_action == "deploy"
+
   roles:
     - { role: common, tags: common, when: 'deployment_action == "deploy"' }
     - { role: database, tags: database, when: 'deployment_action == "deploy"' }
-    - { role: solr, tags: solr, when: 'setup_local_solr == "y" and deployment_action == "deploy"' }
+    - { role: solr, tags: solr, when: 'setup_local_solr == "y"' }
     - { role: redis, tags: redis, when: 'setup_local_redis == "y" and deployment_action == "deploy"' }
     - { role: ckan, tags: ckan }
     - { role: ckan_pycsw, tags: ckan_pycsw, when: 'setup_local_ckan_pycsw == "y" or deployment_action == "deploy"' }
