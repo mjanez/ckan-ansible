@@ -270,7 +270,7 @@ ckanext_versions:
 ### CKAN custom plugins #########################################
 # This is a dictionary of custom plugins to install. The key is the github user/repo and the value is the version to install.
 ckanext_custom_plugins:
-  mjanez/ckanext-schemingdcat: v4.2.2
+  mjanez/ckanext-schemingdcat: v4.2.3
   mjanez/ckanext-openapi: v1.0.0
 
 ### Solr Service #########################################
