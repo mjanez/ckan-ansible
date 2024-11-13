@@ -217,6 +217,7 @@ ckanext__schemingdcat_social_x: "https://x.com/ckanproject"
 ckanext__schemingdcat_social_linkedin: "https://www.linkedin.com/company/ckanproject"
 ckanext__schemingdcat__postgres__geojson_chars_limit: 1000
 ckanext__schemingdcat__postgres__geojson_tolerance: 0.001
+ckanext__schemingdcat__api__private_fields: "private_name private_email"
 
 #### ckanext-openapi
 ckanext__openapi__endpoints: '[{"url":"https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/examples/v3.0/api-with-examples.json","name":"sample","title":{"en":"OpenAPI sample 1","es":"Ejemplo de OpenAPI 1"},"description":{"en":"API with examples.","es":"API con ejemplos."}},{"url":"https://raw.githubusercontent.com/OAI/OpenAPI-Specification/refs/heads/main/examples/v3.0/petstore.json","name":"petstore","title":{"en":"Petstore OpenAPI example","es":"Ejemplo OpenAPI Petstore"},"description":{"en":"This is a sample Pet Store Server based on the OpenAPI 3.0 specification.","es":"Este es un ejemplo de Servidor de Tienda de Mascotas basado en la especificación OpenAPI 3.0."}}]'
