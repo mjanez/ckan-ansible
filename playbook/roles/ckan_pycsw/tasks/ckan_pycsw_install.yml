@@ -56,7 +56,16 @@
 - name: Run pdm install --no-self --group prod
   shell: |
     export PATH=$HOME/.local/bin:$PATH
-    pdm install --no-self --group prod
+    pdm install --no-self --group prod -v > {{ ckan_tmp_dir }}/ckan-pycsw_pdm_install.log 2>&1
+  args:
+    chdir: "{{ pycsw_app_dir }}"
+  become: true
+  become_user: "{{ ckan_user }}"
+
+- name: Run pdm fix to update lock strategy
+  shell: |
+    export PATH=$HOME/.local/bin:$PATH
+    pdm fix
   args:
     chdir: "{{ pycsw_app_dir }}"
   become: true
