@@ -332,6 +332,7 @@ pycsw_output_schema: iso19139_inspire
 pycsw_cron_days_interval: 2
 pycsw_cron_hour_start: 4
 pycsw_app_dir: "{{ ckan_src_dir }}/ckan-pycsw"
+pycsw_local_ssl_unverified: false
 #### pycsw conf
 pycsw_identification_title: Sample Geospatial Catalogue
 pycsw_identification_abstract: OGC CSW server powered by pycsw
