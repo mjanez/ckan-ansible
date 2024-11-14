@@ -3,13 +3,6 @@
     path: "{{ pycsw_app_dir }}/.git"
   register: repo
 
-- name: Get current ckan-pycsw version
-  become: true
-  become_user: "{{ ckan_user }}"
-  shell: "git -C {{ pycsw_app_dir }} describe --tags"
-  register: current_version
-  when: repo.stat.exists
-
 - name: Pull ckan-pycsw:{{ ckan_pycsw_version }} from GitHub
   become: true
   become_user: "{{ ckan_user }}"
@@ -17,23 +10,7 @@
     repo: https://github.com/mjanez/ckan-pycsw
     dest: "{{ pycsw_app_dir }}"
     version: "{{ ckan_pycsw_version }}"
-  when: not repo.stat.exists or (repo.stat.exists and ckan_pycsw_version is version(current_version.stdout, 'gt'))
-
-- name: Confirm update
-  pause:
-    prompt: "Do you want to update ckan-pycsw to version {{ ckan_pycsw_version }}? (y/n)"
-    echo: yes
-  register: confirm_update
-  when: repo.stat.exists and ckan_pycsw_version is version(current_version.stdout, 'gt')
-
-- name: "Update ckan-pycsw to version: {{ ckan_pycsw_version }}"
-  become: true
-  become_user: "{{ ckan_user }}"
-  git:
-    repo: https://github.com/mjanez/ckan-pycsw
-    dest: "{{ pycsw_app_dir }}"
-    version: "{{ ckan_pycsw_version }}"
-  when: confirm_update is defined and confirm_update.user_input is defined and confirm_update.user_input | lower == 'y'
+    force: yes
 
 - name: Install PDM
   shell: curl -sSL https://pdm-project.org/install-pdm.py | python3 -
