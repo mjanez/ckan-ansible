@@ -35,3 +35,15 @@
     line: "ckanext.xloader.api_token = {{ xloader_api_token }}"
   become: true
   when: xloader_api_token is defined and xloader_api_token != ""
+
+  # Clear index
+- name: Clear Solr index
+  shell: |
+    {{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini search-index clear
+  become: true
+
+  # Rebuild index
+- name: Rebuild Solr index
+  shell: |
+    {{ ckan_virtualenv }}/bin/ckan -c {{ ckan_config_dir }}/ckan.ini search-index rebuild
+  become: true
