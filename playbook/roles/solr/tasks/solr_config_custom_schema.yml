@@ -1,0 +1,9 @@
+- name: 'Add custom multivalued field definitions to Solr schema using: solr_multivalued_fields variable'
+  blockinfile:
+    path: "{{ solr_ckan_schema_file }}"
+    insertafter: "<fields>"
+    marker: "<!-- {mark} custom fields -->"
+    block: |
+      {% for field_name in solr_multivalued_fields %}
+      <field name="{{ field_name }}" type="string" uninvertible="false" docValues="true" indexed="true" stored="true" multiValued="true"/>
+      {% endfor %}

@@ -14,9 +14,17 @@
     force: yes
 
 # WTF CSRF token 
-- name: Generate 
-  command: "{{ ckan_virtualenv }}/bin/ckan config-tool {{ ckan_config_dir }}/ckan.ini 'WTF_CSRF_SECRET_KEY=$(python3 -c \"import secrets; print(secrets.token_urlsafe())\")'"
+- name: Generate WTF_CSRF_SECRET_KEY
+  command: '{{ ckan_virtualenv }}/bin/python3 -c "import secrets; print(secrets.token_urlsafe())"'
+  register: wtf_csrf_secret_key
+
+- name: Set WTF_CSRF_SECRET_KEY in ckan.ini 
+  lineinfile:
+    path: "{{ ckan_config_dir }}/ckan.ini"
+    regexp: "^WTF_CSRF_SECRET_KEY = default_secret_change_me"
+    line: "WTF_CSRF_SECRET_KEY = {{ wtf_csrf_secret_key.stdout }}"
   become: true
+  when: wtf_csrf_secret_key.rc == 0
 
 # Beaker session secret and api_token.jwt secret are generated if not set in ckan.ini
 - name: Generate beaker.session.secret

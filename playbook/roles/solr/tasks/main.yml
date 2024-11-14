@@ -38,6 +38,11 @@
     name: solr
     tasks_from: solr_config_spatial.yml
 
+- name: Setup custom schema config for Solr
+  include_role:
+    name: solr
+    tasks_from: solr_config_custom_schema.yml
+
 - name: Restart Solr (RHEL 7+ workaround).
   command: service {{ solr_service_name }} restart
   ignore_errors: true
