@@ -17,6 +17,8 @@ deployment_version_name: Staging
 ### Webserver #########################################
 proxy_server_name: localhost
 proxy_server_url: http://{{ proxy_server_name }}
+# WARNING: This variable is for internal use only if using NGINX in the CKAN-Ansible deployment.
+# It is not necessary to modify it.
 proxy_local_services_url: http://localhost
 proxy_ckan_location: /catalog
 proxy_pycsw_location: /csw
