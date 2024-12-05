@@ -17,6 +17,8 @@ deployment_version_name: Production
 ### Webserver #########################################
 proxy_server_name: localhost
 proxy_server_url: http://{{ proxy_server_name }}
+# WARNING: This variable is for internal use only if using NGINX in the CKAN-Ansible deployment.
+# It is not necessary to modify it.
 proxy_local_services_url: http://localhost
 proxy_ckan_location: /catalog
 proxy_pycsw_location: /csw
@@ -194,6 +196,8 @@ ckanext__spatial__common_map__attribution: "Map tiles by <a href=\"http://openst
 ckanext__xloader__jobs_db__uri: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}:{{ ckan_database.postgres_port }}/{{ ckan_database.ckan_db }}"
 #### Enable or disable SSL certificate verification.  Setting verify to False should only be enabled during local development or testing.
 ckanext__xloader__ssl_verify: True
+#### Maximum content length for uploaded files (in bytes). Default 1000000000 (1GB)
+ckanext__xloader__max_content_length: 1000000000
 
 #### ckanext-pages
 ckanext__pages__organization: True
@@ -331,6 +335,7 @@ pycsw_output_schema: iso19139_inspire
 pycsw_cron_days_interval: 2
 pycsw_cron_hour_start: 4
 pycsw_app_dir: "{{ ckan_src_dir }}/ckan-pycsw"
+pycsw_local_ssl_unverified: false
 #### pycsw conf
 pycsw_identification_title: Sample Geospatial Catalogue
 pycsw_identification_abstract: OGC CSW server powered by pycsw
