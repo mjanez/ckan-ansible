@@ -1,0 +1,20 @@
+# molecule/default/verify.yml
+---
+- name: Verify CKAN installation
+  hosts: all
+  tasks:
+    - name: Get current CKAN version
+      become: true
+      become_user: "{{ ckan_user }}"
+      shell: "git -C {{ ckan_src_dir }}/ckan describe --tags"
+      register: current_version
+      when: repo.stat.exists
+
+    - name: Check if CKAN is installed
+      uri:
+        url: "{{ ckan_site_url }}{{ proxy_ckan_location }}/api/3/action/status_show"
+        method: GET
+        status_code: 200
+      register: result
+      changed_when: false
+      failed_when: result.status != 200
