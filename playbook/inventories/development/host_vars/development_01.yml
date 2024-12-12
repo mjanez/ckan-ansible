@@ -267,8 +267,8 @@ ckanext_versions:
   ckanext_xloader: 1.0.1-stable
   ckanext_harvest: v1.5.6
   ckanext_geoview: v0.2.2
-  ckanext_spatial: v2.1.1
-  ckanext_dcat: v1.8.0
+  ckanext_spatial: v2.2.0
+  ckanext_dcat: v2.1.0
   ckanext_scheming: release-3.0.0
   ckanext_resourcedictionary: v1.0.2
   ckanext_pages: v0.5.2
@@ -279,7 +279,7 @@ ckanext_versions:
 ### CKAN custom plugins #########################################
 # This is a dictionary of custom plugins to install. The key is the github user/repo and the value is the version to install.
 ckanext_custom_plugins:
-  mjanez/ckanext-schemingdcat: v4.2.3
+  mjanez/ckanext-schemingdcat: v4.3.0
   mjanez/ckanext-openapi: v1.0.0
 
 ### Solr Service #########################################
