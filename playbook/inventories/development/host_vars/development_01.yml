@@ -223,6 +223,16 @@ ckanext__schemingdcat_social_linkedin: "https://www.linkedin.com/company/ckanpro
 ckanext__schemingdcat__postgres__geojson_chars_limit: 1000
 ckanext__schemingdcat__postgres__geojson_tolerance: 0.001
 ckanext__schemingdcat__api__private_fields: "private_name private_email"
+ckanext__schemingdcat__csw__ssl_verify: True
+#### DCAT-AP Metadata enhancements
+ckanext__schemingdcat__dcat_ap__publisher__name: "Catalog Publishing Organization"
+ckanext__schemingdcat__dcat_ap__publisher__identifier: "http://datos.gob.es/recurso/sector-publico/org/Organismo/EA0000000"
+ckanext__schemingdcat__dcat_ap__publisher__email: "info@example.org"
+ckanext__schemingdcat__dcat_ap__publisher__type: "http://purl.org/adms/publishertype/NationalAuthority"
+ckanext__schemingdcat__dcat_ap__publisher__url: "https://orgn.example.org/"
+ckanext__schemingdcat__dcat_ap__datastore_dataservice__title: "Datastore API service"
+ckanext__schemingdcat__dcat_ap__datastore_dataservice__description: "This API provides live access to the Datastore portion of the Open Data Portal. Serve data resources in a machine-readable format."
+ckanext__schemingdcat__dcat_ap__datastore_dataservice__endpoint_description: "{ckan_site_url}/openapi/datastore"
 solr_multivalued_fields: 
   - endpoint_url
   - serves_dataset
