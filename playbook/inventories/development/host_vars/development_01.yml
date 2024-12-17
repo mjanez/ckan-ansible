@@ -132,7 +132,7 @@ ckan_licenses_group_url: "file://{{ ckan_src_dir }}/ckanext-schemingdcat/ckanext
 ckan_datastore_sqlsearch_enabled: false
 
 #### Plugins
-ckan_plugins: "activity stats image_view video_view audio_view webpage_view text_view datatables_view resourcedictionary datastore xloader spatial_metadata spatial_query spatial_harvest_metadata_api csw_harvester waf_harvester doc_harvester resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface schemingdcat schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat_ckan_harvester schemingdcat_xls_harvester schemingdcat_postgres_harvester schemingdcat_open_data_statistics harvest pdf_view pages fluent openapi"
+ckan_plugins: "activity stats image_view video_view audio_view webpage_view text_view datatables_view resourcedictionary datastore xloader spatial_metadata spatial_query spatial_harvest_metadata_api resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface schemingdcat schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat_ckan_harvester schemingdcat_xls_harvester schemingdcat_postgres_harvester schemingdcat_csw_harvester schemingdcat_open_data_statistics harvest pdf_view pages fluent openapi"
 
 #### Previews formats
 ckan__preview__json_formats: "json jsonld"
@@ -233,12 +233,12 @@ ckanext__schemingdcat__dcat_ap__publisher__url: "https://orgn.example.org/"
 ckanext__schemingdcat__dcat_ap__datastore_dataservice__title: "Datastore API service"
 ckanext__schemingdcat__dcat_ap__datastore_dataservice__description: "This API provides live access to the Datastore portion of the Open Data Portal. Serve data resources in a machine-readable format."
 ckanext__schemingdcat__dcat_ap__datastore_dataservice__endpoint_description: "{ckan_site_url}/openapi/datastore"
-solr_multivalued_fields: 
-  - endpoint_url
-  - serves_dataset
 
 #### ckanext-openapi
 ckanext__openapi__endpoints: '[{"url":"https://raw.githubusercontent.com/mjanez/ckanext-openapi/refs/heads/develop/ckanext/openapi/public/static/openapi/datastore.yaml","name":"datastore","title":{"en":"CKAN - Datastore API","es":"Portal de datos abiertos de CKAN - API Datastore"},"description":{"en":"This API provides live access to the Datastore portion of the CKAN Open Data Portal.","es":"Esta API proporciona acceso en tiempo real a la parte de Datastore del Portal de Datos Abiertos CKAN."}},{"url":"https://raw.githubusercontent.com/mjanez/ckanext-openapi/refs/heads/develop/ckanext/openapi/public/static/openapi/ckan.yaml","name":"ckan","title":{"en":"CKAN Open Data Portal - CKAN API (ES)","es":"Portal de datos abiertos de CKAN - API CKAN"},"description":{"en":"This API provides live access to the CKAN portion of the CKAN Open Data Portal.","es":"Esta API proporciona acceso en tiempo real a la parte de CKAN del Portal de Datos Abiertos CKAN."}}]'
+solr_multivalued_fields: 
+  - endpoint_url
+  - serves_dataset
 
 ### Web Services config ############################################
 ### Enable all sites in ckan-ansible/playbook/roles/webserver/templates/sites-available/*.conf.j2
