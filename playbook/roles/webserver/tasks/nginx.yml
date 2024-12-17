@@ -1,23 +1,29 @@
+- name: Check if NGINX is installed
+  command: nginx -v
+  register: nginx_installed
+  failed_when: false
+  changed_when: false
+
 - name: "Install NGINX {{ nginx_version }} (RHEL/CentOS >= 8)"
   dnf:
     name: "nginx-{{ nginx_version }}"
     state: present
     update_cache: true
-  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8
+  when: ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8 and nginx_installed.rc != 0
 
 - name: "Install NGINX {{ nginx_version }} (Debian/Ubuntu)"
   apt:
     name: "nginx={{ nginx_version }}"
     state: present
     update_cache: true
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and nginx_installed.rc != 0
 
 - name: "Install NGINX {{ nginx_version }} (Arch Linux)"
   pacman:
     name: "nginx={{ nginx_version }}"
     state: present
     update_cache: true
-  when: ansible_os_family == "Archlinux"
+  when: ansible_os_family == "Archlinux" and nginx_installed.rc != 0
 
 - name: Copy nginx config file
   template:
