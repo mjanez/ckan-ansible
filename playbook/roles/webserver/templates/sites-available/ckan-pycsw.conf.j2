@@ -4,7 +4,7 @@ server {
     listen       {{ nginx_sslport }} ssl;
     listen  [::]:{{ nginx_sslport }} ssl;
     server_name {{proxy_server_name}};
-    client_max_body_size {{proxy_server_name}}M;
+    client_max_body_size {{ckan__max_resource_size}}M;
     ssl_certificate {{ nginx_dir }}/certs/ckan-local.crt;
     ssl_certificate_key {{ nginx_dir }}/certs/ckan-local.key;
 
