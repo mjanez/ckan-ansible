@@ -20,22 +20,22 @@ proxy_server_url: http://{{ proxy_server_name }}
 # WARNING: This variable is for internal use only if using NGINX in the CKAN-Ansible deployment.
 # It is not necessary to modify it.
 proxy_local_services_url: http://localhost
-proxy_ckan_location: /catalogo
+proxy_ckan_location: /catalog
 proxy_pycsw_location: /csw
 pycsw_port: 8000
 ckan_port: 5000
 nginx_dir: /etc/nginx
 nginx_log_dir: /var/log/nginx
-nginx_port: 80
-nginx_sslport: 443
+nginx_port: 81
+nginx_sslport: 8443
 # PRODUCTION DISABLE AND USE A BALANCER!: Enable or disable the httpd network connect to avoid nginx proxy_pass issues. https://www.nginx.com/blog/using-nginx-plus-with-selinux/
 enable_httpd_network_connect: true
 # URLs [ckan, pycsw]
 proxy_pycsw_proxy_pass: "{{ proxy_local_services_url }}:{{ pycsw_port }}"
 proxy_ckan_proxy_pass: "{{ proxy_local_services_url }}:{{ ckan_port }}"
-proxy_server_port: "{{ nginx_sslport }}"
-ckan_url: "{{ proxy_server_url }}{{ proxy_ckan_location }}"
-pycsw_url: "{{ proxy_server_url }}{{ proxy_pycsw_location }}"
+proxy_server_port: "{{ nginx_port }}"
+ckan_url: "{{ proxy_server_url }}:{{ proxy_server_port }}{{ proxy_ckan_location }}"
+pycsw_url: "{{ proxy_server_url }}:{{ proxy_server_port }}{{ proxy_pycsw_location }}"
 
 ### Redis Service #########################################
 redis_os_supported: 
@@ -89,7 +89,7 @@ redis_extra_config: ""
 postgres_port: 5432
 postgres_dir: "/var/lib/pgsql/data"
 # Using an external PostgreSQL server or setup a local one
-use_external_postgres_database: true
+use_external_postgres_database: false
 ckan_database: {
   postgres_user: "postgres",
   postgres_password: "postgres",
@@ -114,10 +114,14 @@ ckan_version: ckan-2.10.5
 ckan_site_id: default
 ckan_site_name: "{{ proxy_server_url }}"
 ## Check if the ckan_site_url is correctly configured. Default uses the proxy_server_name and nginx_port
-ckan_site_url: "{{ ckan_site_name }}"
+ckan_site_url: "{{ ckan_site_name }}:{{ nginx_port }}"
 ckan_root_path: "{{ proxy_ckan_location }}/{% raw %}{{LANG}}{% endraw %}"
-ckan_site_title: "Datos Abiertos MITECO"
-ckan_site_description: "Portal de datos abiertos CKAN - {{ deployment_version_name }}"
+ckan_site_title: "CKAN site - {{ deployment_version_name }}"
+ckan_site_description: "CKAN site - {{ deployment_version_name }}"
+ckan_site_logo: "images/default/ckan-logo.png"
+ckan_favicon: base/images/ckan.ico
+ckan_site_intro_text: "[![ckan-docker-spatial](https://img.shields.io/badge/ckan_docker_spatial-CKAN_${CKAN_VERSION}-brightgreen?style=social&logo=github#center)](https://github.com/mjanez/ckan-docker)[`ckan-docker *spatial`](https://github.com/mjanez/ckan-docker) is a ready-to-use development environment for [CKAN](https://github.com/ckan/ckan), the world’s leading open-source data portal platform."
+ckan_site_about: "{{ ckan_site_intro_text }}"
 ckan_sysadmin_name: ckan_admin
 ckan_sysadmin_email: ckan_admin@localhost
 ckan_sysadmin_password: test1234
@@ -127,7 +131,7 @@ ckan_licenses_group_url: "file://{{ ckan_src_dir }}/ckanext-schemingdcat/ckanext
 ckan_datastore_sqlsearch_enabled: false
 
 #### Plugins
-ckan_plugins: "activity stats image_view video_view audio_view webpage_view text_view datatables_view resourcedictionary datastore xloader spatial_metadata spatial_query spatial_harvest_metadata_api resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface miteco miteco_csw_harvester hierarchy_display schemingdcat schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat_ckan_harvester schemingdcat_xls_harvester schemingdcat_postgres_harvester schemingdcat_csw_harvester schemingdcat_open_data_statistics harvest pdf_view pages fluent openapi"
+ckan_plugins: "activity stats image_view video_view audio_view webpage_view text_view datatables_view resourcedictionary datastore xloader spatial_metadata spatial_query spatial_harvest_metadata_api resource_proxy geo_view geojson_view wmts_view shp_view dcat dcat_rdf_harvester dcat_json_harvester dcat_json_interface schemingdcat schemingdcat_datasets schemingdcat_groups schemingdcat_organizations schemingdcat_ckan_harvester schemingdcat_xls_harvester schemingdcat_postgres_harvester schemingdcat_csw_harvester schemingdcat_open_data_statistics harvest pdf_view pages fluent openapi"
 
 #### Previews formats
 ckan__preview__json_formats: "json jsonld"
@@ -137,14 +141,14 @@ ckan__preview__loadable: "html htm rdf+xml owl+xml xml n3 n-triples turtle plain
 
 #### Resource Proxy settings
 ### The maximum in megabytes a resources upload can be. Default 10MB
-ckan__max_resource_size: 200
+ckan__max_resource_size: 100
 ckan__max_image_size: 4
 ### Preview size limit, default: 1MB
 ckan__resource_proxy__max_file_size: 50048576
 ## Size of chunks to read/write__
-ckan__resource_proxy__chunk_size: 8192
+ckan__resource_proxy__chunk_size: 4096
 ## Default timeout for fetching proxied items
-ckan__resource_proxy__timeout: 25
+ckan__resource_proxy__timeout: 10
 
 #### Views
 ckan_views_default_views: "image_view video_view audio_view webpage_view text_view datatables_view wmts_view geojson_view geo_view shp_view pdf_view"
@@ -156,7 +160,7 @@ ckan_locales_offered: "es en pt_BR ja it cs_CZ ca fr el sv sr sr@latin no sk fi 
 
 #### Datasets
 # Enables or disable collaborators in individual datasets (https://docs.ckan.org/en/2.9/maintaining/authorization.html#dataset-collaborators)
-ckan__auth__allow_dataset_collaborators: true
+ckan__auth__allow_dataset_collaborators: false
 ckan__auth__allow_admin_collaborators: false
 
 #### ckanext-harvest
@@ -178,23 +182,23 @@ ckanext__geoview__shp_viewer__srid: 3857
 ckanext__geoview__shp_viewer__encoding: UTF-8
 
 #### ckanext-scheming
-ckanext__scheming__dataset_schemas: "ckanext.miteco:schemas/miteco/miteco_dataset.yaml"
-ckanext__scheming__group_schemas: "ckanext.miteco:schemas/miteco/miteco_group.json"
-ckanext__scheming__organization_schemas: "ckanext.miteco:schemas/miteco/miteco_org.json"
-ckanext__scheming__presets: "ckanext.schemingdcat:schemas/default_presets.json ckanext.fluent:presets.json ckanext.miteco:schemas/miteco_presets.json"
+ckanext__scheming__dataset_schemas: "ckanext.schemingdcat:schemas/geodcat_ap/eu_geodcat_ap_full.yaml"
+ckanext__scheming__group_schemas: "ckanext.schemingdcat:schemas/geodcat_ap/eu_geodcat_ap_group.json"
+ckanext__scheming__organization_schemas: "ckanext.schemingdcat:schemas/geodcat_ap/eu_geodcat_ap_org.json"
+ckanext__scheming__presets: "ckanext.schemingdcat:schemas/default_presets.json ckanext.fluent:presets.json"
 
 #### ckanext-spatial (Solr Backend - solr9-spatial: https://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#choosing-a-backend-for-the-spatial-search)
 ckan__search__solr_allowed_query_parsers: field
 #### (Solr Backend - solr9-spatial: https://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#choosing-a-backend-for-the-spatial-search)
 ckanext__spatial__search_backend: solr-spatial-field
 ckan__spatial__srid: 3857
-ckanext__spatial__common_map__custom_url: https://tms-ign-base.idee.es/1.0.0/IGNBaseTodo/{z}/{x}/{-y}.jpeg
-ckanext__spatial__common_map__attribution: "Teselas del <a href=\"https://www.scne.es/\">SCNE</a> (<a href=\"http://creativecommons.org/licenses/by/4.0\">CC BY 4.0</a>)"
+ckanext__spatial__common_map__custom_url: https://a.tile.openstreetmap.org/{z}/{x}/{y}.png
+ckanext__spatial__common_map__attribution: "Map tiles by <a href=\"http://openstreetmap.org\">OpenStreetMap</a> (<a href=\"http://creativecommons.org/licenses/by-sa/3.0\">CC BY SA</a>)"
 
 #### ckanext-xloader
 ckanext__xloader__jobs_db__uri: "postgresql://{{ ckan_database.ckan_db_user }}:{{ ckan_database.ckan_db_password }}@{{ ckan_database.postgres_host }}:{{ ckan_database.postgres_port }}/{{ ckan_database.ckan_db }}"
 #### Enable or disable SSL certificate verification.  Setting verify to False should only be enabled during local development or testing.
-ckanext__xloader__ssl_verify: False
+ckanext__xloader__ssl_verify: True
 #### Maximum content length for uploaded files (in bytes). Default 1000000000 (1GB)
 ckanext__xloader__max_content_length: 1000000000
 
@@ -206,44 +210,37 @@ ckanext__pages__group_menu: True
 ckanext__pages__organization_menu: True
 
 #### ckanext-schemingdcat
-ckanext__schemingdcat__facet_list: "dataset_scope hvd_category theme groups theme_es language dcat_type groups publisher_name publisher_type spatial_uri owner_org res_format frequency tags tag_uri conforms_to"
+ckanext__schemingdcat__facet_list: "dataset_scope theme groups theme_es language dcat_type groups publisher_name publisher_type spatial_uri owner_org res_format frequency tags tag_uri conforms_to"
 ckanext__schemingdcat__organization_custom_facets: true
 ckanext__schemingdcat__group_custom_facets: true
 ckanext__schemingdcat__geometadata_base_uri: "{{ ckan_site_url }}{{ proxy_pycsw_location }}"
 ckanext__schemingdcat_default_package_item_icon: "theme"
 ckanext__schemingdcat_default_package_item_show_spatial: True
 ckanext__schemingdcat_show_metadata_templates_toolbar: False
-ckanext__schemingdcat_metadata_templates_search_identifier: "miteco-plantilla"
+ckanext__schemingdcat_metadata_templates_search_identifier: "schemingdcat_xls-template"
 ckanext__schemingdcat_endpoints_yaml: "endpoints.yaml"
-ckanext__schemingdcat_social_github: "https://github.com/ckan/ckan"
-ckanext__schemingdcat_social_x: "https://x.com/mitecogob"
-ckanext__schemingdcat_social_linkedin: "https://es.linkedin.com/company/ministerio-para-la-transición-ecológica-y-el-reto-demográfico"
+ckanext__schemingdcat_social_github: "https://github.com/mjanez/ckanext-schemingdcat"
+ckanext__schemingdcat_social_x: "https://x.com/ckanproject"
+ckanext__schemingdcat_social_linkedin: "https://www.linkedin.com/company/ckanproject"
 ckanext__schemingdcat__postgres__geojson_chars_limit: 1000
 ckanext__schemingdcat__postgres__geojson_tolerance: 0.001
-ckanext__schemingdcat__api__private_fields: "miteco_responsible_data_email miteco_responsible_data_name"
+ckanext__schemingdcat__api__private_fields: "private_name private_email"
 ckanext__schemingdcat__csw__ssl_verify: True
 #### DCAT-AP Metadata enhancements
-ckanext__schemingdcat__dcat_ap__publisher__name: "Ministerio para la Transición Ecológica y el Reto Demográfico"
-ckanext__schemingdcat__dcat_ap__publisher__identifier: "http://datos.gob.es/recurso/sector-publico/org/Organismo/E05068001"
-ckanext__schemingdcat__dcat_ap__publisher__email: "informacionma@miteco.es"
+ckanext__schemingdcat__dcat_ap__publisher__name: "Catalog Publishing Organization"
+ckanext__schemingdcat__dcat_ap__publisher__identifier: "http://datos.gob.es/recurso/sector-publico/org/Organismo/EA0000000"
+ckanext__schemingdcat__dcat_ap__publisher__email: "info@example.org"
 ckanext__schemingdcat__dcat_ap__publisher__type: "http://purl.org/adms/publishertype/NationalAuthority"
-ckanext__schemingdcat__dcat_ap__publisher__url: "https://www.miteco.gob.es/"
-ckanext__schemingdcat__dcat_ap__datastore_dataservice__title: "Servicio de API de datos del MITECO"
-ckanext__schemingdcat__dcat_ap__datastore_dataservice__description: "Esta API proporciona acceso en tiempo real a la parte del almacén de datos  (Datastore) del portal de datos abiertos del MITECO, permitiendo servir recursos de datos en un formato legible por máquina."
+ckanext__schemingdcat__dcat_ap__publisher__url: "https://orgn.example.org/"
+ckanext__schemingdcat__dcat_ap__datastore_dataservice__title: "Datastore API service"
+ckanext__schemingdcat__dcat_ap__datastore_dataservice__description: "This API provides live access to the Datastore portion of the Open Data Portal. Serve data resources in a machine-readable format."
 ckanext__schemingdcat__dcat_ap__datastore_dataservice__endpoint_description: "{ckan_site_url}/openapi/datastore"
 
 #### ckanext-openapi
-ckanext__openapi__endpoints: '[{"url":"https://raw.githubusercontent.com/mjanez/ckanext-openapi/refs/heads/develop/ckanext/openapi/public/static/openapi/datastore.yaml","name":"datastore","title":{"en":"MITECO Open Data Portal - Datastore API","es":"Portal de datos abiertos del MITECO - API Datastore"},"description":{"en":"This API provides live access to the Datastore portion of the Ministry for the Ecological Transition and the Demographic Challenge (MiTEco) Open Data Portal.","es":"Esta API proporciona acceso en tiempo real a la parte del Datastore del Portal de Datos Abiertos del Ministerio para la Transición Ecológica y el Reto Demográfico (MiTEco)."}},{"url":"https://raw.githubusercontent.com/mjanez/ckanext-openapi/refs/heads/develop/ckanext/openapi/public/static/openapi/ckan.yaml","name":"ckan","title":{"en":"MITECO Open Data Portal - CKAN API","es":"Portal de datos abiertos del MITECO - API CKAN"},"description":{"en":"This API provides live access to the Datastore portion of the Ministry for the Ecological Transition and the Demographic Challenge (MiTEco) Open Data Portal.","es":"Esta API proporciona acceso en tiempo real a la parte del Datastore del Portal de Datos Abiertos del Ministerio para la Transición Ecológica y el Reto Demográfico (MiTEco)."}}]'
-
-#### ckanext-miteco
-ckan_site_logo: "images/default/header-logo.png"
-ckan_favicon: images/default/favicon.ico
-ckan_site_intro_text: "[#en#]The open data portal of the [**Ministry for the Ecological Transition and the Demographic Challenge**](https://www.miteco.gob.es/) consists of an application using CKAN technology for the distribution of maps, data and spatial metadata and a [**CSW Catalog**]({{ pycsw_url }}) (OGC standard) for the metadata publication and discovery about spatial resources on the web. [#es#]El portal de datos abiertos del [**Ministerio para la Transición Ecológica y el Reto Demográfico**](https://www.miteco.gob.es/) es una aplicación que utiliza la tecnología CKAN para la distribución de mapas, datos y metadatos espaciales y un [**Catálogo CSW**]({{ pycsw_url }}) (estándar OGC) para la publicación y descubrimiento de metadatos sobre recursos espaciales en la web."
-ckan_site_about: "[#en#]The open data portal of the [**Ministry for the Ecological Transition and the Demographic Challenge**](https://www.miteco.gob.es/) consists of an application using CKAN technology for the distribution of maps, data and spatial metadata and a [**CSW Catalog**]({{ pycsw_url }}) (OGC standard) for the metadata publication and discovery about spatial resources on the web. [#es#]El portal de datos abiertos del [**Ministerio para la Transición Ecológica y el Reto Demográfico**](https://www.miteco.gob.es/) es una aplicación que utiliza la tecnología CKAN para la distribución de mapas, datos y metadatos espaciales y un [**Catálogo CSW**]({{ pycsw_url }}) (estándar OGC) para la publicación y descubrimiento de metadatos sobre recursos espaciales en la web."
+ckanext__openapi__endpoints: '[{"url":"https://raw.githubusercontent.com/mjanez/ckanext-openapi/refs/heads/develop/ckanext/openapi/public/static/openapi/datastore.yaml","name":"datastore","title":{"en":"CKAN - Datastore API","es":"Portal de datos abiertos de CKAN - API Datastore"},"description":{"en":"This API provides live access to the Datastore portion of the CKAN Open Data Portal.","es":"Esta API proporciona acceso en tiempo real a la parte de Datastore del Portal de Datos Abiertos CKAN."}},{"url":"https://raw.githubusercontent.com/mjanez/ckanext-openapi/refs/heads/develop/ckanext/openapi/public/static/openapi/ckan.yaml","name":"ckan","title":{"en":"CKAN Open Data Portal - CKAN API (ES)","es":"Portal de datos abiertos de CKAN - API CKAN"},"description":{"en":"This API provides live access to the CKAN portion of the CKAN Open Data Portal.","es":"Esta API proporciona acceso en tiempo real a la parte de CKAN del Portal de Datos Abiertos CKAN."}}]'
 solr_multivalued_fields: 
   - endpoint_url
   - serves_dataset
-  - miteco_meth
 
 ### Web Services config ############################################
 ### Enable all sites in ckan-ansible/playbook/roles/webserver/templates/sites-available/*.conf.j2
@@ -295,7 +292,6 @@ ckanext_versions:
 # This is a dictionary of custom plugins to install. The key is the github user/repo and the value is the version to install.
 ckanext_custom_plugins:
   mjanez/ckanext-schemingdcat: v4.3.0
-  opendatagis/ckanext-miteco: v0.1.3
   mjanez/ckanext-openapi: v1.0.0
 
 ### Solr Service #########################################
@@ -352,9 +348,9 @@ pycsw_output_schema: iso19139_inspire
 pycsw_cron_days_interval: 2
 pycsw_cron_hour_start: 4
 pycsw_app_dir: "{{ ckan_src_dir }}/ckan-pycsw"
-pycsw_local_ssl_unverified: true
+pycsw_local_ssl_unverified: false
 #### pycsw conf
-pycsw_identification_title: SIG MITECO Geospatial Catalogue
+pycsw_identification_title: Sample Geospatial Catalogue
 pycsw_identification_abstract: OGC CSW server powered by pycsw
 pycsw_identification_keywords: "catalogue,discovery,metadata"
 pycsw_provider_name: Sample
