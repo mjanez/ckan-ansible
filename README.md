@@ -100,6 +100,9 @@ collections_paths = ~/.ansible/collections:/usr/share/ansible/collections:/lib/p
     retry_files_save_path = ./config/tmp/retry/
     log_path = ./config/ansible.log
     stdout_callback = yaml
+
+    ### Custom ansible-galaxy collection paths
+    collections_paths = ~/.ansible/collections:/usr/share/ansible/collections:/lib/python3.9/site-packages/ansible_collections:/path/to/your/collection
     ```
 
 3. Edit the `hosts.ini` and add the target deployment servers IP addresses or `hostname` for the specific environment.
@@ -110,7 +113,7 @@ collections_paths = ~/.ansible/collections:/usr/share/ansible/collections:/lib/p
 
     ```ini
     [ckan_servers]
-    development_01 ansible_host=192.168.68.01 ansible_user=sudouser ansible_port=222 ansible_ssh_pass=sudouserpassword ansible_connection=ssh
+    development_01 ansible_connection=local
     ```
 
     Or for local use:
