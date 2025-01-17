@@ -20,6 +20,11 @@ server {
     # ssl_session_cache dfine in stream and http
     ssl_session_tickets off;
 
+    #Redirect root to CKAN location 
+    location / {
+        return 301 {{ proxy_ckan_location }};
+    }
+
     # CKAN location with and without the slash appended (https://nginx.org/en/docs/http/ngx_http_core_module.html#location)
     location {{ proxy_ckan_location }}/ {
         proxy_pass {{ proxy_ckan_proxy_pass }}/;
